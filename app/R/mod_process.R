@@ -120,9 +120,9 @@ process_server <- function(id, d) {
     output$domains <- shiny::renderUI({
       done <- c(core = "Keys, interview date, regions, sampling weight",
                 fcs = "Food Consumption Score and groups",
-                rcsi = "Reduced Coping Strategies Index and CH phase")
-      planned <- c(lcs = "Livelihood coping strategies (needs a common item set)",
-                   hhs = "Household Hunger Scale (from Oct 2019)",
+                rcsi = "Reduced Coping Strategies Index and CH phase",
+                lcs = "Livelihood coping: 14 strategies, max category (round-specific and comparable)")
+      planned <- c(hhs = "Household Hunger Scale (from Oct 2019)",
                    hdds = "Household Dietary Diversity Score",
                    exp = "Food / non-food expenditure, food share",
                    demo = "Head of household, household size, income")
@@ -145,7 +145,8 @@ process_server <- function(id, d) {
                       orientation = "h",
                       hovertemplate = "%{y} · %{fullData.name}: %{x} rules<extra></extra>") |>
         plotly_style(barmode = "stack", xaxis = list(title = "Rules (target × round)"),
-                     yaxis = list(title = "", categoryorder = "array", categoryarray = rev(c("core", "fcs", "rcsi"))))
+                     yaxis = list(title = "", categoryorder = "array",
+                                  categoryarray = rev(intersect(names(DOMAIN_NAMES), unique(m$domain)))))
     })
 
     output$rules <- reactable::renderReactable({

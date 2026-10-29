@@ -32,6 +32,10 @@ class Config:
         cw = self.crosswalk
         return cw[(cw["domain"] == domain) & (cw["round_id"] == round_id)]
 
+    def table(self, name: str) -> pd.DataFrame:
+        """A domain-specific configuration table, config/<name>.csv, read as text."""
+        return pd.read_csv(self.root / "config" / f"{name}.csv", dtype=str, keep_default_na=False)
+
 
 def load(root: Path) -> Config:
     root = Path(root)

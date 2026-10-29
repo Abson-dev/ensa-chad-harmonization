@@ -335,3 +335,227 @@ rcsi,rCSIMealSize,2023-10,copy,rCSIMealSize,
 rcsi,rCSIMealSize,2024-02,copy,rCSIMealSize,
 rcsi,rCSIMealSize,2024-10,copy,rCSIMealSize,
 rcsi,rCSIMealSize,2025-10,copy,rCSIMealSize,
+lcs,LCS_DomAsset,2018-10,copy,biens_non_productif,
+lcs,LCS_DomAsset,2019-02,copy,biens_non_productif,
+lcs,LCS_DomAsset,2019-10,copy,biens_non_productif,
+lcs,LCS_DomAsset,2020-02,copy,biens_non_productif,
+lcs,LCS_DomAsset,2020-10,copy,biens_non_productif,
+lcs,LCS_DomAsset,2021-02,copy,LhCSIStress1,
+lcs,LCS_DomAsset,2021-10,copy,LhCSIStress1_EN,
+lcs,LCS_DomAsset,2022-02,copy,LhCSIStress1_EN,
+lcs,LCS_DomAsset,2022-10,copy,LhCSIStress1_EN,
+lcs,LCS_DomAsset,2023-02,copy,LhCSIStress1_EN,
+lcs,LCS_DomAsset,2023-10,copy,Lcs_stress_DomAsset,
+lcs,LCS_DomAsset,2024-02,copy,Lcs_stress_DomAsset,
+lcs,LCS_DomAsset,2024-10,copy,LcsEN_stress_DomAsset,
+lcs,LCS_DomAsset,2025-10,copy,Lcs_stress_DomAsset,
+lcs,LCS_Animals,2018-10,copy,vente_animaux,
+lcs,LCS_Animals,2019-02,copy,vente_animaux,
+lcs,LCS_Animals,2019-10,copy,vente_animaux,
+lcs,LCS_Animals,2020-02,copy,vente_animaux,
+lcs,LCS_Animals,2020-10,copy,vente_animaux,
+lcs,LCS_Animals,2021-02,copy,LhCSIStress2,
+lcs,LCS_Animals,2021-10,copy,LhCSIStress2_EN,
+lcs,LCS_Animals,2022-02,copy,LhCSIStress2_EN,
+lcs,LCS_Animals,2022-10,copy,LhCSIStress2_EN,
+lcs,LCS_Animals,2023-02,copy,LhCSIStress2_EN,
+lcs,LCS_Animals,2023-10,copy,Lcs_stress_Animals,
+lcs,LCS_Animals,2024-02,copy,Lcs_stress_Animals,
+lcs,LCS_Animals,2024-10,copy,LcsEN_stress_Animals,
+lcs,LCS_Animals,2025-10,copy,Lcs_stress_Animals,
+lcs,LCS_Saving,2018-10,copy,epargne_menage,
+lcs,LCS_Saving,2019-02,copy,epargne_menage,
+lcs,LCS_Saving,2019-10,copy,epargne_menage,
+lcs,LCS_Saving,2020-02,copy,epargne_menage,
+lcs,LCS_Saving,2020-10,copy,epargne_menage,
+lcs,LCS_Saving,2021-02,copy,LhCSIStress3,
+lcs,LCS_Saving,2021-10,copy,LhCSIStress3_EN,
+lcs,LCS_Saving,2022-02,copy,LhCSIStress3_EN,
+lcs,LCS_Saving,2022-10,copy,LhCSIStress3_EN,
+lcs,LCS_Saving,2023-02,copy,LhCSIStress3_EN,
+lcs,LCS_Saving,2023-10,copy,Lcs_stress_saving,
+lcs,LCS_Saving,2024-02,copy,Lcs_stress_saving,
+lcs,LCS_Saving,2024-10,copy,LcsEN_stress_Saving,
+lcs,LCS_Saving,2025-10,copy,Lcs_stress_Saving,
+lcs,LCS_BorrowCash,2018-10,missing,,strategy not asked in this round
+lcs,LCS_BorrowCash,2019-02,missing,,strategy not asked in this round
+lcs,LCS_BorrowCash,2019-10,missing,,strategy not asked in this round
+lcs,LCS_BorrowCash,2020-02,missing,,strategy not asked in this round
+lcs,LCS_BorrowCash,2020-10,missing,,strategy not asked in this round
+lcs,LCS_BorrowCash,2021-02,copy,LhCSIStress4,
+lcs,LCS_BorrowCash,2021-10,copy,LhCSIStress4_EN,
+lcs,LCS_BorrowCash,2022-02,copy,LhCSIStress4_EN,
+lcs,LCS_BorrowCash,2022-10,copy,LhCSIStress4_EN,
+lcs,LCS_BorrowCash,2023-02,copy,LhCSIStress4_EN,
+lcs,LCS_BorrowCash,2023-10,copy,Lcs_stress_BorrowCash,
+lcs,LCS_BorrowCash,2024-02,copy,Lcs_stress_BorrowCash,
+lcs,LCS_BorrowCash,2024-10,copy,LcsEN_stress_BorrowCash,
+lcs,LCS_BorrowCash,2025-10,copy,Lcs_stress_BorrowCash,
+lcs,LCS_CrdtFood,2018-10,copy,achat_emprunt_nourriture,French item: buy / borrow food on credit
+lcs,LCS_CrdtFood,2019-02,copy,achat_emprunt_nourriture,French item: buy / borrow food on credit
+lcs,LCS_CrdtFood,2019-10,copy,achat_emprunt_nourriture,French item: buy / borrow food on credit
+lcs,LCS_CrdtFood,2020-02,copy,achat_emprunt_nourriture,French item: buy / borrow food on credit
+lcs,LCS_CrdtFood,2020-10,copy,achat_emprunt_nourriture,French item: buy / borrow food on credit
+lcs,LCS_CrdtFood,2021-02,missing,,strategy not asked in this round
+lcs,LCS_CrdtFood,2021-10,missing,,strategy not asked in this round
+lcs,LCS_CrdtFood,2022-02,missing,,strategy not asked in this round
+lcs,LCS_CrdtFood,2022-10,missing,,strategy not asked in this round
+lcs,LCS_CrdtFood,2023-02,missing,,strategy not asked in this round
+lcs,LCS_CrdtFood,2023-10,missing,,strategy not asked in this round
+lcs,LCS_CrdtFood,2024-02,missing,,strategy not asked in this round
+lcs,LCS_CrdtFood,2024-10,copy,LcsEN_stress_CrdtFood,
+lcs,LCS_CrdtFood,2025-10,copy,Lcs_stress_CrdtFood,
+lcs,LCS_EduHealth,2018-10,missing,,strategy not asked in this round
+lcs,LCS_EduHealth,2019-02,missing,,strategy not asked in this round
+lcs,LCS_EduHealth,2019-10,missing,,strategy not asked in this round
+lcs,LCS_EduHealth,2020-02,missing,,strategy not asked in this round
+lcs,LCS_EduHealth,2020-10,missing,,strategy not asked in this round
+lcs,LCS_EduHealth,2021-02,copy,LhCSICrisis1,
+lcs,LCS_EduHealth,2021-10,copy,LhCSICrisis1_EN,
+lcs,LCS_EduHealth,2022-02,copy,LhCSICrisis1_EN,
+lcs,LCS_EduHealth,2022-10,copy,LhCSICrisis1_EN,
+lcs,LCS_EduHealth,2023-02,copy,LhCSICrisis1_EN,
+lcs,LCS_EduHealth,2023-10,copy,Lcs_crisis_Health,health spending only in Oct 2023 / Feb 2024
+lcs,LCS_EduHealth,2024-02,copy,Lcs_crisis_Health,health spending only in Oct 2023 / Feb 2024
+lcs,LCS_EduHealth,2024-10,copy,LcsEN_stress_EduHealth,
+lcs,LCS_EduHealth,2025-10,copy,Lcs_stress_EduHealth,
+lcs,LCS_ProdAssets,2018-10,copy,vente_beins_productifs,
+lcs,LCS_ProdAssets,2019-02,copy,vente_beins_productifs,
+lcs,LCS_ProdAssets,2019-10,copy,vente_beins_productifs,
+lcs,LCS_ProdAssets,2020-02,copy,vente_beins_productifs,
+lcs,LCS_ProdAssets,2020-10,copy,vente_beins_productifs,
+lcs,LCS_ProdAssets,2021-02,copy,LhCSICrisis2,
+lcs,LCS_ProdAssets,2021-10,copy,LhCSICrisis2_EN,
+lcs,LCS_ProdAssets,2022-02,copy,LhCSICrisis2_EN,
+lcs,LCS_ProdAssets,2022-10,copy,LhCSICrisis2_EN,
+lcs,LCS_ProdAssets,2023-02,copy,LhCSICrisis2_EN,
+lcs,LCS_ProdAssets,2023-10,copy,Lcs_crisis_ProdAsset,
+lcs,LCS_ProdAssets,2024-02,copy,Lcs_crisis_ProdAsset,
+lcs,LCS_ProdAssets,2024-10,copy,LcsEN_crisis_ProdAssets,
+lcs,LCS_ProdAssets,2025-10,copy,Lcs_crisis_ProdAssets,
+lcs,LCS_EatCrops,2018-10,copy,recolte_immature,
+lcs,LCS_EatCrops,2019-02,copy,recolte_immature,
+lcs,LCS_EatCrops,2019-10,copy,recolte_immature,
+lcs,LCS_EatCrops,2020-02,copy,recolte_immature,
+lcs,LCS_EatCrops,2020-10,copy,recolte_immature,
+lcs,LCS_EatCrops,2021-02,missing,,strategy not asked in this round
+lcs,LCS_EatCrops,2021-10,missing,,strategy not asked in this round
+lcs,LCS_EatCrops,2022-02,missing,,strategy not asked in this round
+lcs,LCS_EatCrops,2022-10,missing,,strategy not asked in this round
+lcs,LCS_EatCrops,2023-02,missing,,strategy not asked in this round
+lcs,LCS_EatCrops,2023-10,copy,Lcs_crisis_EatCrops,
+lcs,LCS_EatCrops,2024-02,copy,Lcs_crisis_EatCrops,
+lcs,LCS_EatCrops,2024-10,copy,LcsEN_crisis_EatCrops,
+lcs,LCS_EatCrops,2025-10,copy,Lcs_crisis_EatCrops,
+lcs,LCS_ChildWork,2018-10,missing,,strategy not asked in this round
+lcs,LCS_ChildWork,2019-02,missing,,strategy not asked in this round
+lcs,LCS_ChildWork,2019-10,missing,,strategy not asked in this round
+lcs,LCS_ChildWork,2020-02,missing,,strategy not asked in this round
+lcs,LCS_ChildWork,2020-10,missing,,strategy not asked in this round
+lcs,LCS_ChildWork,2021-02,missing,,strategy not asked in this round
+lcs,LCS_ChildWork,2021-10,missing,,strategy not asked in this round
+lcs,LCS_ChildWork,2022-02,missing,,strategy not asked in this round
+lcs,LCS_ChildWork,2022-10,missing,,strategy not asked in this round
+lcs,LCS_ChildWork,2023-02,missing,,strategy not asked in this round
+lcs,LCS_ChildWork,2023-10,missing,,strategy not asked in this round
+lcs,LCS_ChildWork,2024-02,missing,,strategy not asked in this round
+lcs,LCS_ChildWork,2024-10,copy,LcsEN_crisis_ChildWork,
+lcs,LCS_ChildWork,2025-10,copy,Lcs_crisis_ChildWork,
+lcs,LCS_OutSchool,2018-10,copy,enfants_ecole,
+lcs,LCS_OutSchool,2019-02,copy,enfants_ecole,
+lcs,LCS_OutSchool,2019-10,copy,enfants_ecole,
+lcs,LCS_OutSchool,2020-02,copy,enfants_ecole,
+lcs,LCS_OutSchool,2020-10,copy,enfants_ecole,
+lcs,LCS_OutSchool,2021-02,copy,LhCSICrisis3,
+lcs,LCS_OutSchool,2021-10,copy,LhCSICrisis3_EN,
+lcs,LCS_OutSchool,2022-02,copy,LhCSICrisis3_EN,
+lcs,LCS_OutSchool,2022-10,copy,LhCSICrisis3_EN,
+lcs,LCS_OutSchool,2023-02,copy,LhCSICrisis3_EN,
+lcs,LCS_OutSchool,2023-10,missing,,strategy not asked in this round
+lcs,LCS_OutSchool,2024-02,missing,,strategy not asked in this round
+lcs,LCS_OutSchool,2024-10,copy,LcsEN_em_OutSchool,
+lcs,LCS_OutSchool,2025-10,copy,Lcs_em_OutSchool,
+lcs,LCS_Marriage,2018-10,missing,,strategy not asked in this round
+lcs,LCS_Marriage,2019-02,missing,,strategy not asked in this round
+lcs,LCS_Marriage,2019-10,missing,,strategy not asked in this round
+lcs,LCS_Marriage,2020-02,missing,,strategy not asked in this round
+lcs,LCS_Marriage,2020-10,missing,,strategy not asked in this round
+lcs,LCS_Marriage,2021-02,missing,,strategy not asked in this round
+lcs,LCS_Marriage,2021-10,missing,,strategy not asked in this round
+lcs,LCS_Marriage,2022-02,missing,,strategy not asked in this round
+lcs,LCS_Marriage,2022-10,missing,,strategy not asked in this round
+lcs,LCS_Marriage,2023-02,missing,,strategy not asked in this round
+lcs,LCS_Marriage,2023-10,missing,,strategy not asked in this round
+lcs,LCS_Marriage,2024-02,missing,,strategy not asked in this round
+lcs,LCS_Marriage,2024-10,copy,LcsEN_em_Marriage,
+lcs,LCS_Marriage,2025-10,copy,Lcs_em_Marriage,
+lcs,LCS_ResAsset,2018-10,copy,vendre_parcelle,
+lcs,LCS_ResAsset,2019-02,copy,vendre_parcelle,
+lcs,LCS_ResAsset,2019-10,copy,vendre_parcelle,
+lcs,LCS_ResAsset,2020-02,copy,vendre_parcelle,
+lcs,LCS_ResAsset,2020-10,copy,vendre_parcelle,
+lcs,LCS_ResAsset,2021-02,copy,LhCSIEmergency1,
+lcs,LCS_ResAsset,2021-10,copy,LhCSIEmergency1_EN,
+lcs,LCS_ResAsset,2022-02,copy,LhCSIEmergency1_EN,
+lcs,LCS_ResAsset,2022-10,copy,LhCSIEmergency1_EN,
+lcs,LCS_ResAsset,2023-02,copy,LhCSIEmergency1_EN,
+lcs,LCS_ResAsset,2023-10,copy,Lcs_em_ResAsset,
+lcs,LCS_ResAsset,2024-02,copy,Lcs_em_ResAsset,
+lcs,LCS_ResAsset,2024-10,copy,LcsEN_em_ResAsset,
+lcs,LCS_ResAsset,2025-10,copy,Lcs_em_ResAsset,
+lcs,LCS_FemAnimal,2018-10,copy,vendre_femelle_reproductrice,
+lcs,LCS_FemAnimal,2019-02,copy,vendre_femelle_reproductrice,
+lcs,LCS_FemAnimal,2019-10,copy,vendre_femelle_reproductrice,
+lcs,LCS_FemAnimal,2020-02,copy,vendre_femelle_reproductrice,
+lcs,LCS_FemAnimal,2020-10,copy,vendre_femelle_reproductrice,
+lcs,LCS_FemAnimal,2021-02,copy,LhCSIEmergency2,slot LhCSIEmergency2 in Feb 2021 (Emergency3 from Oct 2021)
+lcs,LCS_FemAnimal,2021-10,copy,LhCSIEmergency3_EN,
+lcs,LCS_FemAnimal,2022-02,copy,LhCSIEmergency3_EN,
+lcs,LCS_FemAnimal,2022-10,copy,LhCSIEmergency3_EN,
+lcs,LCS_FemAnimal,2023-02,copy,LhCSIEmergency3_EN,
+lcs,LCS_FemAnimal,2023-10,copy,Lcs_em_FemAnimal,
+lcs,LCS_FemAnimal,2024-02,copy,Lcs_em_FemAnimal,
+lcs,LCS_FemAnimal,2024-10,copy,LcsEN_em_FemAnimal,
+lcs,LCS_FemAnimal,2025-10,copy,Lcs_em_FemAnimal,
+lcs,LCS_Begged,2018-10,copy,envoye_menage_mendie,
+lcs,LCS_Begged,2019-02,copy,envoye_menage_mendie,
+lcs,LCS_Begged,2019-10,copy,envoye_menage_mendie,
+lcs,LCS_Begged,2020-02,copy,envoye_menage_mendie,
+lcs,LCS_Begged,2020-10,copy,envoye_menage_mendie,
+lcs,LCS_Begged,2021-02,copy,LhCSIEmergency3,slot LhCSIEmergency3 in Feb 2021 (Emergency2 from Oct 2021)
+lcs,LCS_Begged,2021-10,copy,LhCSIEmergency2_EN,
+lcs,LCS_Begged,2022-02,copy,LhCSIEmergency2_EN,
+lcs,LCS_Begged,2022-10,copy,LhCSIEmergency2_EN,
+lcs,LCS_Begged,2023-02,copy,LhCSIEmergency2_EN,
+lcs,LCS_Begged,2023-10,copy,Lcs_em_Begged,
+lcs,LCS_Begged,2024-02,copy,Lcs_em_Begged,
+lcs,LCS_Begged,2024-10,copy,LcsEN_em_Begged,
+lcs,LCS_Begged,2025-10,copy,Lcs_em_Begged,
+lcs,orig_LCS,2018-10,copy,Strategie_moyen_existence,
+lcs,orig_LCS,2019-02,copy,Strategie_moyen_existence,
+lcs,orig_LCS,2019-10,copy,Strategie_moyen_existence,
+lcs,orig_LCS,2020-02,copy,ISAM,
+lcs,orig_LCS,2020-10,copy,ISAM,
+lcs,orig_LCS,2021-02,copy,Strategie_moyen_existence,
+lcs,orig_LCS,2021-10,copy,ISAM,
+lcs,orig_LCS,2022-02,copy,Strategie_moyen_existence,
+lcs,orig_LCS,2022-10,copy,ISAM,
+lcs,orig_LCS,2023-02,copy,ISAM,
+lcs,orig_LCS,2023-10,copy,ISAM,
+lcs,orig_LCS,2024-02,copy,ISAM,
+lcs,orig_LCS,2024-10,missing,,no pre-computed max category in the source file
+lcs,orig_LCS,2025-10,copy,Max_coping_behaviour,
+lcs,lcs_food_reason,2018-10,missing,,questions already framed as coping with a lack of food
+lcs,lcs_food_reason,2019-02,missing,,questions already framed as coping with a lack of food
+lcs,lcs_food_reason,2019-10,missing,,questions already framed as coping with a lack of food
+lcs,lcs_food_reason,2020-02,missing,,questions already framed as coping with a lack of food
+lcs,lcs_food_reason,2020-10,missing,,questions already framed as coping with a lack of food
+lcs,lcs_food_reason,2021-02,missing,,questions already framed as coping with a lack of food
+lcs,lcs_food_reason,2021-10,missing,,questions already framed as coping with a lack of food
+lcs,lcs_food_reason,2022-02,missing,,questions already framed as coping with a lack of food
+lcs,lcs_food_reason,2022-10,missing,,questions already framed as coping with a lack of food
+lcs,lcs_food_reason,2023-02,missing,,questions already framed as coping with a lack of food
+lcs,lcs_food_reason,2023-10,missing,,questions already framed as coping with a lack of food
+lcs,lcs_food_reason,2024-02,missing,,questions already framed as coping with a lack of food
+lcs,lcs_food_reason,2024-10,copy,LhCSIEnAccess.1,essential-needs module: 1 = strategies used to buy food
+lcs,lcs_food_reason,2025-10,copy,LhCSIEnAccess.1,essential-needs module: 1 = strategies used to buy food

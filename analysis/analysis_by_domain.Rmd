@@ -60,6 +60,9 @@ fcs_nat <- dcast(as.data.table(estimate_by(design, c("FCS", "fcs_poor", "fcs_bor
 rcsi_nat <- dcast(as.data.table(estimate_by(design, c("rCSI", "rcsi_p1", "rcsi_p2", "rcsi_p3"))),
                   round_id ~ var, value.var = c("est", "lo", "hi"))
 both_nat <- as.data.table(estimate_by(design, "both_severe"))
+lcs_nat <- dcast(as.data.table(estimate_by(design, c("lcs_none", "lcs_stress", "lcs_crisis", "lcs_emergency", "lcs_ce", "lcs_ce_round"))),
+                 round_id ~ var, value.var = c("est", "lo", "hi"))
+lcs_nat <- merge(R[, .(round_id, round, round_lab, season, year, weighted)], lcs_nat, by = "round_id")[order(match(round_id, R$round_id))]
 fcs_nat <- merge(R[, .(round_id, round, round_lab, season, year, weighted)], fcs_nat, by = "round_id")[order(match(round_id, R$round_id))]
 rcsi_nat <- merge(R[, .(round_id, round, round_lab, season, year, weighted)], rcsi_nat, by = "round_id")[order(match(round_id, R$round_id))]
 
@@ -97,6 +100,7 @@ p3_low <- rcsi_nat[weighted == TRUE][which.min(est_rcsi_p3)]
 
 - **`r if (worse) "Food consumption deteriorated over the period." else "Food consumption trends."`** In October, the share of households with poor or borderline food consumption (FCS 28/42) `r dir_word(pb(first_oct), pb(last_oct))` from `r pct(pb(first_oct))`% in `r lab(first_oct)` to `r pct(pb(last_oct))`% in `r lab(last_oct)`, peaking at `r pct(peak_oct$est_fcs_pb)`% in `r peak_oct$round_lab`. In February it went from `r pct(pb(first_feb))`% (`r lab(first_feb)`) to `r pct(pb(last_feb))`% (`r lab(last_feb)`).
 - **Severe consumption-based coping concerns a minority of households.** The share in rCSI phase 3 or above (rCSI ≥ 19) ranged from `r pct(min(rcsi_nat$est_rcsi_p3))`% to `r pct(max(rcsi_nat$est_rcsi_p3))`% across rounds. It was `r pct(p3(last_oct))`% in `r lab(last_oct)`, against `r pct(p3(first_oct))`% in `r lab(first_oct)` and a low of `r pct(p3_low$est_rcsi_p3)`% in `r p3_low$round_lab`.
+- **Livelihood coping.** Using the strategies asked in every round, `r pct(g(lcs_nat, "est_lcs_ce", latest))`% of households resorted to crisis or emergency strategies in `r lab(latest)`, against `r pct(g(lcs_nat, "est_lcs_ce", first_oct))`% in `r lab(first_oct)` (range `r pct(min(lcs_nat$est_lcs_ce))`–`r pct(max(lcs_nat$est_lcs_ce))`% across rounds).
 - **Hotspots in `r lab(latest)`:** `r paste0(top3$admin1, " (", pct(top3$est, 0), "%)", collapse = ", ")` have the highest shares of poor or borderline consumption.
 - **Overlap of the two dimensions:** in `r lab(latest)`, `r pct(both_latest$est)`% of households combined poor or borderline consumption with rCSI phase 3+.
 - **Caveat:** `r paste(unweighted, collapse = ", ")` have no usable sampling weight and are estimated unweighted (marked †); February and October rounds reflect different seasons and should be compared within season.
@@ -126,6 +130,7 @@ ft(t1[, .(round_lab, generation, households = int(households), regions, fieldwor
 
 - **Food Consumption Score (FCS)** — days of consumption of 9 food groups over the last 7 days, weighted (staples 2, pulses 3, vegetables 1, fruit 1, meat/fish/eggs 4, dairy 4, sugar 0.5, oil 0.5, condiments 0). Groups: poor ≤ 28, borderline 28.5–42, acceptable > 42 (Chad thresholds); the 21/35 thresholds are shown for sensitivity.
 - **Reduced Coping Strategies Index (rCSI)** — days of use of 5 strategies over the last 7 days, weighted (1, 2, 1, 3, 1); range 0–56. Cadre Harmonisé phases: phase 1 ≤ 3, phase 2 = 4–18, phase 3+ ≥ 19.
+- **Livelihood Coping Strategies (LCS)** — strategies used in the past 30 days because of a lack of food (answer "yes" or "no, already exhausted"); each household is classified by the most severe strategy used (none, stress, crisis, emergency). The list of strategies and their severities changed between questionnaires, so the **comparable** indicator uses the 7 strategies asked in all rounds with a fixed severity (stress: sold household assets, sold more animals, spent savings; crisis: sold productive assets; emergency: sold house or land, sold last female animals, begged). From October 2024 the module covers coping for any essential need; only coping to buy food is counted, as in earlier rounds.
 
 Both indicators were recomputed from the item answers with the same formula in every round; they agree with the scores computed by the original analysts in 98.7–100% of households (see the harmonisation documentation).
 
@@ -349,6 +354,78 @@ save_fig(heat("rcsi_p3", "% rCSI phase 3+", "#B35900"), "F07_rcsi_region_heatmap
 
 <!---BLOCK_LANDSCAPE_STOP--->
 
+# Livelihood coping strategies (LCS domain)
+
+```{r lcs-calc}
+lcs_use <- weighted_grid(d, paste0("use_", names(LCS_STRATEGIES)), by = c("round_id", "round_lab"), min_n = 0)
+lcs_use <- melt(lcs_use[, -"n"], id.vars = c("round_id", "round_lab"), variable.name = "strategy", value.name = "share")
+lcs_use[, item := sub("use_", "", strategy)]
+top_lcs <- lcs_use[round_id == latest & !is.na(share)][order(-share)][1:3]
+gap <- lcs_nat[round_id == latest, est_lcs_ce_round - est_lcs_ce]
+```
+
+Livelihood coping strategies show how households protect food consumption by drawing on their assets and future capacity. On the comparable indicator, `r pct(g(lcs_nat, "est_lcs_ce", latest))`% of households used crisis or emergency strategies in `r lab(latest)` (Table \@ref(tab:lcs-national), Figure \@ref(fig:lcs-cat)). The round-specific indicator, which uses all the strategies asked in that round, gives `r pct(g(lcs_nat, "est_lcs_ce_round", latest))`%: the difference (`r sprintf("%+.1f", 100 * gap)` points) comes from the strategies that are not asked in every round`r if (latest %in% c("2024-10", "2025-10")) " and from coping for non-food needs, which the round-specific indicator includes" else ""`. The most common strategies in `r lab(latest)` were `r paste0(tolower(LCS_STRATEGIES[top_lcs$item]), " (", pct(top_lcs$share, 0), "%)", collapse = ", ")` (Figure \@ref(fig:lcs-use)).
+
+```{r lcs-national}
+save_tab(lcs_nat, "T11_lcs_national")
+ft(lcs_nat[, .(Round = round_lab, `No strategy (%)` = pct(est_lcs_none), `Stress (%)` = pct(est_lcs_stress),
+               `Crisis (%)` = pct(est_lcs_crisis), `Emergency (%)` = pct(est_lcs_emergency),
+               `Crisis + emergency (%)` = pct(est_lcs_ce), `95% CI` = ci(lo_lcs_ce, hi_lcs_ce),
+               `C + E, round-specific (%)` = pct(est_lcs_ce_round))]) |>
+  flextable::add_footer_lines("Comparable indicator: 7 strategies asked in all rounds, fixed severity, coping for food only. Round-specific: all strategies asked in the round, with that round's severity. † Unweighted estimate.") |>
+  flextable::fontsize(size = 8, part = "all") |>
+  cap("Livelihood coping strategies: maximum category by round (national, 95% CI)", "lcs-national")
+```
+
+```{r lcs-cat, fig.id = "lcs-cat", fig.cap = "Households by most severe livelihood coping strategy (comparable indicator), by round and season", fig.height = 3.8}
+x <- melt(lcs_nat[, .(round_lab, season, `No strategy` = est_lcs_none, Stress = est_lcs_stress,
+                      Crisis = est_lcs_crisis, Emergency = est_lcs_emergency)],
+          id.vars = c("round_lab", "season"), variable.name = "cat", value.name = "share")
+x[, season := factor(season, c("Feb", "Oct"), c("February rounds", "October rounds"))]
+x[, cat := factor(cat, levels = rev(names(PAL$lcs)))]
+p <- ggplot(x, aes(round_lab, share, fill = cat)) +
+  geom_col(width = 0.72, colour = "white", linewidth = 0.3) +
+  # group = cat keeps labels stacked with their bars (the colour mapping would otherwise split the stack)
+  geom_text(aes(label = ifelse(share >= 0.04, pct(share, 0), ""), group = cat,
+                colour = cat %in% c("Emergency", "Crisis")), position = position_stack(vjust = 0.5), size = 2.5,
+            show.legend = FALSE) +
+  scale_colour_manual(values = c(`TRUE` = "white", `FALSE` = PAL$ink)) +
+  facet_grid(~season, scales = "free_x", space = "free_x") +
+  scale_fill_manual(values = PAL$lcs, name = NULL, breaks = names(PAL$lcs)) +
+  scale_y_continuous(labels = scales::label_percent(), expand = c(0, 0)) +
+  labs(x = NULL, y = "Share of households", caption = "† Unweighted estimate.") +
+  theme_report() + theme(axis.text.x = element_text(angle = 40, hjust = 1), panel.grid.major.x = element_blank())
+save_fig(p, "F10_lcs_categories", height = 3.8)
+```
+
+```{r lcs-use, fig.id = "lcs-use", fig.cap = "Households using each livelihood coping strategy (yes or already exhausted), by round (weighted)", fig.height = 4.6}
+save_tab(dcast(lcs_use, strategy ~ round_lab, value.var = "share"), "T12_lcs_strategy_use")
+sev_lab <- function(i) ifelse(i %in% LCS_COMMON, paste0(LCS_STRATEGIES[i], " *"), LCS_STRATEGIES[i])
+lcs_use[, label := factor(sev_lab(item), levels = rev(sev_lab(names(LCS_STRATEGIES))))]
+p <- ggplot(lcs_use, aes(round_lab, label, fill = share)) +
+  geom_tile(colour = "white", linewidth = 0.5) +
+  geom_text(aes(label = ifelse(is.na(share), "", pct(share, 0))), size = 2.2,
+            colour = ifelse(!is.na(lcs_use$share) & lcs_use$share > 0.25, "white", PAL$ink)) +
+  scale_fill_gradient(low = "#F7F7F2", high = "#B35900", labels = scales::label_percent(), na.value = "#EEF0F3",
+                      limits = c(0, NA), name = "% of households") +
+  labs(x = NULL, y = NULL, caption = paste("* Strategy asked in all rounds (comparable indicator). Grey: not asked in that round. † Unweighted estimate.",
+                                           "From Oct 2024: coping for any essential need, not only food.", sep = "\n")) +
+  theme_report(9) + theme(axis.text.x = element_text(angle = 40, hjust = 1), panel.grid = element_blank(),
+                          legend.key.width = unit(1.2, "cm"))
+save_fig(p, "F11_lcs_strategy_use", height = 4.6)
+```
+
+<!---BLOCK_LANDSCAPE_START--->
+
+```{r lcs-heatmap, fig.id = "lcs-heatmap", fig.cap = "Crisis or emergency livelihood coping (%, comparable indicator) by region and round", fig.width = 9, fig.height = 5.6}
+rg <- merge(rg, weighted_grid(d[!is.na(admin1)], "lcs_ce", by = c("admin1", "round_lab"), min_n = params$min_cell)[, -"n"],
+            by = c("admin1", "round_lab"))
+save_tab(rg, "T05_region_round_grid")
+save_fig(heat("lcs_ce", "% crisis + emergency", "#8B0000"), "F12_lcs_region_heatmap", width = 9, height = 5.6)
+```
+
+<!---BLOCK_LANDSCAPE_STOP--->
+
 # Food consumption and coping combined
 
 ```{r combined-calc}
@@ -406,6 +483,7 @@ save_fig(p, "F09_region_scatter", height = 4.4)
 - **Weights.** `r paste(unweighted, collapse = ", ")` have no usable sampling weight; their estimates are unweighted and may be biased, particularly in 2024 when refugee and returnee strata were over-sampled.
 - **Variance.** Confidence intervals use `r if (params$cluster == "admin3") "sub-prefectures as approximate clusters" else "simple random sampling"`, not the official sampling design.
 - **Questionnaire changes.** Indicators were recomputed with identical formulas, but question wording and food-group examples changed between generations; small level shifts at the 2021 and 2023 generation changes cannot be ruled out.
+- **Livelihood coping.** The comparable LCS indicator rests on 7 strategies with only one crisis strategy, so it understates crisis coping compared with the full module; use the round-specific indicator for a single round and the comparable one for trends. From October 2024 the module asks about coping for any essential need, then the reason; households that coped only for non-food needs are excluded from the comparable indicator.
 - **Preliminary.** These are harmonised estimates for methodological review, not official ENSA results.
 
 # Annex

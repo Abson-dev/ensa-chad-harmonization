@@ -4,9 +4,9 @@
 ![R](https://img.shields.io/badge/R-%E2%89%A54.3%20(tested%204.5.2)-276DC3?logo=r&logoColor=white)
 ![Shiny](https://img.shields.io/badge/Shiny-1.14-1F77B4?logo=rstudioide&logoColor=white)
 ![Environment](https://img.shields.io/badge/env-conda--forge-green)
-![Pipeline tests](https://img.shields.io/badge/pipeline%20tests-11%20passing-brightgreen)
+![Pipeline tests](https://img.shields.io/badge/pipeline%20tests-16%20passing-brightgreen)
 ![App checks](https://img.shields.io/badge/app%20checks-85%20passing-brightgreen)
-![Status](https://img.shields.io/badge/status-pilot%20(3%20domains)-orange)
+![Status](https://img.shields.io/badge/status-4%20of%208%20domains-orange)
 
 A config-driven, tested and documented workflow that harmonises **14 rounds** of Chad's national food security assessment (*Enquête Nationale de Sécurité Alimentaire*, ENSA), October 2018 to October 2025, **197,947 households**, into one comparable dataset per **thematic domain**. It has two parts:
 
@@ -57,7 +57,7 @@ Across these rounds the questionnaire went through three codebook generations: F
 | `core` | ✅ done | Household keys, interview date, regions (23 standardised names), department, sub-prefecture, sampling weight |
 | `fcs` | ✅ done | 9 food groups, Food Consumption Score, groups 21/35 and 28/42 |
 | `rcsi` | ✅ done | 5 coping strategies, reduced Coping Strategies Index, Cadre Harmonisé phase |
-| `lcs` | 🔜 planned | Livelihood coping strategies (needs a common item set: the module changes between rounds) |
+| `lcs` | ✅ done | 14 livelihood coping strategies on the WFP answer scale; maximum coping category, round-specific and comparable across rounds |
 | `hhs` | 🔜 planned | Household Hunger Scale (from Oct 2019) |
 | `hdds` | 🔜 planned | Household Dietary Diversity Score (12 groups) |
 | `exp` | 🔜 planned | Food / non-food expenditure, food expenditure share |
@@ -93,7 +93,7 @@ The pipeline expects the original SPSS files laid out like this (folder names ar
 
 | Part | Language | Role | Environment | Entry point | Tests |
 |---|---|---|---|---|---|
-| Harmonisation pipeline | **Python 3.11** | read SPSS files, apply rules, recompute and validate indicators, write CSV / SAV | [`environment.yml`](environment.yml) (conda-forge, pinned) or [`requirements.txt`](requirements.txt) | `run_harmonize.py` | `python -m pytest -q` (11) |
+| Harmonisation pipeline | **Python 3.11** | read SPSS files, apply rules, recompute and validate indicators, write CSV / SAV | [`environment.yml`](environment.yml) (conda-forge, pinned) or [`requirements.txt`](requirements.txt) | `run_harmonize.py` | `python -m pytest -q` (16) |
 | Harmonisation explorer | **R ≥ 4.3** (tested 4.5.2) | Shiny app for reviewers: process, crosswalk, validation, indicators | packages installed by [`app/install_packages.R`](app/install_packages.R) | `app/app.R`, `app/run_app.bat` | `Rscript tests/test_app.R` (85) |
 | App data preparation | **R** | aggregates the pipeline outputs for the app (no household data) | `data.table`, `jsonlite` | `app/prepare_app_data.R` | — |
 | Analysis by domain | **R Markdown** | merges the domain files; survey-weighted tables and figures; Word report | officedown, flextable, survey, ggplot2 (+ Pandoc) | `analysis/render_report.R`, `analysis/render_report.bat` | — |
@@ -115,7 +115,7 @@ git clone https://github.com/Abson-dev/ensa-chad-harmonization.git harmonization
 cd harmonization
 conda env create -f environment.yml      # Python 3.11 + pinned packages from conda-forge
 conda activate ensa-chad
-python -m pytest -q                      # 11 rule tests
+python -m pytest -q                      # 16 rule tests
 python run_harmonize.py                  # all domains, all rounds (about 2-3 min)
 ```
 
@@ -182,7 +182,9 @@ harmonization/
 │   ├── settings.toml        paths, FCS / rCSI weights and thresholds, date tolerance
 │   ├── rounds.csv           one row per round: file, season, codebook generation, fieldwork window
 │   ├── crosswalk.csv        one row per domain x target x round: method + source variable(s) + note
-│   └── admin1_names.csv     every region spelling found -> standard name (32 -> 23)
+│   ├── admin1_names.csv     every region spelling found -> standard name (32 -> 23)
+│   ├── lcs_responses.csv    LCS answer codes per round -> WFP scale (three source scales, one reversed)
+│   └── lcs_severity.csv     severity of each LCS strategy in each round
 ├── ensa_harmonize/
 │   ├── config.py            loads and validates the config
 │   ├── engine.py            reads only the needed columns; applies crosswalk methods
@@ -236,16 +238,24 @@ raw .sav (14 rounds) ──► crosswalk rules ──► domain derive() ──�
 
 Recomputed scores against the scores pre-computed by the original analysts (± 0.5 points):
 
-| Round | FCS agreement | rCSI agreement |
-|---|---:|---:|
-| Oct 2018 | 98.7% | 100% |
-| Feb 2019 – Oct 2019 | 100% | 100% |
-| Feb 2020 | 98.9% | 100% |
-| Oct 2020 – Feb 2023 | 100% | 100% |
-| Oct 2023 | no original score | 100% |
-| Feb 2024 | 99.2% | 100% |
-| Oct 2024 | no original score | no original score |
-| Oct 2025 | no original score | 100% |
+| Round | FCS agreement | rCSI agreement | LCS max category (exact) |
+|---|---:|---:|---:|
+| Oct 2018 | 98.7% | 100% | 87.7% |
+| Feb 2019 | 100% | 100% | 31.2% ¹ |
+| Oct 2019 | 100% | 100% | 87.3% |
+| Feb 2020 | 98.9% | 100% | 100% |
+| Oct 2020 | 100% | 100% | 100% |
+| Feb 2021 | 100% | 100% | 100% |
+| Oct 2021 | 100% | 100% | 100% |
+| Feb 2022 | 100% | 100% | 69.6% ¹ |
+| Oct 2022 | 100% | 100% | 93.6% |
+| Feb 2023 | 100% | 100% | 97.1% |
+| Oct 2023 | no original score | 100% | 100% |
+| Feb 2024 | 99.2% | 100% | 100% |
+| Oct 2024 | no original score | no original score | no original |
+| Oct 2025 | no original score | 100% | 68.5% ² |
+
+LCS: the round-specific maximum category is identical to the analysts' in 6 rounds, including Oct 2021, where the answer codes are reversed, which validates the recoding. In the other rounds the analysts' variable left out one to five strategies (an undocumented choice; the lowest-agreement rounds were checked by searching every inclusion and severity combination). ¹ The original variable does not correspond to these items (best possible reconstruction 48% / 88%). ² The original counts only coping to buy food and uses the pre-2024 severities; with the food filter, agreement rises to 79%.
 
 Per-round QC tables (completeness, invalid values, weighted means and prevalences, agreement) are written to `output/qc/` on every run.
 
@@ -266,6 +276,16 @@ Per-round QC tables (completeness, invalid values, weighted means and prevalence
 - rCSI = LessQlty + 2×Borrow + MealSize + 3×MealAdult + MealNb (0–56). Cadre Harmonisé phase: ≤3 / 4–18 / ≥19.
 - **Oct 2024 skip pattern:** "restrict adults so children can eat" was not asked in households without children. It is set to 0 for those households (1,078, flagged per household); the 185 skipped answers in households with children stay missing.
 
+### lcs
+- **Strategies mapped by content**, not slot name: 14 strategies, 10 per round until Feb 2024 and 14 from Oct 2024 ([`config/crosswalk.csv`](config/crosswalk.csv)).
+- **Answers harmonised to the WFP scale** (10 no need, 20 already exhausted, 30 yes, 9999 not applicable) with an explicit code table per round ([`config/lcs_responses.csv`](config/lcs_responses.csv)). The source files use three scales, one of them **reversed** (Oct 2021 – Feb 2023: 1 = no need, 3 = yes).
+- **Used** = yes or already exhausted (WFP rule); skipped questions count as not used.
+- **Severity per strategy and round** ([`config/lcs_severity.csv`](config/lcs_severity.csv)), as each questionnaire defines it. For example, reduced education/health spending is crisis until Feb 2024 and stress from Oct 2024, and school withdrawal moves from crisis to emergency.
+- Two indicators (1 none, 2 stress, 3 crisis, 4 emergency):
+  - `LCS_max`: **round-specific**, all strategies asked, at that round's severity. Use it for a single round.
+  - `LCS_max_common`: **comparable**, the 7 strategies asked in all 14 rounds at a fixed severity (stress: household assets, animals, savings; crisis: productive assets; emergency: house/land, last female animals, begging), coping for food only. Use it for trends.
+- **Food framing:** until Feb 2024 every question asks about coping "because of a lack of food". From Oct 2024 the essential-needs module asks about coping for any need, then the reason; for `LCS_max_common`, households that did not cope to buy food are excluded (1,437 in Oct 2024, 1,359 in Oct 2025; flagged as `lcs_not_for_food`). Set `food_reason_filter = false` in `settings.toml` to turn this off.
+
 ## Data issues found during harmonisation
 
 | Issue | Rounds | Handling |
@@ -273,7 +293,10 @@ Per-round QC tables (completeness, invalid values, weighted means and prevalence
 | Pre-computed FCS groups coded in **reverse** (1 = Acceptable, 3 = Poor) | Feb 2020 – Feb 2023 | Groups recomputed; reversal detected automatically in QC |
 | No usable sampling weight | Oct 2021, Feb 2024 (only group weights), Oct 2024 | Weighted QC left blank; weights to confirm with the data owners |
 | Weights on a different scale (sum about 21k vs 130–240k) | Feb 2020 | `weight_norm` per round |
-| LCS strategy slots renumbered and severities changed | 2021 onward | Content-based mapping (planned `lcs` domain) |
+| LCS answer codes **reversed** (1 = no need, 3 = yes) | Oct 2021 – Feb 2023 | Explicit code table per round; validated at 100% against the original in Oct 2021 |
+| LCS strategy slots renumbered, item set and severities changed | Feb 2021 onward | Content-based mapping; round-specific and comparable (common-set) indicators |
+| LCS module switched to essential needs (coping for any need, then reason) | Oct 2024 onward | Comparable indicator keeps coping to buy food only |
+| Analysts' LCS max category built on varying, undocumented item sets | 7 rounds | Recomputed with documented rules; differences reported in QC |
 | Region name variants (Hajer/Hadjer Lamis, Wardi Fira, …) | Several | Explicit lookup table |
 | Many pre-computed indicators stored as text | Gen 2 | Converted, then recomputed |
 
@@ -300,6 +323,7 @@ Details: [SETUP.md §10](SETUP.md#10-change-a-harmonisation-decision).
 | `ensa_core.csv/.sav` | 197,947 | round_id, hh_id, year, season, generation, uuid, svy_date, date_flag, admin1, admin1_raw, admin2, admin3, weight, weight_norm, weight_flag |
 | `ensa_fcs.csv/.sav` | 197,947 | round_id, hh_id, 9 food groups, fcs_n_missing, fcs_n_invalid, FCS, FCSCat21, FCSCat28, orig_FCS, orig_FCSCat28 |
 | `ensa_rcsi.csv/.sav` | 197,947 | round_id, hh_id, 5 strategies, rcsi_mealadult_imputed, rcsi_n_missing, rcsi_n_invalid, rCSI, rCSI_CH, orig_rCSI |
+| `ensa_lcs.csv/.sav` | 197,947 | round_id, hh_id, 14 strategies (WFP codes), lcs_n_asked, lcs_n_answered, lcs_n_used, LCS_stress, LCS_crisis, LCS_emergency, LCS_max, LCS_max_common, lcs_food_reason, lcs_not_for_food, orig_LCS |
 | `qc/qc_<domain>_by_round.csv` | 14 | completeness, invalid values, unweighted and weighted indicators, agreement with original scores |
 
 `orig_*` columns are kept for QC only; analyse the recomputed columns. Outputs contain household-level data and are **not versioned** (`.gitignore`).

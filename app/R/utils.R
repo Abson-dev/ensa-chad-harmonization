@@ -14,6 +14,9 @@ METHOD_COL <- c(copy = "#2F7FB5", copy_label = "#6C5CE7", sum = "#0F7C80", sum_c
                 missing = "#ADB5BD")
 COVERAGE_SCALE <- list(c(0, "#C8553D"), c(0.5, "#F2C14E"), c(0.95, "#8CC084"), c(1, "#2E8B57"))
 
+DOMAIN_NAMES <- c(core = "core", fcs = "FCS", rcsi = "rCSI", lcs = "LCS", hhs = "HHS", hdds = "HDDS",
+                  exp = "expenditure", demo = "demographics")
+
 # Facts from the metadata scan of the 14 source files (see the crosswalk README sheet).
 FACTS <- list(distinct_vars = 3853, shared_vars = 14, tests = 11)
 

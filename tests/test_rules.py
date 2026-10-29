@@ -10,7 +10,7 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 
 from ensa_harmonize import config  # noqa: E402
-from ensa_harmonize.domains import fcs, rcsi  # noqa: E402
+from ensa_harmonize.domains import fcs, lcs, rcsi  # noqa: E402
 from ensa_harmonize.domains.common import categorise, item_matrix  # noqa: E402
 from ensa_harmonize.engine import spss_to_datetime, sum_sources, to_number  # noqa: E402
 
@@ -86,3 +86,43 @@ def test_spss_date_conversion():
 
 def test_admin1_lookup_covers_23_regions(cfg):
     assert len(set(cfg.admin1.values())) == 23
+
+
+# ---- Livelihood coping strategies ----------------------------------------------------------
+
+def test_lcs_severity_matches_strategies_asked(cfg):
+    cw = cfg.crosswalk
+    asked = {(r.target, r.round_id) for r in cw[(cw["domain"] == "lcs") & (cw["method"] != "missing")].itertuples()
+             if r.target in lcs.ITEMS}
+    sev = cfg.table("lcs_severity")
+    assert asked == set(zip(sev["target"], sev["round_id"]))
+    assert set(sev["severity"]) <= set(lcs.SEVERITIES)
+
+
+def test_lcs_answer_codes_cover_every_round(cfg):
+    resp = cfg.table("lcs_responses")
+    for rid in cfg.rounds.index:
+        r = resp[resp["round_id"] == rid]
+        assert sorted(r["response"]) == sorted(lcs.RESPONSE_CODES), rid
+
+
+def test_lcs_reversed_scale_oct2021_to_feb2023(cfg):
+    resp = cfg.table("lcs_responses")
+    code = lambda rid, c: resp[(resp["round_id"] == rid) & (resp["code"] == c)]["response"].item()
+    assert code("2021-02", "1") == "yes" and code("2021-10", "1") == "no_need"
+    assert code("2021-10", "3") == "yes" and code("2023-02", "3") == "yes"
+    assert code("2023-10", "30") == "yes" and code("2023-10", "20") == "exhausted"
+
+
+def test_lcs_common_items_asked_in_every_round(cfg):
+    cw = cfg.crosswalk
+    for item in cfg.settings["lcs"]["common_items"]:
+        rules = cw[(cw["domain"] == "lcs") & (cw["target"] == item)]
+        assert (rules["method"] != "missing").all(), item
+
+
+def test_lcs_max_category():
+    used = pd.DataFrame({"a": [False, True, True, False], "b": [False, False, True, False],
+                         "c": [False, False, False, True]})
+    severity = {"a": "stress", "b": "crisis", "c": "emergency"}
+    assert lcs.max_category(used, severity).tolist() == [1, 2, 3, 4]

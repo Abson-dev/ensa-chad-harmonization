@@ -24,7 +24,8 @@ overview_ui <- function(id, d) {
                        showcase = bsicons::bs_icon("table"), theme = bslib::value_box_theme(bg = "#FDF3E7", fg = "#7A4A12")),
       bslib::value_box("Concepts mapped", nrow(d$concepts), "in the crosswalk workbook",
                        showcase = bsicons::bs_icon("diagram-3"), theme = bslib::value_box_theme(bg = "#E8F4F4", fg = COL$teal)),
-      bslib::value_box("Domains harmonised", paste0(n_dom_done, " / 8"), "core, FCS, rCSI · more planned",
+      bslib::value_box("Domains harmonised", paste0(n_dom_done, " / 8"),
+                       paste(paste(DOMAIN_NAMES[intersect(names(DOMAIN_NAMES), d$rules$domain)], collapse = ", "), "· more planned"),
                        showcase = bsicons::bs_icon("check2-circle"), theme = bslib::value_box_theme(bg = "#EAF5EE", fg = "#1E6B41"))
     ),
     bslib::layout_columns(

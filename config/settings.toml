@@ -20,3 +20,13 @@ thresholds_28 = [28.0, 42.0]
 weights = { rCSILessQlty = 1.0, rCSIBorrow = 2.0, rCSIMealSize = 1.0, rCSIMealAdult = 3.0, rCSIMealNb = 1.0 }
 # Cadre Harmonise reference: phase 1 <= 3, phase 2 = 4-18, phase 3+ >= 19.
 ch_thresholds = [3.0, 18.0]
+
+[lcs]
+# A strategy counts as used if the household answered "yes" or "no, already exhausted" (WFP rule).
+used_responses = ["yes", "exhausted"]
+# Comparable indicator: only strategies used because of a lack of food. Until Feb 2024 every question
+# says so; from Oct 2024 (essential-needs module) households that did not cope "to buy food" are excluded.
+food_reason_filter = true
+# Comparable indicator: strategies asked in all 14 rounds, with a fixed severity.
+# Answer codes per round are in lcs_responses.csv; round-specific severities in lcs_severity.csv.
+common_items = { LCS_DomAsset = "stress", LCS_Animals = "stress", LCS_Saving = "stress", LCS_ProdAssets = "crisis", LCS_ResAsset = "emergency", LCS_FemAnimal = "emergency", LCS_Begged = "emergency" }

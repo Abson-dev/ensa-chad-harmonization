@@ -1,6 +1,6 @@
 # Analysis by domain (R Markdown → Word)
 
-Merges the harmonised domain files (`../output/ensa_core`, `ensa_fcs`, `ensa_rcsi`) and produces a Word report with survey-weighted tables and figures, plus every table as CSV and every figure as PNG for reuse in other documents.
+Merges the harmonised domain files (`../output/ensa_core`, `ensa_fcs`, `ensa_rcsi`, `ensa_lcs`) and produces a Word report with survey-weighted tables and figures, plus every table as CSV and every figure as PNG for reuse in other documents.
 
 ```
 analysis/
@@ -14,8 +14,8 @@ analysis/
 ├── tools/update_word_fields.ps1  fills in the table of contents and table/figure numbers with Word
 └── output/                       generated, not versioned (contains regional estimates)
     ├── ENSA_Chad_analysis_by_domain.docx
-    ├── figures/                  F01–F09 (PNG, 300 dpi)
-    └── tables/                   T01–T10, A01 (CSV)
+    ├── figures/                  F01–F12 (PNG, 300 dpi)
+    └── tables/                   T01–T12, A01 (CSV)
 ```
 
 ## Run
@@ -47,6 +47,7 @@ Parameters (top of `analysis_by_domain.Rmd`, or `params = list(...)` in `render_
 | Sample (core) | | households per round and questionnaire generation |
 | Food consumption (FCS) | national FCS and groups with 95% CI (28/42 and 21/35); regions, latest vs previous October | groups by round and season; days per food group; **decomposition of the FCS change by food group**; region × round heatmap |
 | Coping (rCSI) | national rCSI and Cadre Harmonisé phases with 95% CI; regions, latest vs previous October | phases by round and season; use of each strategy; region × round heatmap |
+| Livelihood coping (LCS) | maximum category by round with 95% CI: comparable (7 strategies asked in every round, coping for food) and round-specific | categories by round and season; use of each of the 14 strategies; region × round heatmap of crisis + emergency |
 | Food consumption × coping | overlap (poor/borderline FCS and rCSI phase 3+), Spearman correlation by round | joint distribution in the latest round; regional scatter |
 | Limitations, annex | households by region × round; provenance (data run, package versions) | |
 

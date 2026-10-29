@@ -6,6 +6,7 @@ PAL <- list(
   fcs = c(Poor = "#B83227", Borderline = "#E58E26", Acceptable = "#3C9D5D"),
   # Cadre Harmonise / IPC phase colours
   ch = c("Phase 1" = "#CDFACD", "Phase 2" = "#FAE61E", "Phase 3+" = "#E67800"),
+  lcs = c("No strategy" = "#CDFACD", Stress = "#FAE61E", Crisis = "#E67800", Emergency = "#C80000"),
   season = c(Feb = "#C17F3A", Oct = "#0F7C80")
 )
 GEN_LABEL <- c("1" = "Gen 1 · French codebook", "2" = "Gen 2 · hybrid / WFP modules",
