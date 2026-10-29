@@ -18,7 +18,7 @@ PIPELINE_NODES <- function(d) {
       sprintf("%d concepts × 14 rounds mapped by question content, with coverage, storage type, value labels and data issues. This is the reference for all domains.",
               nrow(d$concepts)),
       sprintf("crosswalk.csv (%d rules: one per domain × target × round), rounds.csv, admin1_names.csv (32 spellings → 23 regions) and settings.toml (weights, thresholds). All decisions live here, not in code.", n_rules),
-      "Reads only the columns needed, applies one method per rule (copy, copy_label, sum, sum_cap7, missing) and stops on any gap, unknown region spelling or duplicate ID.",
+      "Reads only the columns needed, applies one method per rule (copy, copy_label, sum, sum_cap7, any, max_or_last, missing) and stops on any gap, unknown region spelling or duplicate ID.",
       "Keys (round_id, hh_id), interview date with fieldwork-window check, standardised regions, sampling weight and per-round normalised weight.",
       "9 food groups → Food Consumption Score (WFP weights) → groups at 21/35 and 28/42 thresholds.",
       "5 strategies → reduced Coping Strategies Index → Cadre Harmonisé phase; Oct 2024 skip pattern resolved by rule.",
@@ -59,7 +59,7 @@ process_ui <- function(id, d) {
         bslib::card_header("How each rule builds its target", class = "card-title-sm"),
         plotly::plotlyOutput(ns("methods"), height = "380px"),
         bslib::card_footer(class = "small text-muted",
-                           "copy = take source as is · copy_label = take value label · sum / sum_cap7 = combine items (cap at 7 days) · missing = documented as not available")
+                           "copy = take source as is · copy_label = take value label · sum / sum_cap7 = combine items (cap at 7 days) · any = eaten in any sub-group · max_or_last = sub-groups, else main group · missing = documented as not available")
       ),
       bslib::card(
         full_screen = TRUE,
@@ -162,7 +162,7 @@ process_server <- function(id, d) {
           domain = reactable::colDef(width = 70),
           target = reactable::colDef(width = 140),
           round = reactable::colDef(width = 85),
-          method = reactable::colDef(width = 100, cell = function(v) pill(v, METHOD_COL[[v]])),
+          method = reactable::colDef(width = 100, cell = function(v) pill(v, method_colour(v))),
           sources = reactable::colDef(minWidth = 170, style = list(fontFamily = "Consolas, monospace", fontSize = "0.82em")),
           note = reactable::colDef(minWidth = 220, style = list(fontSize = "0.82em"))
         )

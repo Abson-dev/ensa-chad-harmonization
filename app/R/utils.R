@@ -11,7 +11,9 @@ FCS_COL <- c(Poor = "#B83227", Borderline = "#E58E26", Acceptable = "#3C9D5D")
 # Cadre Harmonise / IPC phase colours.
 CH_COL <- c("Phase 1" = "#CDFACD", "Phase 2" = "#FAE61E", "Phase 3+" = "#E67800")
 METHOD_COL <- c(copy = "#2F7FB5", copy_label = "#6C5CE7", sum = "#0F7C80", sum_cap7 = "#C17F3A",
-                missing = "#ADB5BD")
+                any = "#2E8B57", max_or_last = "#B83227", missing = "#ADB5BD")
+# Any method added to the pipeline later still gets a colour instead of breaking the Process page.
+method_colour <- function(m) if (m %in% names(METHOD_COL)) METHOD_COL[[m]] else "#6B7785"
 COVERAGE_SCALE <- list(c(0, "#C8553D"), c(0.5, "#F2C14E"), c(0.95, "#8CC084"), c(1, "#2E8B57"))
 
 DOMAIN_NAMES <- c(core = "core", fcs = "FCS", rcsi = "rCSI", lcs = "LCS", hhs = "HHS", hdds = "HDDS",
