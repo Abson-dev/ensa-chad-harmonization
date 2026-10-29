@@ -1,0 +1,22 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Harmonise: all domains",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "${workspaceFolder}/run_harmonize.py",
+      "cwd": "${workspaceFolder}",
+      "console": "integratedTerminal"
+    },
+    {
+      "name": "Harmonise: quick test (2 rounds, no hash)",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "${workspaceFolder}/run_harmonize.py",
+      "args": ["--rounds", "2024-10", "2025-10", "--no-hash"],
+      "cwd": "${workspaceFolder}",
+      "console": "integratedTerminal"
+    }
+  ]
+}

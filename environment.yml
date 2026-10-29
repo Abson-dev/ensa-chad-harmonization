@@ -1,0 +1,14 @@
+# Conda environment for the ENSA Chad harmonisation pipeline.
+# Create:  conda env create -f environment.yml
+# Update:  conda env update -f environment.yml --prune
+name: ensa-chad
+channels:
+  - conda-forge
+dependencies:
+  - python=3.11
+  - pandas=2.2.2
+  - numpy=2.2.6
+  - pyreadstat=1.2.7
+  - pytest=8.2.2
+  - openpyxl          # crosswalk workbook
+  - ipykernel         # run notebooks / interactive window in VS Code

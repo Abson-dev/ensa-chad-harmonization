@@ -1,0 +1,22 @@
+# Harmonisation settings. Paths are relative to the harmonization/ folder.
+
+[paths]
+data_dir = ".."          # folder containing "Round  de fevrier" and "Round d'octobre"
+output_dir = "output"
+
+[core]
+# Interview dates outside [fieldwork_start - tol, fieldwork_end + tol] (config/rounds.csv) are flagged, not dropped.
+date_tolerance_days = 7
+
+[fcs]
+# WFP Food Consumption Score weights.
+weights = { FCSStap = 2.0, FCSPulse = 3.0, FCSVeg = 1.0, FCSFruit = 1.0, FCSPr = 4.0, FCSDairy = 4.0, FCSSugar = 0.5, FCSFat = 0.5, FCSCond = 0.0 }
+# Upper bounds of "Poor" and "Borderline" (inclusive). 28/42 is the Chad standard (frequent oil and sugar consumption).
+thresholds_21 = [21.0, 35.0]
+thresholds_28 = [28.0, 42.0]
+
+[rcsi]
+# WFP reduced Coping Strategies Index weights.
+weights = { rCSILessQlty = 1.0, rCSIBorrow = 2.0, rCSIMealSize = 1.0, rCSIMealAdult = 3.0, rCSIMealNb = 1.0 }
+# Cadre Harmonise reference: phase 1 <= 3, phase 2 = 4-18, phase 3+ >= 19.
+ch_thresholds = [3.0, 18.0]

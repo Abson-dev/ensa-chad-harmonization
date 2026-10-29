@@ -1,0 +1,14 @@
+# Household-level outputs: regenerate with run_harmonize.py, never publish
+output/
+
+# Raw survey microdata (not redistributable)
+*.sav
+*.dta
+*.xlsx
+
+# Python / tooling
+__pycache__/
+*.pyc
+.pytest_cache/
+.ipynb_checkpoints/
+notebooks/*.ipynb
