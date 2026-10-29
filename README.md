@@ -4,9 +4,9 @@
 ![R](https://img.shields.io/badge/R-%E2%89%A54.3%20(tested%204.5.2)-276DC3?logo=r&logoColor=white)
 ![Shiny](https://img.shields.io/badge/Shiny-1.14-1F77B4?logo=rstudioide&logoColor=white)
 ![Environment](https://img.shields.io/badge/env-conda--forge-green)
-![Pipeline tests](https://img.shields.io/badge/pipeline%20tests-16%20passing-brightgreen)
+![Pipeline tests](https://img.shields.io/badge/pipeline%20tests-20%20passing-brightgreen)
 ![App checks](https://img.shields.io/badge/app%20checks-85%20passing-brightgreen)
-![Status](https://img.shields.io/badge/status-4%20of%208%20domains-orange)
+![Status](https://img.shields.io/badge/status-5%20of%208%20domains-orange)
 
 A config-driven, tested and documented workflow that harmonises **14 rounds** of Chad's national food security assessment (*Enquête Nationale de Sécurité Alimentaire*, ENSA), October 2018 to October 2025, **197,947 households**, into one comparable dataset per **thematic domain**. It has two parts:
 
@@ -58,7 +58,7 @@ Across these rounds the questionnaire went through three codebook generations: F
 | `fcs` | ✅ done | 9 food groups, Food Consumption Score, groups 21/35 and 28/42 |
 | `rcsi` | ✅ done | 5 coping strategies, reduced Coping Strategies Index, Cadre Harmonisé phase |
 | `lcs` | ✅ done | 14 livelihood coping strategies on the WFP answer scale; maximum coping category, round-specific and comparable across rounds |
-| `hhs` | 🔜 planned | Household Hunger Scale (from Oct 2019) |
+| `hhs` | ✅ done | Household Hunger Scale (from Oct 2019): 3 questions and frequencies, score 0–6, WFP category, IPC / CH phase |
 | `hdds` | 🔜 planned | Household Dietary Diversity Score (12 groups) |
 | `exp` | 🔜 planned | Food / non-food expenditure, food expenditure share |
 | `demo` | 🔜 planned | Head of household characteristics, household size, income source |
@@ -93,7 +93,7 @@ The pipeline expects the original SPSS files laid out like this (folder names ar
 
 | Part | Language | Role | Environment | Entry point | Tests |
 |---|---|---|---|---|---|
-| Harmonisation pipeline | **Python 3.11** | read SPSS files, apply rules, recompute and validate indicators, write CSV / SAV | [`environment.yml`](environment.yml) (conda-forge, pinned) or [`requirements.txt`](requirements.txt) | `run_harmonize.py` | `python -m pytest -q` (16) |
+| Harmonisation pipeline | **Python 3.11** | read SPSS files, apply rules, recompute and validate indicators, write CSV / SAV | [`environment.yml`](environment.yml) (conda-forge, pinned) or [`requirements.txt`](requirements.txt) | `run_harmonize.py` | `python -m pytest -q` (20) |
 | Harmonisation explorer | **R ≥ 4.3** (tested 4.5.2) | Shiny app for reviewers: process, crosswalk, validation, indicators | packages installed by [`app/install_packages.R`](app/install_packages.R) | `app/app.R`, `app/run_app.bat` | `Rscript tests/test_app.R` (85) |
 | App data preparation | **R** | aggregates the pipeline outputs for the app (no household data) | `data.table`, `jsonlite` | `app/prepare_app_data.R` | — |
 | Analysis by domain | **R Markdown** | merges the domain files; survey-weighted tables and figures; Word report | officedown, flextable, survey, ggplot2 (+ Pandoc) | `analysis/render_report.R`, `analysis/render_report.bat` | — |
@@ -115,7 +115,7 @@ git clone https://github.com/Abson-dev/ensa-chad-harmonization.git harmonization
 cd harmonization
 conda env create -f environment.yml      # Python 3.11 + pinned packages from conda-forge
 conda activate ensa-chad
-python -m pytest -q                      # 16 rule tests
+python -m pytest -q                      # 20 rule tests
 python run_harmonize.py                  # all domains, all rounds (about 2-3 min)
 ```
 
@@ -257,6 +257,8 @@ Recomputed scores against the scores pre-computed by the original analysts (± 0
 
 LCS: the round-specific maximum category is identical to the analysts' in 6 rounds, including Oct 2021, where the answer codes are reversed, which validates the recoding. In the other rounds the analysts' variable left out one to five strategies (an undocumented choice; the lowest-agreement rounds were checked by searching every inclusion and severity combination). ¹ The original variable does not correspond to these items (best possible reconstruction 48% / 88%). ² The original counts only coping to buy food and uses the pre-2024 severities; with the food filter, agreement rises to 79%.
 
+**HHS:** the recomputed score is identical to the analysts' in all 8 rounds that carry one (Oct 2019 – Feb 2023), and the phase in 8 of 9 rounds. The exception is Oct 2019, where the original phase is an analyst-"corrected" classification (`Echelle_faim_cor`) that resets some households with hunger to phase 1 (82.8% agreement).
+
 Per-round QC tables (completeness, invalid values, weighted means and prevalences, agreement) are written to `output/qc/` on every run.
 
 ## Domain decisions
@@ -275,6 +277,12 @@ Per-round QC tables (completeness, invalid values, weighted means and prevalence
 ### rcsi
 - rCSI = LessQlty + 2×Borrow + MealSize + 3×MealAdult + MealNb (0–56). Cadre Harmonisé phase: ≤3 / 4–18 / ≥19.
 - **Oct 2024 skip pattern:** "restrict adults so children can eat" was not asked in households without children. It is set to 0 for those households (1,078, flagged per household); the 185 skipped answers in households with children stay missing.
+
+### hhs
+- Collected from Oct 2019 (12 rounds); Oct 2018 and Feb 2019 are documented as not collected.
+- Occurrence 0/1 and frequency 1–3 have the same codes in every round. "No" sets the frequency to 0. Answers that contradict each other (yes without a frequency, or no with one) are not scored and are counted; there are none in the data.
+- Item score: never 0, rarely or sometimes 1, often 2. HHS = sum (0–6). WFP category: little or none 0–1, moderate 2–3, severe 4–6. IPC / CH phase: 0 → 1, 1 → 2, 2–3 → 3, 4 → 4, 5–6 → 5 (all in `settings.toml`).
+- **Oct 2019 exception:** 80 households have an undocumented code 2 on "no food in the house". All of them answered "often" in the follow-up, and the analysts counted them as yes. It is accepted as yes in that round only (`extra_yes_codes`), flagged per household; in any other round an undeclared code stops the run.
 
 ### lcs
 - **Strategies mapped by content**, not slot name: 14 strategies, 10 per round until Feb 2024 and 14 from Oct 2024 ([`config/crosswalk.csv`](config/crosswalk.csv)).
@@ -323,6 +331,7 @@ Details: [SETUP.md §10](SETUP.md#10-change-a-harmonisation-decision).
 | `ensa_core.csv/.sav` | 197,947 | round_id, hh_id, year, season, generation, uuid, svy_date, date_flag, admin1, admin1_raw, admin2, admin3, weight, weight_norm, weight_flag |
 | `ensa_fcs.csv/.sav` | 197,947 | round_id, hh_id, 9 food groups, fcs_n_missing, fcs_n_invalid, FCS, FCSCat21, FCSCat28, orig_FCS, orig_FCSCat28 |
 | `ensa_rcsi.csv/.sav` | 197,947 | round_id, hh_id, 5 strategies, rcsi_mealadult_imputed, rcsi_n_missing, rcsi_n_invalid, rCSI, rCSI_CH, orig_rCSI |
+| `ensa_hhs.csv/.sav` | 197,947 | round_id, hh_id, 3 questions + frequencies, hhs_n_missing, hhs_inconsistent, hhs_code_exception, HHS, HHSCat, HHS_phase, orig_HHS, orig_HHS_phase |
 | `ensa_lcs.csv/.sav` | 197,947 | round_id, hh_id, 14 strategies (WFP codes), lcs_n_asked, lcs_n_answered, lcs_n_used, LCS_stress, LCS_crisis, LCS_emergency, LCS_max, LCS_max_common, lcs_food_reason, lcs_not_for_food, orig_LCS |
 | `qc/qc_<domain>_by_round.csv` | 14 | completeness, invalid values, unweighted and weighted indicators, agreement with original scores |
 

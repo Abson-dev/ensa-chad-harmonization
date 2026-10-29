@@ -63,6 +63,12 @@ both_nat <- as.data.table(estimate_by(design, "both_severe"))
 lcs_nat <- dcast(as.data.table(estimate_by(design, c("lcs_none", "lcs_stress", "lcs_crisis", "lcs_emergency", "lcs_ce", "lcs_ce_round"))),
                  round_id ~ var, value.var = c("est", "lo", "hi"))
 lcs_nat <- merge(R[, .(round_id, round, round_lab, season, year, weighted)], lcs_nat, by = "round_id")[order(match(round_id, R$round_id))]
+# HHS is collected from Oct 2019: estimate on the rounds where it exists.
+hhs_design <- subset(design, !is.na(HHS))
+hhs_nat <- dcast(as.data.table(estimate_by(hhs_design, c("HHS", "hhs_moderate", "hhs_severe", "hhs_p3", paste0("hhs_ph", 1:5)))),
+                 round_id ~ var, value.var = c("est", "lo", "hi"))
+hhs_nat <- merge(R[, .(round_id, round, round_lab, season, year, weighted)], hhs_nat, by = "round_id")[order(match(round_id, R$round_id))]
+hhs_first_oct <- hhs_nat[season == "Oct", round_id][1]
 fcs_nat <- merge(R[, .(round_id, round, round_lab, season, year, weighted)], fcs_nat, by = "round_id")[order(match(round_id, R$round_id))]
 rcsi_nat <- merge(R[, .(round_id, round, round_lab, season, year, weighted)], rcsi_nat, by = "round_id")[order(match(round_id, R$round_id))]
 
@@ -101,6 +107,7 @@ p3_low <- rcsi_nat[weighted == TRUE][which.min(est_rcsi_p3)]
 - **`r if (worse) "Food consumption deteriorated over the period." else "Food consumption trends."`** In October, the share of households with poor or borderline food consumption (FCS 28/42) `r dir_word(pb(first_oct), pb(last_oct))` from `r pct(pb(first_oct))`% in `r lab(first_oct)` to `r pct(pb(last_oct))`% in `r lab(last_oct)`, peaking at `r pct(peak_oct$est_fcs_pb)`% in `r peak_oct$round_lab`. In February it went from `r pct(pb(first_feb))`% (`r lab(first_feb)`) to `r pct(pb(last_feb))`% (`r lab(last_feb)`).
 - **Severe consumption-based coping concerns a minority of households.** The share in rCSI phase 3 or above (rCSI ≥ 19) ranged from `r pct(min(rcsi_nat$est_rcsi_p3))`% to `r pct(max(rcsi_nat$est_rcsi_p3))`% across rounds. It was `r pct(p3(last_oct))`% in `r lab(last_oct)`, against `r pct(p3(first_oct))`% in `r lab(first_oct)` and a low of `r pct(p3_low$est_rcsi_p3)`% in `r p3_low$round_lab`.
 - **Livelihood coping.** Using the strategies asked in every round, `r pct(g(lcs_nat, "est_lcs_ce", latest))`% of households resorted to crisis or emergency strategies in `r lab(latest)`, against `r pct(g(lcs_nat, "est_lcs_ce", first_oct))`% in `r lab(first_oct)` (range `r pct(min(lcs_nat$est_lcs_ce))`–`r pct(max(lcs_nat$est_lcs_ce))`% across rounds).
+- **Hunger.** On the Household Hunger Scale, `r pct(g(hhs_nat, "est_hhs_p3", latest))`% of households were in phase 3 or above in `r lab(latest)`, against `r pct(g(hhs_nat, "est_hhs_p3", hhs_first_oct))`% in `r lab(hhs_first_oct)`; the highest share was `r pct(max(hhs_nat$est_hhs_p3))`% (`r hhs_nat[which.max(est_hhs_p3), round_lab]`). Severe hunger (score 4–6) stays below `r pct(max(hhs_nat$est_hhs_severe) + 0.005, 0)`% in every round.
 - **Hotspots in `r lab(latest)`:** `r paste0(top3$admin1, " (", pct(top3$est, 0), "%)", collapse = ", ")` have the highest shares of poor or borderline consumption.
 - **Overlap of the two dimensions:** in `r lab(latest)`, `r pct(both_latest$est)`% of households combined poor or borderline consumption with rCSI phase 3+.
 - **Caveat:** `r paste(unweighted, collapse = ", ")` have no usable sampling weight and are estimated unweighted (marked †); February and October rounds reflect different seasons and should be compared within season.
@@ -130,6 +137,7 @@ ft(t1[, .(round_lab, generation, households = int(households), regions, fieldwor
 
 - **Food Consumption Score (FCS)** — days of consumption of 9 food groups over the last 7 days, weighted (staples 2, pulses 3, vegetables 1, fruit 1, meat/fish/eggs 4, dairy 4, sugar 0.5, oil 0.5, condiments 0). Groups: poor ≤ 28, borderline 28.5–42, acceptable > 42 (Chad thresholds); the 21/35 thresholds are shown for sensitivity.
 - **Reduced Coping Strategies Index (rCSI)** — days of use of 5 strategies over the last 7 days, weighted (1, 2, 1, 3, 1); range 0–56. Cadre Harmonisé phases: phase 1 ≤ 3, phase 2 = 4–18, phase 3+ ≥ 19.
+- **Household Hunger Scale (HHS)** — three questions on the past 30 days (no food in the house, went to sleep hungry, a whole day and night without eating), each scored 0 (never), 1 (rarely or sometimes) or 2 (often); score 0–6. WFP categories: little or none (0–1), moderate (2–3), severe (4–6). IPC / Cadre Harmonisé phases: 0 → 1, 1 → 2, 2–3 → 3, 4 → 4, 5–6 → 5. Collected from October 2019.
 - **Livelihood Coping Strategies (LCS)** — strategies used in the past 30 days because of a lack of food (answer "yes" or "no, already exhausted"); each household is classified by the most severe strategy used (none, stress, crisis, emergency). The list of strategies and their severities changed between questionnaires, so the **comparable** indicator uses the 7 strategies asked in all rounds with a fixed severity (stress: sold household assets, sold more animals, spent savings; crisis: sold productive assets; emergency: sold house or land, sold last female animals, begged). From October 2024 the module covers coping for any essential need; only coping to buy food is counted, as in earlier rounds.
 
 Both indicators were recomputed from the item answers with the same formula in every round; they agree with the scores computed by the original analysts in 98.7–100% of households (see the harmonisation documentation).
@@ -422,6 +430,68 @@ rg <- merge(rg, weighted_grid(d[!is.na(admin1)], "lcs_ce", by = c("admin1", "rou
             by = c("admin1", "round_lab"))
 save_tab(rg, "T05_region_round_grid")
 save_fig(heat("lcs_ce", "% crisis + emergency", "#8B0000"), "F12_lcs_region_heatmap", width = 9, height = 5.6)
+```
+
+<!---BLOCK_LANDSCAPE_STOP--->
+
+# Household Hunger Scale (HHS domain)
+
+```{r hhs-calc}
+hhs_q <- weighted_grid(d[!is.na(HHS)], names(HHS_QUESTIONS), by = c("round_id", "round_lab"), min_n = 0)
+hhs_q <- melt(hhs_q[, -"n"], id.vars = c("round_id", "round_lab"), variable.name = "q", value.name = "share")
+hhs_q[, question := factor(HHS_QUESTIONS[as.character(q)], levels = HHS_QUESTIONS)]
+q_latest <- hhs_q[round_id == latest][order(-share)]
+```
+
+The Household Hunger Scale measures the most severe experience of food deprivation. It has been collected since `r lab(hhs_first_oct)`. In `r lab(latest)`, `r pct(g(hhs_nat, "est_hhs_p3", latest))`% of households were in phase 3 or above (score 2 or more), mostly with moderate hunger; severe hunger concerned `r pct(g(hhs_nat, "est_hhs_severe", latest))`% (Table \@ref(tab:hhs-national), Figure \@ref(fig:hhs-phases)). The most frequent experience was "`r tolower(q_latest$question[1])`" (`r pct(q_latest$share[1], 0)`% of households), the least frequent "`r tolower(q_latest$question[3])`" (`r pct(q_latest$share[3], 0)`%; Figure \@ref(fig:hhs-questions)).
+
+```{r hhs-national}
+save_tab(hhs_nat, "T13_hhs_national")
+ft(hhs_nat[, .(Round = round_lab, `Mean HHS` = num(est_HHS, 2), `95% CI` = ci(lo_HHS, hi_HHS, d = 2, scale = 1),
+               `Moderate (%)` = pct(est_hhs_moderate), `Severe (%)` = pct(est_hhs_severe),
+               `Phase 3+ (%)` = pct(est_hhs_p3), `95% CI ` = ci(lo_hhs_p3, hi_hhs_p3))]) |>
+  flextable::add_footer_lines("Moderate = score 2–3, severe = 4–6 (WFP). Phase 3+ = IPC / Cadre Harmonisé phase 3 or above (score ≥ 2). Not collected in Oct 2018 and Feb 2019. † Unweighted estimate.") |>
+  flextable::fontsize(size = 8, part = "all") |>
+  cap("Household Hunger Scale by round (national, 95% CI)", "hhs-national")
+```
+
+```{r hhs-phases, fig.id = "hhs-phases", fig.cap = "Households by Household Hunger Scale phase (IPC / Cadre Harmonisé), by round and season", fig.height = 3.8}
+x <- melt(hhs_nat[, c("round_lab", "season", paste0("est_hhs_ph", 1:5)), with = FALSE],
+          id.vars = c("round_lab", "season"), variable.name = "phase", value.name = "share")
+x[, phase := factor(paste("Phase", sub("est_hhs_ph", "", phase)), levels = rev(names(PAL$ipc)))]
+x[, season := factor(season, c("Feb", "Oct"), c("February rounds", "October rounds"))]
+p <- ggplot(x, aes(round_lab, share, fill = phase)) +
+  geom_col(width = 0.72, colour = "white", linewidth = 0.3) +
+  geom_text(aes(label = ifelse(share >= 0.04, pct(share, 0), ""), group = phase,
+                colour = phase %in% c("Phase 4", "Phase 5")), position = position_stack(vjust = 0.5), size = 2.5,
+            show.legend = FALSE) +
+  scale_colour_manual(values = c(`TRUE` = "white", `FALSE` = PAL$ink)) +
+  facet_grid(~season, scales = "free_x", space = "free_x") +
+  scale_fill_manual(values = PAL$ipc, name = NULL, breaks = names(PAL$ipc)) +
+  scale_y_continuous(labels = scales::label_percent(), expand = c(0, 0)) +
+  labs(x = NULL, y = "Share of households", caption = "Collected from Oct 2019. † Unweighted estimate.") +
+  theme_report() + theme(axis.text.x = element_text(angle = 40, hjust = 1), panel.grid.major.x = element_blank())
+save_fig(p, "F13_hhs_phases", height = 3.8)
+```
+
+```{r hhs-questions, fig.id = "hhs-questions", fig.cap = "Households reporting each hunger experience in the past 30 days, by round (weighted)", fig.height = 3.4}
+save_tab(dcast(hhs_q, question ~ round_lab, value.var = "share"), "T14_hhs_questions")
+p <- ggplot(hhs_q, aes(round_lab, share, colour = question, group = question)) +
+  geom_line(linewidth = 0.8) + geom_point(size = 1.8) +
+  scale_colour_manual(values = c("#E67800", "#C80000", "#640000"), name = NULL) +
+  scale_y_continuous(labels = scales::label_percent(), limits = c(0, NA)) +
+  labs(x = NULL, y = "Share of households", caption = "† Unweighted estimate.") +
+  theme_report() + theme(axis.text.x = element_text(angle = 40, hjust = 1))
+save_fig(p, "F14_hhs_questions", height = 3.4)
+```
+
+<!---BLOCK_LANDSCAPE_START--->
+
+```{r hhs-heatmap, fig.id = "hhs-heatmap", fig.cap = "Household Hunger Scale phase 3+ (%) by region and round", fig.width = 9, fig.height = 5.6}
+rg <- merge(rg, weighted_grid(d[!is.na(admin1) & !is.na(HHS)], "hhs_p3", by = c("admin1", "round_lab"), min_n = params$min_cell)[, -"n"],
+            by = c("admin1", "round_lab"), all.x = TRUE)
+save_tab(rg, "T05_region_round_grid")
+save_fig(heat("hhs_p3", "% HHS phase 3+", "#7A1F00"), "F15_hhs_region_heatmap", width = 9, height = 5.6)
 ```
 
 <!---BLOCK_LANDSCAPE_STOP--->

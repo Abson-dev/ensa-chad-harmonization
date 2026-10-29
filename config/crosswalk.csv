@@ -559,3 +559,115 @@ lcs,lcs_food_reason,2023-10,missing,,questions already framed as coping with a l
 lcs,lcs_food_reason,2024-02,missing,,questions already framed as coping with a lack of food
 lcs,lcs_food_reason,2024-10,copy,LhCSIEnAccess.1,essential-needs module: 1 = strategies used to buy food
 lcs,lcs_food_reason,2025-10,copy,LhCSIEnAccess.1,essential-needs module: 1 = strategies used to buy food
+hhs,HHSNoFood,2018-10,missing,,Household Hunger Scale not collected
+hhs,HHSNoFood,2019-02,missing,,Household Hunger Scale not collected
+hhs,HHSNoFood,2019-10,copy,manque_aliment,"code 2 (undocumented) = yes, answered 'often' in the follow-up"
+hhs,HHSNoFood,2020-02,copy,manque_aliment,
+hhs,HHSNoFood,2020-10,copy,manque_aliment,
+hhs,HHSNoFood,2021-02,copy,HHhSNoFood_YN,
+hhs,HHSNoFood,2021-10,copy,HHhSNoFood_YN,
+hhs,HHSNoFood,2022-02,copy,HHhSNoFood_YN,
+hhs,HHSNoFood,2022-10,copy,HHhSNoFood_YN,
+hhs,HHSNoFood,2023-02,copy,HHhSNoFood_YN,
+hhs,HHSNoFood,2023-10,copy,HHSNoFood,
+hhs,HHSNoFood,2024-02,copy,HHSNoFood,
+hhs,HHSNoFood,2024-10,copy,HHSNoFood,
+hhs,HHSNoFood,2025-10,copy,HHSNoFood,
+hhs,HHSNoFood_FR,2018-10,missing,,Household Hunger Scale not collected
+hhs,HHSNoFood_FR,2019-02,missing,,Household Hunger Scale not collected
+hhs,HHSNoFood_FR,2019-10,copy,intensite_manque_aliment,
+hhs,HHSNoFood_FR,2020-02,copy,intensite_manque_aliment,
+hhs,HHSNoFood_FR,2020-10,copy,intensite_manque_aliment,
+hhs,HHSNoFood_FR,2021-02,copy,HHhSNoFood_FR,
+hhs,HHSNoFood_FR,2021-10,copy,HHhSNoFood_FR,
+hhs,HHSNoFood_FR,2022-02,copy,HHhSNoFood_FR,
+hhs,HHSNoFood_FR,2022-10,copy,HHhSNoFood_FR,
+hhs,HHSNoFood_FR,2023-02,copy,HHhSNoFood_FR,
+hhs,HHSNoFood_FR,2023-10,copy,HHSNoFood_FR,
+hhs,HHSNoFood_FR,2024-02,copy,HHSNoFood_FR,
+hhs,HHSNoFood_FR,2024-10,copy,HHSNoFood_FR,
+hhs,HHSNoFood_FR,2025-10,copy,HHSNoFood_FR,
+hhs,HHSBedHung,2018-10,missing,,Household Hunger Scale not collected
+hhs,HHSBedHung,2019-02,missing,,Household Hunger Scale not collected
+hhs,HHSBedHung,2019-10,copy,men_affame,
+hhs,HHSBedHung,2020-02,copy,men_affame,
+hhs,HHSBedHung,2020-10,copy,men_affame,
+hhs,HHSBedHung,2021-02,copy,HHhSBedHung_YN,
+hhs,HHSBedHung,2021-10,copy,HHhSBedHung_YN,
+hhs,HHSBedHung,2022-02,copy,HHhSBedHung_YN,
+hhs,HHSBedHung,2022-10,copy,HHhSBedHung_YN,
+hhs,HHSBedHung,2023-02,copy,HHhSBedHung_YN,
+hhs,HHSBedHung,2023-10,copy,HHSBedHung,
+hhs,HHSBedHung,2024-02,copy,HHSBedHung,
+hhs,HHSBedHung,2024-10,copy,HHSBedHung,
+hhs,HHSBedHung,2025-10,copy,HHSBedHung,
+hhs,HHSBedHung_FR,2018-10,missing,,Household Hunger Scale not collected
+hhs,HHSBedHung_FR,2019-02,missing,,Household Hunger Scale not collected
+hhs,HHSBedHung_FR,2019-10,copy,intensite_men_affame,
+hhs,HHSBedHung_FR,2020-02,copy,intensite_men_affame,
+hhs,HHSBedHung_FR,2020-10,copy,intensite_men_affame,
+hhs,HHSBedHung_FR,2021-02,copy,HHhSBedHung_FR,
+hhs,HHSBedHung_FR,2021-10,copy,HHhSBedHung_FR,
+hhs,HHSBedHung_FR,2022-02,copy,HHhSBedHung_FR,
+hhs,HHSBedHung_FR,2022-10,copy,HHhSBedHung_FR,
+hhs,HHSBedHung_FR,2023-02,copy,HHhSBedHung_FR,
+hhs,HHSBedHung_FR,2023-10,copy,HHSBedHung_FR,
+hhs,HHSBedHung_FR,2024-02,copy,HHSBedHung_FR,
+hhs,HHSBedHung_FR,2024-10,copy,HHSBedHung_FR,
+hhs,HHSBedHung_FR,2025-10,copy,HHSBedHung_FR,
+hhs,HHSNotEat,2018-10,missing,,Household Hunger Scale not collected
+hhs,HHSNotEat,2019-02,missing,,Household Hunger Scale not collected
+hhs,HHSNotEat,2019-10,copy,jour_manque_nourriture,
+hhs,HHSNotEat,2020-02,copy,jour_manque_nourriture,
+hhs,HHSNotEat,2020-10,copy,jour_manque_nourriture,
+hhs,HHSNotEat,2021-02,copy,HHhSNotEat_YN,
+hhs,HHSNotEat,2021-10,copy,HHhSNotEat_YN,
+hhs,HHSNotEat,2022-02,copy,HHhSNotEat_YN,
+hhs,HHSNotEat,2022-10,copy,HHhSNotEat_YN,
+hhs,HHSNotEat,2023-02,copy,HHhSNotEat_YN,
+hhs,HHSNotEat,2023-10,copy,HHSNotEat,
+hhs,HHSNotEat,2024-02,copy,HHSNotEat,
+hhs,HHSNotEat,2024-10,copy,HHSNotEat,
+hhs,HHSNotEat,2025-10,copy,HHSNotEat,
+hhs,HHSNotEat_FR,2018-10,missing,,Household Hunger Scale not collected
+hhs,HHSNotEat_FR,2019-02,missing,,Household Hunger Scale not collected
+hhs,HHSNotEat_FR,2019-10,copy,intensite_jour_manque_nourriture,
+hhs,HHSNotEat_FR,2020-02,copy,intensite_jour_manque_nourriture,
+hhs,HHSNotEat_FR,2020-10,copy,intensite_jour_manque_nourriture,
+hhs,HHSNotEat_FR,2021-02,copy,HHhSNotEat_FR,
+hhs,HHSNotEat_FR,2021-10,copy,HHhSNotEat_FR,
+hhs,HHSNotEat_FR,2022-02,copy,HHhSNotEat_FR,
+hhs,HHSNotEat_FR,2022-10,copy,HHhSNotEat_FR,
+hhs,HHSNotEat_FR,2023-02,copy,HHhSNotEat_FR,
+hhs,HHSNotEat_FR,2023-10,copy,HHSNotEat_FR,
+hhs,HHSNotEat_FR,2024-02,copy,HHSNotEat_FR,
+hhs,HHSNotEat_FR,2024-10,copy,HHSNotEat_FR,
+hhs,HHSNotEat_FR,2025-10,copy,HHSNotEat_FR,
+hhs,orig_HHS,2018-10,missing,,Household Hunger Scale not collected
+hhs,orig_HHS,2019-02,missing,,Household Hunger Scale not collected
+hhs,orig_HHS,2019-10,copy,Echelle_faim,
+hhs,orig_HHS,2020-02,copy,Echelle_Faim,
+hhs,orig_HHS,2020-10,copy,Echelle_Faim,
+hhs,orig_HHS,2021-02,copy,HHhS,
+hhs,orig_HHS,2021-10,copy,HHhS,
+hhs,orig_HHS,2022-02,copy,HHhS,
+hhs,orig_HHS,2022-10,copy,HHhS,
+hhs,orig_HHS,2023-02,copy,HHhS,
+hhs,orig_HHS,2023-10,missing,,no pre-computed value in the source file
+hhs,orig_HHS,2024-02,missing,,no pre-computed value in the source file
+hhs,orig_HHS,2024-10,missing,,no pre-computed value in the source file
+hhs,orig_HHS,2025-10,missing,,no pre-computed value in the source file
+hhs,orig_HHS_phase,2018-10,missing,,Household Hunger Scale not collected
+hhs,orig_HHS_phase,2019-02,missing,,Household Hunger Scale not collected
+hhs,orig_HHS_phase,2019-10,copy,Echelle_faim_cor,
+hhs,orig_HHS_phase,2020-02,missing,,no pre-computed value in the source file
+hhs,orig_HHS_phase,2020-10,copy,Echelle_faim_1,
+hhs,orig_HHS_phase,2021-02,copy,HHhSCat,
+hhs,orig_HHS_phase,2021-10,copy,HHhSCat,
+hhs,orig_HHS_phase,2022-02,copy,HHhSCat,
+hhs,orig_HHS_phase,2022-10,copy,HHhSCat,
+hhs,orig_HHS_phase,2023-02,copy,HHhSCat,
+hhs,orig_HHS_phase,2023-10,copy,Echelle_faim_1,
+hhs,orig_HHS_phase,2024-02,copy,Echelle_faim_1,
+hhs,orig_HHS_phase,2024-10,missing,,no pre-computed value in the source file
+hhs,orig_HHS_phase,2025-10,copy,Echelle_faim_1,

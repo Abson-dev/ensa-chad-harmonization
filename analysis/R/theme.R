@@ -7,6 +7,8 @@ PAL <- list(
   # Cadre Harmonise / IPC phase colours
   ch = c("Phase 1" = "#CDFACD", "Phase 2" = "#FAE61E", "Phase 3+" = "#E67800"),
   lcs = c("No strategy" = "#CDFACD", Stress = "#FAE61E", Crisis = "#E67800", Emergency = "#C80000"),
+  # IPC / Cadre Harmonise 5-phase colours
+  ipc = c("Phase 1" = "#CDFACD", "Phase 2" = "#FAE61E", "Phase 3" = "#E67800", "Phase 4" = "#C80000", "Phase 5" = "#640000"),
   season = c(Feb = "#C17F3A", Oct = "#0F7C80")
 )
 GEN_LABEL <- c("1" = "Gen 1 · French codebook", "2" = "Gen 2 · hybrid / WFP modules",

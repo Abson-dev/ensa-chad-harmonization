@@ -10,7 +10,7 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 
 from ensa_harmonize import config  # noqa: E402
-from ensa_harmonize.domains import fcs, lcs, rcsi  # noqa: E402
+from ensa_harmonize.domains import fcs, hhs, lcs, rcsi  # noqa: E402
 from ensa_harmonize.domains.common import categorise, item_matrix  # noqa: E402
 from ensa_harmonize.engine import spss_to_datetime, sum_sources, to_number  # noqa: E402
 
@@ -119,6 +119,50 @@ def test_lcs_common_items_asked_in_every_round(cfg):
     for item in cfg.settings["lcs"]["common_items"]:
         rules = cw[(cw["domain"] == "lcs") & (cw["target"] == item)]
         assert (rules["method"] != "missing").all(), item
+
+
+# ---- Household Hunger Scale ------------------------------------------------------------------
+
+def hhs_frame(rows):
+    cols = ["HHSNoFood", "HHSNoFood_FR", "HHSBedHung", "HHSBedHung_FR", "HHSNotEat", "HHSNotEat_FR"]
+    t = pd.DataFrame(rows, columns=cols, dtype=float)
+    t["orig_HHS"] = np.nan
+    t["orig_HHS_phase"] = np.nan
+    return t
+
+
+def test_hhs_scoring_category_and_phase(cfg):
+    t = hhs_frame([
+        [0, None, 0, None, 0, None],   # no hunger -> 0
+        [1, 1, 0, None, 0, None],      # rarely -> 1
+        [1, 2, 1, 2, 0, None],         # sometimes x2 -> 2
+        [1, 3, 1, 3, 0, None],         # often x2 -> 4
+        [1, 3, 1, 3, 1, 3],            # often x3 -> 6
+    ])
+    out = hhs.derive(t, cfg.rounds.loc["2025-10"], cfg)
+    assert out["HHS"].tolist() == [0, 1, 2, 4, 6]
+    assert out["HHSCat"].tolist() == [1, 1, 2, 3, 3]
+    assert out["HHS_phase"].tolist() == [1, 2, 3, 4, 5]
+    assert out["HHSNoFood_FR"].tolist()[0] == 0  # "no" -> frequency 0
+
+
+def test_hhs_inconsistent_answers_are_not_scored(cfg):
+    t = hhs_frame([[1, None, 0, None, 0, None],   # yes but no frequency
+                   [0, 2, 0, None, 0, None]])     # no but a frequency
+    out = hhs.derive(t, cfg.rounds.loc["2025-10"], cfg)
+    assert out["HHS"].isna().all() and out["hhs_inconsistent"].tolist() == [1, 1]
+
+
+def test_hhs_oct2019_code2_exception_only_in_that_round(cfg):
+    t = hhs_frame([[2, 3, 0, None, 0, None]])
+    out = hhs.derive(t, cfg.rounds.loc["2019-10"], cfg)
+    assert out["HHS"].item() == 2 and out["hhs_code_exception"].item() == 1
+    with pytest.raises(ValueError):
+        hhs.derive(t, cfg.rounds.loc["2022-10"], cfg)
+
+
+def test_hhs_phase_table_covers_scores_0_to_6(cfg):
+    assert cfg.settings["hhs"]["phase_by_score"] == [1, 2, 3, 3, 4, 5, 5]
 
 
 def test_lcs_max_category():

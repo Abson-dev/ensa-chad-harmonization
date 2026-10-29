@@ -48,6 +48,7 @@ Parameters (top of `analysis_by_domain.Rmd`, or `params = list(...)` in `render_
 | Food consumption (FCS) | national FCS and groups with 95% CI (28/42 and 21/35); regions, latest vs previous October | groups by round and season; days per food group; **decomposition of the FCS change by food group**; region × round heatmap |
 | Coping (rCSI) | national rCSI and Cadre Harmonisé phases with 95% CI; regions, latest vs previous October | phases by round and season; use of each strategy; region × round heatmap |
 | Livelihood coping (LCS) | maximum category by round with 95% CI: comparable (7 strategies asked in every round, coping for food) and round-specific | categories by round and season; use of each of the 14 strategies; region × round heatmap of crisis + emergency |
+| Household Hunger Scale (HHS) | score, moderate / severe hunger and phase 3+ by round with 95% CI (from Oct 2019) | IPC phases by round and season; each hunger experience by round; region × round heatmap of phase 3+ |
 | Food consumption × coping | overlap (poor/borderline FCS and rCSI phase 3+), Spearman correlation by round | joint distribution in the latest round; regional scatter |
 | Limitations, annex | households by region × round; provenance (data run, package versions) | |
 

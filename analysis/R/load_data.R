@@ -1,7 +1,7 @@
 # Load and merge the harmonised domain files written by the Python pipeline (../output).
 
 load_harmonised <- function(dir) {
-  need <- file.path(dir, c("ensa_core.csv", "ensa_fcs.csv", "ensa_rcsi.csv", "ensa_lcs.csv"))
+  need <- file.path(dir, c("ensa_core.csv", "ensa_fcs.csv", "ensa_rcsi.csv", "ensa_lcs.csv", "ensa_hhs.csv"))
   if (!all(file.exists(need))) {
     stop("Harmonised files not found in ", normalizePath(dir, mustWork = FALSE),
          ". Run the pipeline first: python run_harmonize.py")
@@ -13,11 +13,14 @@ load_harmonised <- function(dir) {
   fcs[, orig_FCS := NULL][, orig_FCSCat28 := NULL]
   rcsi[, orig_rCSI := NULL]
   lcs[, orig_LCS := NULL]
+  hhs <- data.table::fread(need[5], na.strings = c("", "NA"))
+  hhs[, orig_HHS := NULL][, orig_HHS_phase := NULL]
 
   # Domain files join one-to-one on round_id + hh_id.
   d <- merge(core, fcs, by = c("round_id", "hh_id"), all = FALSE)
   d <- merge(d, rcsi, by = c("round_id", "hh_id"), all = FALSE)
   d <- merge(d, lcs, by = c("round_id", "hh_id"), all = FALSE)
+  d <- merge(d, hhs, by = c("round_id", "hh_id"), all = FALSE)
   stopifnot(nrow(d) == nrow(core), !anyDuplicated(d$hh_id))
 
   rounds <- unique(d[, .(round_id, year, season, generation)])
@@ -62,6 +65,13 @@ load_harmonised <- function(dir) {
     lcs_ce = na_if(fl(LCS_max_common >= 3), is.na(LCS_max_common)),
     lcs_ce_round = na_if(fl(LCS_max >= 3), is.na(LCS_max))
   )]
+  # Household Hunger Scale (collected from Oct 2019): phases and WFP categories as 0/1 flags.
+  for (k in 1:5) d[, (paste0("hhs_ph", k)) := na_if(fl(HHS_phase == k), is.na(HHS_phase))]
+  d[, `:=`(
+    hhs_p3 = na_if(fl(HHS_phase >= 3), is.na(HHS_phase)),
+    hhs_moderate = na_if(fl(HHSCat == 2), is.na(HHSCat)),
+    hhs_severe = na_if(fl(HHSCat == 3), is.na(HHSCat))
+  )]
   for (s in names(LCS_STRATEGIES)) {
     # Only where the strategy was asked in the round (otherwise NA); skipped answers count as not used.
     d[, (paste0("use_", s)) := fl(get(s) %in% c(20, 30))]
@@ -81,6 +91,8 @@ LCS_STRATEGIES <- c(
   LCS_OutSchool = "Withdrew children from school", LCS_Marriage = "Child marriage (<18)",
   LCS_ResAsset = "Sold house or land", LCS_FemAnimal = "Sold last female animals", LCS_Begged = "Begged"
 )
+HHS_QUESTIONS <- c(HHSNoFood = "No food of any kind in the house", HHSBedHung = "Went to sleep hungry",
+                   HHSNotEat = "Whole day and night without eating")
 LCS_COMMON <- c("LCS_DomAsset", "LCS_Animals", "LCS_Saving", "LCS_ProdAssets", "LCS_ResAsset",
                 "LCS_FemAnimal", "LCS_Begged")
 RCSI_STRATEGIES <- c(rCSILessQlty = "Less preferred / cheaper food", rCSIBorrow = "Borrow food / rely on help",
