@@ -4,7 +4,7 @@ rounds_ui <- function(id, d) {
   ns <- shiny::NS(id)
   htmltools::tagList(
     page_intro("Survey rounds",
-               "Fourteen cross-sectional rounds: February (lean-season onset) and October (harvest). Households differ between rounds, so rounds are stacked, never linked."),
+               "Fourteen cross-sectional rounds: February (post-harvest) and October (harvest, end of the lean season). Households differ between rounds, so rounds are stacked, never linked."),
     bslib::layout_columns(
       col_widths = c(7, 5),
       bslib::card(

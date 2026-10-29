@@ -96,6 +96,7 @@ The pipeline expects the original SPSS files laid out like this (folder names ar
 | Harmonisation pipeline | **Python 3.11** | read SPSS files, apply rules, recompute and validate indicators, write CSV / SAV | [`environment.yml`](environment.yml) (conda-forge, pinned) or [`requirements.txt`](requirements.txt) | `run_harmonize.py` | `python -m pytest -q` (11) |
 | Harmonisation explorer | **R ≥ 4.3** (tested 4.5.2) | Shiny app for reviewers: process, crosswalk, validation, indicators | packages installed by [`app/install_packages.R`](app/install_packages.R) | `app/app.R`, `app/run_app.bat` | `Rscript tests/test_app.R` (85) |
 | App data preparation | **R** | aggregates the pipeline outputs for the app (no household data) | `data.table`, `jsonlite` | `app/prepare_app_data.R` | — |
+| Analysis by domain | **R Markdown** | merges the domain files; survey-weighted tables and figures; Word report | officedown, flextable, survey, ggplot2 (+ Pandoc) | `analysis/render_report.R`, `analysis/render_report.bat` | — |
 
 **Python packages** (pinned): pandas 2.2.2, numpy 2.2.6, pyreadstat 1.2.7, pytest 8.2.2.
 
@@ -137,6 +138,15 @@ Rscript prepare_app_data.R       # aggregates ../output into app/data (cells < 3
 Rscript tests/test_app.R         # 85 server-side checks of every page
 Rscript -e "shiny::runApp()"     # opens the app; on Windows you can double-click run_app.bat
 ```
+
+### 3. Write the analysis report (R Markdown → Word)
+
+```bash
+cd analysis
+Rscript render_report.R          # Word report + CSV tables + PNG figures in analysis/output; or double-click render_report.bat
+```
+
+The report covers each domain (sample, food consumption, coping, and the two combined) with survey-weighted estimates and 95% confidence intervals; see [analysis/README.md](analysis/README.md).
 
 ## Interactive explorer (R Shiny)
 
@@ -187,6 +197,10 @@ harmonization/
 │   ├── prepare_app_data.R   builds app/data from ../output (aggregates only; not versioned)
 │   ├── install_packages.R   installs missing R packages
 │   └── run_app.bat          double-click launcher for Windows
+├── analysis/                analysis by domain: R Markdown → Word report, CSV tables, PNG figures
+│   ├── analysis_by_domain.Rmd
+│   ├── R/                   data loading and merging, survey estimates, report style
+│   └── render_report.R      / render_report.bat (double-click)
 ├── docs/screenshots/        app screenshots used in this README
 ├── .vscode/                 interpreter, test and run/debug configuration
 ├── environment.yml          conda environment (conda-forge, pinned)

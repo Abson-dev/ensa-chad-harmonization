@@ -1,0 +1,437 @@
+---
+title: "ENSA Chad 2018–2025"
+subtitle: "Harmonised analysis by domain: food consumption and coping strategies"
+author: "`r params$author`"
+date: "`r format(Sys.Date(), '%d %B %Y')`"
+output:
+  officedown::rdocx_document:
+    tables:
+      style: Table
+      layout: autofit
+      caption:
+        style: Table Caption
+        pre: "Table "
+        sep: ". "
+    plots:
+      style: Normal
+      align: center
+      caption:
+        style: Image Caption
+        pre: "Figure "
+        sep: ". "
+params:
+  data_dir: "../output"
+  config_dir: "../config"
+  out_dir: "output"
+  cluster: "admin3"
+  min_cell: 30
+  author: "Aboubacar Hema"
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE, dpi = 300, dev = "ragg_png",
+                      fig.width = 6.5, fig.height = 4)
+suppressPackageStartupMessages({
+  library(data.table); library(ggplot2); library(flextable); library(officer); library(officedown)
+})
+for (f in list.files("R", full.names = TRUE)) source(f)
+flextable_style()
+
+fig_dir <- file.path(params$out_dir, "figures"); tab_dir <- file.path(params$out_dir, "tables")
+dir.create(fig_dir, recursive = TRUE, showWarnings = FALSE); dir.create(tab_dir, showWarnings = FALSE)
+save_fig <- function(p, name, width = 6.5, height = 4) {
+  ggsave(file.path(fig_dir, paste0(name, ".png")), p, width = width, height = height, dpi = 300,
+         device = ragg::agg_png, bg = "white")
+  p
+}
+# invisible(): a visible return value would be printed into the Word document.
+save_tab <- function(df, name) { fwrite(df, file.path(tab_dir, paste0(name, ".csv"))); invisible(df) }
+
+h <- load_harmonised(params$data_dir)
+d <- h$d; R <- h$rounds
+cfg_rounds <- fread(file.path(params$config_dir, "rounds.csv"))
+design <- make_design(d, params$cluster)
+lab <- function(id) R$round_lab[match(id, R$round_id)]
+unweighted <- R[weighted == FALSE, round]
+
+# ---- national estimates --------------------------------------------------
+fcs_nat <- dcast(as.data.table(estimate_by(design, c("FCS", "fcs_poor", "fcs_border", "fcs_accept", "fcs_pb", "fcs_pb21"))),
+                 round_id ~ var, value.var = c("est", "lo", "hi"))
+rcsi_nat <- dcast(as.data.table(estimate_by(design, c("rCSI", "rcsi_p1", "rcsi_p2", "rcsi_p3"))),
+                  round_id ~ var, value.var = c("est", "lo", "hi"))
+both_nat <- as.data.table(estimate_by(design, "both_severe"))
+fcs_nat <- merge(R[, .(round_id, round, round_lab, season, year, weighted)], fcs_nat, by = "round_id")[order(match(round_id, R$round_id))]
+rcsi_nat <- merge(R[, .(round_id, round, round_lab, season, year, weighted)], rcsi_nat, by = "round_id")[order(match(round_id, R$round_id))]
+
+# ---- rounds used for regional comparisons ---------------------------------
+oct_w <- R[season == "Oct" & weighted == TRUE, round_id]
+latest <- tail(oct_w, 1); previous <- tail(head(oct_w, -1), 1)
+first_oct <- R[season == "Oct", round_id][1]; last_oct <- tail(R[season == "Oct", round_id], 1)
+first_feb <- R[season == "Feb", round_id][1]; last_feb <- tail(R[season == "Feb", round_id], 1)
+
+region_est <- function(var, rid) {
+  x <- as.data.table(estimate_by(subset(design, round_id == rid), var, by = ~admin1))
+  n <- d[round_id == rid, .N, by = admin1]
+  x <- merge(x, n, by = "admin1")
+  x[N < params$min_cell, c("est", "lo", "hi") := NA_real_]
+  x
+}
+g <- function(dt, col, rid) dt[round_id == rid][[col]]
+```
+
+<!---BLOCK_TOC--->
+
+# Key messages
+
+```{r key-messages}
+pb <- function(rid) g(fcs_nat, "est_fcs_pb", rid)
+p3 <- function(rid) g(rcsi_nat, "est_rcsi_p3", rid)
+dir_word <- function(a, b) if (b > a + 0.01) "rose" else if (b < a - 0.01) "fell" else "remained stable"
+oct_pb <- fcs_nat[season == "Oct"]; peak_oct <- oct_pb[which.max(est_fcs_pb)]
+reg_fcs_latest <- region_est("fcs_pb", latest)[order(-est)][!is.na(est)]
+top3 <- reg_fcs_latest[1:3]
+both_latest <- both_nat[round_id == latest]
+worse <- pb(last_oct) > pb(first_oct) && pb(last_feb) > pb(first_feb)
+p3_low <- rcsi_nat[weighted == TRUE][which.min(est_rcsi_p3)]
+```
+
+- **`r if (worse) "Food consumption deteriorated over the period." else "Food consumption trends."`** In October, the share of households with poor or borderline food consumption (FCS 28/42) `r dir_word(pb(first_oct), pb(last_oct))` from `r pct(pb(first_oct))`% in `r lab(first_oct)` to `r pct(pb(last_oct))`% in `r lab(last_oct)`, peaking at `r pct(peak_oct$est_fcs_pb)`% in `r peak_oct$round_lab`. In February it went from `r pct(pb(first_feb))`% (`r lab(first_feb)`) to `r pct(pb(last_feb))`% (`r lab(last_feb)`).
+- **Severe consumption-based coping concerns a minority of households.** The share in rCSI phase 3 or above (rCSI ≥ 19) ranged from `r pct(min(rcsi_nat$est_rcsi_p3))`% to `r pct(max(rcsi_nat$est_rcsi_p3))`% across rounds. It was `r pct(p3(last_oct))`% in `r lab(last_oct)`, against `r pct(p3(first_oct))`% in `r lab(first_oct)` and a low of `r pct(p3_low$est_rcsi_p3)`% in `r p3_low$round_lab`.
+- **Hotspots in `r lab(latest)`:** `r paste0(top3$admin1, " (", pct(top3$est, 0), "%)", collapse = ", ")` have the highest shares of poor or borderline consumption.
+- **Overlap of the two dimensions:** in `r lab(latest)`, `r pct(both_latest$est)`% of households combined poor or borderline consumption with rCSI phase 3+.
+- **Caveat:** `r paste(unweighted, collapse = ", ")` have no usable sampling weight and are estimated unweighted (marked †); February and October rounds reflect different seasons and should be compared within season.
+
+# Data and methods
+
+## Data
+
+The analysis uses the harmonised household files produced by the ENSA harmonisation pipeline: `ensa_core` (keys, region, weight), `ensa_fcs` and `ensa_rcsi`, merged one-to-one on the household identifier. Together they cover `r int(nrow(d))` households in `r nrow(R)` rounds (Table \@ref(tab:rounds)).
+
+```{r rounds}
+t1 <- R[, .(round_id, round_lab, generation)]
+t1 <- merge(t1, d[, .(households = .N, regions = uniqueN(admin1, na.rm = TRUE)), by = round_id], by = "round_id")
+t1 <- merge(t1, cfg_rounds[, .(round_id, fieldwork = paste(format(as.Date(fieldwork_start), "%d %b"), "–",
+                                                           format(as.Date(fieldwork_end), "%d %b %Y")))], by = "round_id")
+t1 <- t1[order(match(round_id, R$round_id))]
+t1[, weight := ifelse(round_id %in% R[weighted == TRUE, round_id], "survey weight", "none (unweighted †)")]
+save_tab(t1, "T01_rounds")
+ft(t1[, .(round_lab, generation, households = int(households), regions, fieldwork, weight)],
+   header = list(round_lab = "Round", generation = "Questionnaire generation", households = "Households",
+                 regions = "Regions", fieldwork = "Fieldwork", weight = "Weighting")) |>
+  flextable::add_footer_lines("Fieldwork = 1st–99th percentile of interview dates. † No usable sampling weight in the source file.") |>
+  cap("Survey rounds analysed", "rounds")
+```
+
+## Indicators
+
+- **Food Consumption Score (FCS)** — days of consumption of 9 food groups over the last 7 days, weighted (staples 2, pulses 3, vegetables 1, fruit 1, meat/fish/eggs 4, dairy 4, sugar 0.5, oil 0.5, condiments 0). Groups: poor ≤ 28, borderline 28.5–42, acceptable > 42 (Chad thresholds); the 21/35 thresholds are shown for sensitivity.
+- **Reduced Coping Strategies Index (rCSI)** — days of use of 5 strategies over the last 7 days, weighted (1, 2, 1, 3, 1); range 0–56. Cadre Harmonisé phases: phase 1 ≤ 3, phase 2 = 4–18, phase 3+ ≥ 19.
+
+Both indicators were recomputed from the item answers with the same formula in every round; they agree with the scores computed by the original analysts in 98.7–100% of households (see the harmonisation documentation).
+
+## Estimation
+
+Estimates are survey-weighted (normalised weights, mean 1 within each round) with 95% confidence intervals from the `survey` package. `r if (params$cluster == "admin3") "The harmonised files do not carry the official strata and primary sampling units; sub-prefectures are used as approximate clusters, which gives conservative (wider) intervals." else "Confidence intervals assume simple random sampling and are therefore too narrow."` Regional estimates based on fewer than `r params$min_cell` households are suppressed. Regional changes compare `r lab(latest)` with `r lab(previous)`, the two most recent weighted October rounds.
+
+# Sample and design (core domain)
+
+```{r sample-calc}
+n_round <- d[, .N, by = round_id]
+```
+
+The sample ranged from `r int(min(n_round$N))` households (`r lab(n_round[which.min(N), round_id])`) to `r int(max(n_round$N))` (`r lab(n_round[which.max(N), round_id])`); the largest samples, in 2024, include refugee and returnee strata (Figure \@ref(fig:sample)). Three questionnaire generations were used; harmonisation makes their indicators comparable.
+
+```{r sample, fig.id = "sample", fig.cap = "Households interviewed per round, by questionnaire generation", fig.height = 3.4}
+s <- d[, .N, by = .(round_lab, generation)]
+p <- ggplot(s, aes(round_lab, N, fill = factor(generation))) +
+  geom_col(width = 0.75) +
+  geom_text(aes(label = int(N)), vjust = -0.4, size = 2.6, colour = PAL$ink) +
+  scale_fill_manual(values = PAL$gen, labels = GEN_LABEL, name = NULL) +
+  scale_y_continuous(labels = scales::label_comma(), expand = expansion(mult = c(0, 0.12))) +
+  labs(x = NULL, y = "Households", caption = "† No usable sampling weight.") +
+  theme_report() + theme(axis.text.x = element_text(angle = 40, hjust = 1))
+save_fig(p, "F01_sample", height = 3.4)
+```
+
+# Food consumption (FCS domain)
+
+```{r fcs-text}
+mean_first <- g(fcs_nat, "est_FCS", first_oct); mean_last <- g(fcs_nat, "est_FCS", last_oct)
+```
+
+The mean Food Consumption Score in October went from `r num(mean_first)` (`r lab(first_oct)`) to `r num(mean_last)` (`r lab(last_oct)`). Table \@ref(tab:fcs-national) gives the national estimates for every round and Figure \@ref(fig:fcs-groups) the distribution of households across the three consumption groups. The threshold choice matters: with the 21/35 thresholds, fewer households fall into the poor or borderline groups, but the trend is the same.
+
+```{r fcs-national}
+t2 <- fcs_nat[, .(Round = round_lab,
+                  `Mean FCS` = num(est_FCS), `95% CI` = ci(lo_FCS, hi_FCS, scale = 1),
+                  `Poor (%)` = pct(est_fcs_poor), `Borderline (%)` = pct(est_fcs_border),
+                  `Acceptable (%)` = pct(est_fcs_accept),
+                  `Poor + borderline (%)` = pct(est_fcs_pb), `95% CI ` = ci(lo_fcs_pb, hi_fcs_pb),
+                  `P + B, 21/35 (%)` = pct(est_fcs_pb21))]
+save_tab(fcs_nat, "T02_fcs_national")
+ft(t2) |>
+  flextable::add_footer_lines("Groups with the 28/42 thresholds unless stated. † Unweighted estimate (no sampling weight).") |>
+  flextable::fontsize(size = 8, part = "all") |>
+  cap("Food Consumption Score by round (national, 95% CI)", "fcs-national")
+```
+
+```{r fcs-groups, fig.id = "fcs-groups", fig.cap = "Households by FCS group (28/42), by round and season", fig.height = 3.8}
+x <- melt(fcs_nat[, .(round_lab, season, Poor = est_fcs_poor, Borderline = est_fcs_border, Acceptable = est_fcs_accept)],
+          id.vars = c("round_lab", "season"), variable.name = "group", value.name = "share")
+x[, season := factor(season, c("Feb", "Oct"), c("February rounds", "October rounds"))]
+x[, group := factor(group, levels = c("Acceptable", "Borderline", "Poor"))]
+p <- ggplot(x, aes(round_lab, share, fill = group)) +
+  geom_col(width = 0.72, colour = "white", linewidth = 0.3) +
+  geom_text(aes(label = ifelse(share >= 0.04, pct(share, 0), "")), position = position_stack(vjust = 0.5),
+            size = 2.5, colour = "white", fontface = "bold") +
+  facet_grid(~season, scales = "free_x", space = "free_x") +
+  scale_fill_manual(values = PAL$fcs, name = NULL, breaks = c("Poor", "Borderline", "Acceptable")) +
+  scale_y_continuous(labels = scales::label_percent(), expand = c(0, 0)) +
+  labs(x = NULL, y = "Share of households", caption = "† Unweighted estimate.") +
+  theme_report() + theme(axis.text.x = element_text(angle = 40, hjust = 1), panel.grid.major.x = element_blank())
+save_fig(p, "F02_fcs_groups", height = 3.8)
+```
+
+## Diet composition
+
+```{r diet-calc}
+fg <- weighted_grid(d, names(FCS_GROUPS), by = c("round_id", "round_lab"), min_n = 0)
+fg <- melt(fg[, -"n"], id.vars = c("round_id", "round_lab"), variable.name = "item", value.name = "days")
+fg[, group := factor(FCS_GROUPS[as.character(item)], levels = rev(FCS_GROUPS))]
+# Change in mean FCS between the first and last October rounds, split by food group:
+# contribution = FCS weight x change in mean days.
+fcs_w <- c(FCSStap = 2, FCSPulse = 3, FCSVeg = 1, FCSFruit = 1, FCSPr = 4, FCSDairy = 4, FCSSugar = 0.5, FCSFat = 0.5, FCSCond = 0)
+dec <- dcast(fg[round_id %in% c(first_oct, last_oct)], item + group ~ round_id, value.var = "days")
+dec[, contrib := fcs_w[as.character(item)] * (get(last_oct) - get(first_oct))]
+dec <- dec[order(contrib)]
+total <- sum(dec$contrib)
+big3 <- dec[order(-abs(contrib))][1:3]
+almost_daily <- fg[round_id == last_oct & days >= 5.5, as.character(group)]
+```
+
+Figure \@ref(fig:food-groups) shows how many days per week households ate each food group. In `r lab(last_oct)`, `r paste(tolower(almost_daily), collapse = ", ")` were eaten on at least 5.5 days a week. Between `r lab(first_oct)` and `r lab(last_oct)`, the mean FCS `r if (total < 0) "fell" else "rose"` by `r num(abs(total))` points. The largest contributions came from `r paste0(tolower(big3$group), " (", sprintf("%+.1f", big3$contrib), ")", collapse = ", ")` (Figure \@ref(fig:fcs-decomp)): the groups with the highest weights in the score drive its trend.
+
+```{r food-groups, fig.id = "food-groups", fig.cap = "Mean days of consumption per week, by food group and round (weighted)", fig.height = 3.6}
+save_tab(dcast(fg, group ~ round_lab, value.var = "days"), "T03_food_group_days")
+p <- ggplot(fg, aes(round_lab, group, fill = days)) +
+  geom_tile(colour = "white", linewidth = 0.6) +
+  geom_text(aes(label = num(days)), size = 2.4, colour = ifelse(fg$days > 4.5, "white", PAL$ink)) +
+  scale_fill_gradient(low = "#F4F1EA", high = PAL$teal, limits = c(0, 7), name = "Days / week") +
+  labs(x = NULL, y = NULL, caption = "† Unweighted estimate.") +
+  theme_report() + theme(axis.text.x = element_text(angle = 40, hjust = 1), panel.grid = element_blank(),
+                         legend.key.width = unit(1.2, "cm"))
+save_fig(p, "F03_food_group_days", height = 3.6)
+```
+
+```{r fcs-decomp, fig.id = "fcs-decomp", fig.cap = paste0("Contribution of each food group to the change in mean FCS, ", lab(first_oct), " to ", lab(last_oct)), fig.height = 3.2}
+save_tab(dec, "T03b_fcs_change_decomposition")
+dec[, group := factor(as.character(group), levels = as.character(group))]
+p <- ggplot(dec, aes(contrib, group, fill = contrib < 0)) +
+  geom_col(width = 0.7) +
+  geom_vline(xintercept = 0, colour = PAL$muted) +
+  geom_text(aes(label = ifelse(abs(contrib) < 0.05, "0.0", sprintf("%+.1f", contrib)),
+                hjust = ifelse(contrib < 0, 1.15, -0.15)), size = 2.8, colour = PAL$ink) +
+  scale_fill_manual(values = c(`TRUE` = PAL$fcs[["Poor"]], `FALSE` = PAL$fcs[["Acceptable"]]), guide = "none") +
+  scale_x_continuous(expand = expansion(mult = 0.25)) +
+  labs(x = "FCS points (weight × change in mean days)", y = NULL,
+       caption = sprintf("Total change: %+.1f points. Weighted means; condiments have weight 0.", total)) +
+  theme_report() + theme(panel.grid.major.y = element_blank())
+save_fig(p, "F03b_fcs_change_decomposition", height = 3.2)
+```
+
+## Regional differences
+
+```{r fcs-region-table}
+a <- region_est("fcs_pb", latest); b <- region_est("fcs_pb", previous)
+rt <- merge(a[, .(admin1, n = N, est, lo, hi)], b[, .(admin1, prev = est)], by = "admin1", all.x = TRUE)
+rt[, change := 100 * (est - prev)]
+rt <- rt[order(-est)]
+save_tab(rt, "T04_fcs_region")
+ft(rt[, .(Region = admin1, Households = int(n), `% P+B` = pct(est), `95% CI` = ci(lo, hi),
+          `% P+B, previous` = pct(prev), `Change (pp)` = ifelse(is.na(change), "–", sprintf("%+.1f", change)))]) |>
+  colour_change(rt$change) |>
+  flextable::add_footer_lines(sprintf("P+B = poor + borderline (28/42). Previous = %s. pp = percentage points; red = increase > 5 pp, green = decrease > 5 pp.", lab(previous))) |>
+  flextable::fontsize(size = 8, part = "all") |>
+  cap(paste0("Poor + borderline food consumption by region, ", lab(latest), " vs ", lab(previous)), "fcs-region")
+```
+
+<!---BLOCK_LANDSCAPE_START--->
+
+```{r fcs-heatmap, fig.id = "fcs-heatmap", fig.cap = "Poor + borderline food consumption (%) by region and round", fig.width = 9, fig.height = 5.6}
+rg <- weighted_grid(d[!is.na(admin1)], c("fcs_pb", "rcsi_p3"), by = c("admin1", "round_lab"), min_n = params$min_cell)
+save_tab(rg, "T05_region_round_grid")
+heat <- function(var, title, high) {
+  ggplot(rg, aes(round_lab, forcats::fct_rev(factor(admin1)), fill = .data[[var]])) +
+    geom_tile(colour = "white", linewidth = 0.5) +
+    geom_text(aes(label = ifelse(is.na(.data[[var]]), "", pct(.data[[var]], 0))), size = 2.2,
+              colour = ifelse(!is.na(rg[[var]]) & rg[[var]] > 0.55, "white", PAL$ink)) +
+    scale_fill_gradient(low = "#F7F7F2", high = high, labels = scales::label_percent(), na.value = "#EEF0F3",
+                        limits = c(0, NA), name = title) +
+    labs(x = NULL, y = NULL, caption = "Blank cells: region not surveyed or fewer than 30 households. † Unweighted estimate.") +
+    theme_report(9) + theme(axis.text.x = element_text(angle = 40, hjust = 1), panel.grid = element_blank(),
+                            legend.key.width = unit(1.4, "cm"))
+}
+save_fig(heat("fcs_pb", "% poor + borderline", "#9E2A1E"), "F04_fcs_region_heatmap", width = 9, height = 5.6)
+```
+
+<!---BLOCK_LANDSCAPE_STOP--->
+
+# Coping strategies (rCSI domain)
+
+```{r rcsi-text}
+str_latest <- weighted_grid(d[round_id == latest], paste0("use_", names(RCSI_STRATEGIES)), by = "round_id", min_n = 0)
+top_str <- names(which.max(unlist(str_latest[, -c("round_id", "n")])))
+```
+
+Table \@ref(tab:rcsi-national) and Figure \@ref(fig:rcsi-phases) show the rCSI and its Cadre Harmonisé phases. Most households fall in phases 1 and 2; phase 3+ (rCSI ≥ 19) concerns a minority but is the most relevant signal for food insecurity classification. The most common strategy in `r lab(latest)` was "`r tolower(RCSI_STRATEGIES[sub("use_", "", top_str)])`" (Figure \@ref(fig:strategies)).
+
+```{r rcsi-national}
+save_tab(rcsi_nat, "T06_rcsi_national")
+ft(rcsi_nat[, .(Round = round_lab, `Mean rCSI` = num(est_rCSI), `95% CI` = ci(lo_rCSI, hi_rCSI, scale = 1),
+                `Phase 1 (%)` = pct(est_rcsi_p1), `Phase 2 (%)` = pct(est_rcsi_p2),
+                `Phase 3+ (%)` = pct(est_rcsi_p3), `95% CI ` = ci(lo_rcsi_p3, hi_rcsi_p3))]) |>
+  flextable::add_footer_lines("Cadre Harmonisé phases: 1 ≤ 3, 2 = 4–18, 3+ ≥ 19. † Unweighted estimate (no sampling weight).") |>
+  flextable::fontsize(size = 8, part = "all") |>
+  cap("Reduced Coping Strategies Index by round (national, 95% CI)", "rcsi-national")
+```
+
+```{r rcsi-phases, fig.id = "rcsi-phases", fig.cap = "Households by rCSI Cadre Harmonisé phase, by round and season", fig.height = 3.8}
+x <- melt(rcsi_nat[, .(round_lab, season, `Phase 1` = est_rcsi_p1, `Phase 2` = est_rcsi_p2, `Phase 3+` = est_rcsi_p3)],
+          id.vars = c("round_lab", "season"), variable.name = "phase", value.name = "share")
+x[, season := factor(season, c("Feb", "Oct"), c("February rounds", "October rounds"))]
+x[, phase := factor(phase, levels = c("Phase 1", "Phase 2", "Phase 3+"))]
+p <- ggplot(x, aes(round_lab, share, fill = forcats::fct_rev(phase))) +
+  geom_col(width = 0.72, colour = "white", linewidth = 0.3) +
+  geom_text(aes(label = ifelse(share >= 0.04, pct(share, 0), "")), position = position_stack(vjust = 0.5),
+            size = 2.5, colour = PAL$ink) +
+  facet_grid(~season, scales = "free_x", space = "free_x") +
+  scale_fill_manual(values = PAL$ch, name = NULL, breaks = names(PAL$ch)) +
+  scale_y_continuous(labels = scales::label_percent(), expand = c(0, 0)) +
+  labs(x = NULL, y = "Share of households", caption = "† Unweighted estimate.") +
+  theme_report() + theme(axis.text.x = element_text(angle = 40, hjust = 1), panel.grid.major.x = element_blank())
+save_fig(p, "F05_rcsi_phases", height = 3.8)
+```
+
+```{r strategies, fig.id = "strategies", fig.cap = "Households using each coping strategy at least one day in the past week (weighted)", fig.height = 3.8}
+st <- weighted_grid(d, paste0("use_", names(RCSI_STRATEGIES)), by = c("round_lab"), min_n = 0)
+st <- melt(st[, -"n"], id.vars = "round_lab", variable.name = "strategy", value.name = "share")
+st[, strategy := factor(RCSI_STRATEGIES[sub("use_", "", strategy)], levels = RCSI_STRATEGIES)]
+save_tab(dcast(st, strategy ~ round_lab, value.var = "share"), "T07_strategy_use")
+p <- ggplot(st, aes(round_lab, share, colour = strategy, group = strategy)) +
+  geom_line(linewidth = 0.8) + geom_point(size = 1.8) +
+  scale_colour_manual(values = c("#0F7C80", "#C17F3A", "#2F7FB5", "#B83227", "#6C5CE7"), name = NULL) +
+  scale_y_continuous(labels = scales::label_percent(), limits = c(0, NA)) +
+  guides(colour = guide_legend(nrow = 2)) +
+  labs(x = NULL, y = "Share of households", caption = "† Unweighted estimate.") +
+  theme_report() + theme(axis.text.x = element_text(angle = 40, hjust = 1))
+save_fig(p, "F06_strategy_use", height = 3.8)
+```
+
+```{r rcsi-region-table}
+a <- region_est("rcsi_p3", latest); b <- region_est("rcsi_p3", previous)
+rr <- merge(a[, .(admin1, n = N, est, lo, hi)], b[, .(admin1, prev = est)], by = "admin1", all.x = TRUE)
+rr[, change := 100 * (est - prev)]
+rr <- rr[order(-est)]
+save_tab(rr, "T08_rcsi_region")
+ft(rr[, .(Region = admin1, Households = int(n), `% phase 3+` = pct(est), `95% CI` = ci(lo, hi),
+          `% phase 3+, previous` = pct(prev), `Change (pp)` = ifelse(is.na(change), "–", sprintf("%+.1f", change)))]) |>
+  colour_change(rr$change) |>
+  flextable::add_footer_lines(sprintf("Previous = %s. pp = percentage points; red = increase > 5 pp, green = decrease > 5 pp.", lab(previous))) |>
+  flextable::fontsize(size = 8, part = "all") |>
+  cap(paste0("rCSI phase 3+ by region, ", lab(latest), " vs ", lab(previous)), "rcsi-region")
+```
+
+<!---BLOCK_LANDSCAPE_START--->
+
+```{r rcsi-heatmap, fig.id = "rcsi-heatmap", fig.cap = "rCSI phase 3+ (%) by region and round", fig.width = 9, fig.height = 5.6}
+save_fig(heat("rcsi_p3", "% rCSI phase 3+", "#B35900"), "F07_rcsi_region_heatmap", width = 9, height = 5.6)
+```
+
+<!---BLOCK_LANDSCAPE_STOP--->
+
+# Food consumption and coping combined
+
+```{r combined-calc}
+rho <- corr_by_round(d, "FCS", "rCSI")
+strength <- function(r) if (max(abs(r)) < 0.3) "weak" else if (max(abs(r)) < 0.5) "weak to moderate" else "moderate to strong"
+```
+
+Merging the two domains shows how far they overlap. Households with lower food consumption tend to cope more, but the two indicators capture different dimensions: the rank correlation between FCS and rCSI is `r if (all(rho$rho < 0)) "negative" else "mostly negative"` and `r strength(rho$rho)` in every round (ρ between `r num(max(rho$rho), 2)` and `r num(min(rho$rho), 2)`; Table \@ref(tab:combined)). Few households combine both severe signals.
+
+```{r combined}
+cb <- merge(both_nat[, .(round_id, est, lo, hi)], rho, by = "round_id")
+cb <- merge(R[, .(round_id, round_lab)], cb, by = "round_id")[order(match(round_id, R$round_id))]
+save_tab(cb, "T09_combined")
+ft(cb[, .(Round = round_lab, `P+B FCS and rCSI phase 3+ (%)` = pct(est), `95% CI` = ci(lo, hi),
+          `Spearman ρ (FCS, rCSI)` = num(rho, 2))]) |>
+  flextable::add_footer_lines("P+B = poor or borderline FCS (28/42). ρ < 0: lower consumption goes with more coping. † Unweighted estimate.") |>
+  cap("Overlap of food consumption and coping, by round", "combined")
+```
+
+```{r joint, fig.id = "joint", fig.cap = paste0("Joint distribution of FCS group and rCSI phase, ", lab(latest), " (% of households, weighted)"), fig.height = 3}
+j <- d[round_id == latest & !is.na(FCSCat28) & !is.na(rCSI_CH),
+       .(w = sum(w)), by = .(fcs = factor(FCSCat28, 1:3, c("Poor", "Borderline", "Acceptable")),
+                             ch = factor(rCSI_CH, 1:3, c("Phase 1", "Phase 2", "Phase 3+")))]
+j[, share := w / sum(w)]
+save_tab(j, "T10_joint_latest")
+p <- ggplot(j, aes(ch, fcs, fill = share)) +
+  geom_tile(colour = "white", linewidth = 1) +
+  geom_text(aes(label = paste0(pct(share), "%")), size = 3.2, colour = ifelse(j$share > 0.25, "white", PAL$ink)) +
+  scale_fill_gradient(low = "#F4F1EA", high = PAL$navy, labels = scales::label_percent(), name = NULL) +
+  labs(x = "rCSI phase (Cadre Harmonisé)", y = "FCS group (28/42)") +
+  theme_report() + theme(panel.grid = element_blank(), legend.position = "right")
+save_fig(p, "F08_joint_latest", height = 3)
+```
+
+```{r scatter, fig.id = "scatter", fig.cap = paste0("Regions by poor + borderline FCS and rCSI phase 3+, ", lab(latest)), fig.height = 4.4}
+sc <- merge(region_est("fcs_pb", latest)[, .(admin1, fcs = est, n = N)],
+            region_est("rcsi_p3", latest)[, .(admin1, rcsi = est)], by = "admin1")[!is.na(fcs) & !is.na(rcsi)]
+nat_f <- g(fcs_nat, "est_fcs_pb", latest); nat_r <- g(rcsi_nat, "est_rcsi_p3", latest)
+p <- ggplot(sc, aes(fcs, rcsi)) +
+  geom_vline(xintercept = nat_f, linetype = "dashed", colour = PAL$muted) +
+  geom_hline(yintercept = nat_r, linetype = "dashed", colour = PAL$muted) +
+  geom_point(aes(size = n), colour = PAL$teal, alpha = 0.75) +
+  ggrepel::geom_text_repel(aes(label = admin1), size = 2.6, colour = PAL$ink, seed = 1, max.overlaps = Inf,
+                           box.padding = 0.35, min.segment.length = 0.2, segment.colour = PAL$muted) +
+  scale_x_continuous(labels = scales::label_percent()) + scale_y_continuous(labels = scales::label_percent()) +
+  scale_size_area(max_size = 6, name = "Households", labels = scales::label_comma()) +
+  labs(x = "% poor + borderline FCS", y = "% rCSI phase 3+", caption = "Dashed lines: national values.") +
+  theme_report() + theme(legend.position = "right")
+save_fig(p, "F09_region_scatter", height = 4.4)
+```
+
+# Limitations
+
+- **Seasonality.** February (post-harvest) and October (harvest, end of the lean season) rounds are not directly comparable; trends should be read within season.
+- **Weights.** `r paste(unweighted, collapse = ", ")` have no usable sampling weight; their estimates are unweighted and may be biased, particularly in 2024 when refugee and returnee strata were over-sampled.
+- **Variance.** Confidence intervals use `r if (params$cluster == "admin3") "sub-prefectures as approximate clusters" else "simple random sampling"`, not the official sampling design.
+- **Questionnaire changes.** Indicators were recomputed with identical formulas, but question wording and food-group examples changed between generations; small level shifts at the 2021 and 2023 generation changes cannot be ruled out.
+- **Preliminary.** These are harmonised estimates for methodological review, not official ENSA results.
+
+# Annex
+
+<!---BLOCK_LANDSCAPE_START--->
+
+```{r annex-sample}
+ns <- dcast(d[!is.na(admin1), .N, by = .(admin1, round_lab)], admin1 ~ round_lab, value.var = "N", fill = 0)
+save_tab(ns, "A01_sample_region_round")
+ft(ns, header = list(admin1 = "Region")) |> flextable::fontsize(size = 7, part = "all") |>
+  flextable::padding(padding = 1.5, part = "all") |>
+  cap("Households interviewed by region and round", "annex-sample")
+```
+
+<!---BLOCK_LANDSCAPE_STOP--->
+
+```{r provenance}
+m <- jsonlite::fromJSON(file.path(params$data_dir, "manifest.json"))
+pk <- c("data.table", "survey", "ggplot2", "flextable", "officedown")
+prov <- data.table(
+  Item = c("Harmonised data produced (UTC)", "Pipeline version", "Report rendered", "R",
+           paste("R package", pk), "Variance clusters", "Minimum regional cell"),
+  Value = c(m$run_utc, m$pipeline_version, format(Sys.time(), "%Y-%m-%d %H:%M"), as.character(getRversion()),
+            vapply(pk, function(x) as.character(utils::packageVersion(x)), ""), params$cluster,
+            paste(params$min_cell, "households"))
+)
+ft(prov) |> flextable::align(j = 2, align = "left", part = "body") |>
+  flextable::set_caption("Provenance of this report")
+```

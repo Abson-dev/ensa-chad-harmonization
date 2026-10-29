@@ -4,6 +4,10 @@ output/
 # Shiny app data: aggregates by region; share deliberately, not via a public repo
 app/data/
 
+# Analysis report, figures and tables (regional estimates); regenerate with analysis/render_report.R
+analysis/output/
+*.docx
+
 # Raw survey microdata (not redistributable)
 *.sav
 *.dta
@@ -15,3 +19,8 @@ __pycache__/
 .pytest_cache/
 .ipynb_checkpoints/
 notebooks/*.ipynb
+
+# R session files
+.Rhistory
+.RData
+.Rproj.user/
