@@ -1,6 +1,6 @@
 # Analysis by domain (R Markdown → Word)
 
-Merges the harmonised domain files (`../output/ensa_core`, `ensa_fcs`, `ensa_rcsi`, `ensa_lcs`) and produces a Word report with survey-weighted tables and figures, plus every table as CSV and every figure as PNG for reuse in other documents.
+Merges the harmonised domain files (`../output/ensa_core`, `ensa_fcs`, `ensa_rcsi`, `ensa_lcs`, `ensa_hhs`, `ensa_hdds`, `ensa_exp`, `ensa_demo`) and produces a Word report with survey-weighted tables and figures, plus every table as CSV and every figure as PNG for reuse in other documents.
 
 ```
 analysis/
@@ -14,8 +14,8 @@ analysis/
 ├── tools/update_word_fields.ps1  fills in the table of contents and table/figure numbers with Word
 └── output/                       generated, not versioned (contains regional estimates)
     ├── ENSA_Chad_analysis_by_domain.docx
-    ├── figures/                  F01–F12 (PNG, 300 dpi)
-    └── tables/                   T01–T12, A01 (CSV)
+    ├── figures/                  F01–F19 (PNG, 300 dpi)
+    └── tables/                   T01–T20, A01 (CSV)
 ```
 
 ## Run
@@ -49,6 +49,10 @@ Parameters (top of `analysis_by_domain.Rmd`, or `params = list(...)` in `render_
 | Coping (rCSI) | national rCSI and Cadre Harmonisé phases with 95% CI; regions, latest vs previous October | phases by round and season; use of each strategy; region × round heatmap |
 | Livelihood coping (LCS) | maximum category by round with 95% CI: comparable (7 strategies asked in every round, coping for food) and round-specific | categories by round and season; use of each of the 14 strategies; region × round heatmap of crisis + emergency |
 | Household Hunger Scale (HHS) | score, moderate / severe hunger and phase 3+ by round with 95% CI (from Oct 2019) | IPC phases by round and season; each hunger experience by round; region × round heatmap of phase 3+ |
+| Household profile (demographics) | female-headed share, head's age, household size, no formal education, by round | main income source (broad categories) by round |
+| Dietary diversity (HDDS) | mean HDDS and CH phases with 95% CI | phases by round and season; share eating each food group |
+| Expenditure | median food and total expenditure, food share and share ≥ 75% with 95% CI (not available Oct 2024) | food-share categories by round and season, with the generation-3 caveat |
+| Cross-domain | indicators by sex of the household head (latest October, with significance) |  |
 | Food consumption × coping | overlap (poor/borderline FCS and rCSI phase 3+), Spearman correlation by round | joint distribution in the latest round; regional scatter |
 | Limitations, annex | households by region × round; provenance (data run, package versions) | |
 

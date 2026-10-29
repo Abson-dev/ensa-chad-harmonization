@@ -4,9 +4,9 @@
 ![R](https://img.shields.io/badge/R-%E2%89%A54.3%20(tested%204.5.2)-276DC3?logo=r&logoColor=white)
 ![Shiny](https://img.shields.io/badge/Shiny-1.14-1F77B4?logo=rstudioide&logoColor=white)
 ![Environment](https://img.shields.io/badge/env-conda--forge-green)
-![Pipeline tests](https://img.shields.io/badge/pipeline%20tests-25%20passing-brightgreen)
+![Pipeline tests](https://img.shields.io/badge/pipeline%20tests-29%20passing-brightgreen)
 ![App checks](https://img.shields.io/badge/app%20checks-85%20passing-brightgreen)
-![Status](https://img.shields.io/badge/status-7%20of%208%20domains-orange)
+![Status](https://img.shields.io/badge/domains-8%20of%208-brightgreen)
 
 A config-driven, tested and documented workflow that harmonises **14 rounds** of Chad's national food security assessment (*Enquête Nationale de Sécurité Alimentaire*, ENSA), October 2018 to October 2025, **197,947 households**, into one comparable dataset per **thematic domain**. It has two parts:
 
@@ -61,9 +61,9 @@ Across these rounds the questionnaire went through three codebook generations: F
 | `hhs` | ✅ done | Household Hunger Scale (from Oct 2019): 3 questions and frequencies, score 0–6, WFP category, IPC / CH phase |
 | `hdds` | ✅ done | 12 food groups eaten in the past 24 hours, Household Dietary Diversity Score, Cadre Harmonisé phase |
 | `exp` | ✅ done | Monthly food / non-food / total expenditure (analysts' aggregates), food expenditure share and CARI category; not available for Oct 2024 |
-| `demo` | 🔜 planned | Head of household characteristics, household size, income source |
+| `demo` | ✅ done | Head of household (sex, age, education, literacy, marital status), household size, main income source, population group |
 
-The variable mapping for the planned domains has already been worked out (crosswalk workbook, 83 concepts × 14 rounds); they need their rules and a domain module.
+All eight domains planned from the crosswalk workbook (83 concepts × 14 rounds) are implemented. Further modules (e.g. shocks, assistance, nutrition) can be added the same way ([Extending the pipeline](#extending-the-pipeline)).
 
 ## Data
 
@@ -93,7 +93,7 @@ The pipeline expects the original SPSS files laid out like this (folder names ar
 
 | Part | Language | Role | Environment | Entry point | Tests |
 |---|---|---|---|---|---|
-| Harmonisation pipeline | **Python 3.11** | read SPSS files, apply rules, recompute and validate indicators, write CSV / SAV | [`environment.yml`](environment.yml) (conda-forge, pinned) or [`requirements.txt`](requirements.txt) | `run_harmonize.py` | `python -m pytest -q` (25) |
+| Harmonisation pipeline | **Python 3.11** | read SPSS files, apply rules, recompute and validate indicators, write CSV / SAV | [`environment.yml`](environment.yml) (conda-forge, pinned) or [`requirements.txt`](requirements.txt) | `run_harmonize.py` | `python -m pytest -q` (29) |
 | Harmonisation explorer | **R ≥ 4.3** (tested 4.5.2) | Shiny app for reviewers: process, crosswalk, validation, indicators | packages installed by [`app/install_packages.R`](app/install_packages.R) | `app/app.R`, `app/run_app.bat` | `Rscript tests/test_app.R` (85) |
 | App data preparation | **R** | aggregates the pipeline outputs for the app (no household data) | `data.table`, `jsonlite` | `app/prepare_app_data.R` | — |
 | Analysis by domain | **R Markdown** | merges the domain files; survey-weighted tables and figures; Word report | officedown, flextable, survey, ggplot2 (+ Pandoc) | `analysis/render_report.R`, `analysis/render_report.bat` | — |
@@ -115,7 +115,7 @@ git clone https://github.com/Abson-dev/ensa-chad-harmonization.git harmonization
 cd harmonization
 conda env create -f environment.yml      # Python 3.11 + pinned packages from conda-forge
 conda activate ensa-chad
-python -m pytest -q                      # 25 rule tests
+python -m pytest -q                      # 29 rule tests
 python run_harmonize.py                  # all domains, all rounds (about 2-3 min)
 ```
 
@@ -146,7 +146,7 @@ cd analysis
 Rscript render_report.R          # Word report + CSV tables + PNG figures in analysis/output; or double-click render_report.bat
 ```
 
-The report covers each domain (sample, food consumption, coping, and the two combined) with survey-weighted estimates and 95% confidence intervals; see [analysis/README.md](analysis/README.md).
+The report has one chapter per domain (sample, household profile, FCS, HDDS, rCSI, LCS, HHS, expenditure) and a cross-domain chapter (indicators by sex of the head, food consumption × coping), with survey-weighted estimates and 95% confidence intervals; see [analysis/README.md](analysis/README.md).
 
 ## Interactive explorer (R Shiny)
 
@@ -282,6 +282,15 @@ Per-round QC tables (completeness, invalid values, weighted means and prevalence
 - rCSI = LessQlty + 2×Borrow + MealSize + 3×MealAdult + MealNb (0–56). Cadre Harmonisé phase: ≤3 / 4–18 / ≥19.
 - **Oct 2024 skip pattern:** "restrict adults so children can eat" was not asked in households without children. It is set to 0 for those households (1,078, flagged per household); the 185 skipped answers in households with children stay missing.
 
+### demo
+- **Code table per round** ([`config/demo_codes.csv`](config/demo_codes.csv), 380 rows): source code → harmonised code for sex, education, marital status, income source and population group. An unknown code stops the run; a known code can be declared "not recorded" (empty value, with a note).
+- **Sex of the head:** 1 = male, 2 = female in 2018 – Feb 2023; 0 = female, 1 = male in Oct 2023 – Feb 2024; **reversed** (1 = female, 2 = male) in Oct 2024 – Oct 2025. After harmonisation, 17–26% of households are female-headed in every round.
+- **Education:** none / primary / secondary / higher / non-formal. In Oct 2020 – Feb 2024 the level is asked only of literate heads; a non-literate head is classed as "no formal education" (flagged, `edu_imputed`). The skip rule is exact in every round. Not collected in Oct 2018, Feb 2019 (literacy flag only), Oct 2019 or Feb 2020. Literacy is kept as `HHHLiterate`.
+- **Marital status:** married monogamous / polygamous / type not asked (Oct 2023), widowed, divorced or separated, single, cohabiting or engaged, other. Not collected in Feb 2024.
+- **Main income source:** four code lists mapped to 10 detailed categories, plus a broad variable comparable in every round (Oct 2025 does not separate crops from livestock).
+- **Population group:** where recorded (Oct 2021, Feb 2022, Feb 2024 corrected variable, Oct 2024): local, host, refugees (earlier / new arrivals), returnees, internally displaced.
+- **Ranges:** head's age outside 12–100 (e.g. 2021, 1925) and household size outside 1–50 (e.g. 0, 1,223,440 in Oct 2024) are set to missing and flagged.
+
 ### exp
 - **Source:** the analysts' monthly aggregates (food from all sources, non-food, total; nominal FCFA), the `_Cor` corrected versions where they exist. They are internally consistent in every round: stored share = food / total for 100% of households, and food + non-food = total wherever non-food is stored. Non-food is derived as total − food when not stored.
 - **Invalid totals** (≤ 0, negative food, food > total; 26 households) are set to missing and flagged; totals above 20 × the round median are flagged only.
@@ -321,6 +330,8 @@ Per-round QC tables (completeness, invalid values, weighted means and prevalence
 | LCS strategy slots renumbered, item set and severities changed | Feb 2021 onward | Content-based mapping; round-specific and comparable (common-set) indicators |
 | LCS module switched to essential needs (coping for any need, then reason) | Oct 2024 onward | Comparable indicator keeps coping to buy food only |
 | Analysts' LCS max category built on varying, undocumented item sets | 7 rounds | Recomputed with documented rules; differences reported in QC |
+| Sex of household head coded differently, **reversed** in 2024–2025 (1 = female) | Oct 2023 onward | Explicit code table per round; female-headed share stable (17–26%) after harmonisation |
+| Household size of 1,223,440 and heads aged 2021 / 1925 | Oct 2024, Oct 2025 | Out-of-range values set to missing, flagged |
 | No expenditure aggregates; analysts' food aggregation not reproducible | Oct 2024 | Expenditure left missing, documented |
 | Food expenditure share level shift with the new expenditure module | Oct 2023 onward | Flagged in the report; compare generation-3 rounds with each other |
 | HDDS 24-hour questions skipped when the group was not eaten in 7 days | Oct 2024 | Set to "not eaten" when the FCS gate is 0 (every skipped answer has a zero gate) |
@@ -351,6 +362,7 @@ Details: [SETUP.md §10](SETUP.md#10-change-a-harmonisation-decision).
 | `ensa_core.csv/.sav` | 197,947 | round_id, hh_id, year, season, generation, uuid, svy_date, date_flag, admin1, admin1_raw, admin2, admin3, weight, weight_norm, weight_flag |
 | `ensa_fcs.csv/.sav` | 197,947 | round_id, hh_id, 9 food groups, fcs_n_missing, fcs_n_invalid, FCS, FCSCat21, FCSCat28, orig_FCS, orig_FCSCat28 |
 | `ensa_rcsi.csv/.sav` | 197,947 | round_id, hh_id, 5 strategies, rcsi_mealadult_imputed, rcsi_n_missing, rcsi_n_invalid, rCSI, rCSI_CH, orig_rCSI |
+| `ensa_demo.csv/.sav` | 197,947 | round_id, hh_id, HHHSex, HHHAge, HHHEdu, HHHLiterate, edu_imputed, HHHMarital, HHSize, income_main, income_main_broad, pop_group, demo_out_of_range |
 | `ensa_exp.csv/.sav` | 197,947 | round_id, hh_id, exp_food, exp_nonfood, exp_total, exp_nonfood_derived, exp_invalid, exp_outlier, FES, FES_cat, orig_FES |
 | `ensa_hdds.csv/.sav` | 197,947 | round_id, hh_id, 12 food groups, hdds_n_imputed, hdds_n_missing, hdds_n_invalid, HDDS, HDDS_phase, orig_HDDS, orig_HDDS_phase |
 | `ensa_hhs.csv/.sav` | 197,947 | round_id, hh_id, 3 questions + frequencies, hhs_n_missing, hhs_inconsistent, hhs_code_exception, HHS, HHSCat, HHS_phase, orig_HHS, orig_HHS_phase |

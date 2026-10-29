@@ -1091,3 +1091,115 @@ exp,orig_FES,2023-10,copy,Part_depenses_altres,analysts' monthly aggregate
 exp,orig_FES,2024-02,copy,Part_depenses_altres,analysts' monthly aggregate
 exp,orig_FES,2024-10,missing,,only item-level answers; the analysts' aggregation (cleaning of cereal values) cannot be reproduced
 exp,orig_FES,2025-10,copy,Part_depenses_altres,analysts' monthly aggregate
+demo,HHHSex,2018-10,copy,sexe,codes harmonised in config/demo_codes.csv
+demo,HHHSex,2019-02,copy,sexe,codes harmonised in config/demo_codes.csv
+demo,HHHSex,2019-10,copy,sexe,codes harmonised in config/demo_codes.csv
+demo,HHHSex,2020-02,copy,sexe,codes harmonised in config/demo_codes.csv
+demo,HHHSex,2020-10,copy,sexe,codes harmonised in config/demo_codes.csv
+demo,HHHSex,2021-02,copy,sexe,codes harmonised in config/demo_codes.csv
+demo,HHHSex,2021-10,copy,sexe,codes harmonised in config/demo_codes.csv
+demo,HHHSex,2022-02,copy,sexe,codes harmonised in config/demo_codes.csv
+demo,HHHSex,2022-10,copy,sexe,codes harmonised in config/demo_codes.csv
+demo,HHHSex,2023-02,copy,sexe,codes harmonised in config/demo_codes.csv
+demo,HHHSex,2023-10,copy,HHHSex,codes harmonised in config/demo_codes.csv
+demo,HHHSex,2024-02,copy,HHHSex,codes harmonised in config/demo_codes.csv
+demo,HHHSex,2024-10,copy,HHHSex,codes harmonised in config/demo_codes.csv
+demo,HHHSex,2025-10,copy,HHHSex,codes harmonised in config/demo_codes.csv
+demo,HHHAge,2018-10,copy,age_CM,
+demo,HHHAge,2019-02,copy,age_CM,
+demo,HHHAge,2019-10,copy,age_CM,
+demo,HHHAge,2020-02,copy,age_CM,
+demo,HHHAge,2020-10,copy,age_CM,
+demo,HHHAge,2021-02,copy,age_CM,
+demo,HHHAge,2021-10,copy,age_CM,
+demo,HHHAge,2022-02,copy,age_CM,
+demo,HHHAge,2022-10,copy,age_CM,
+demo,HHHAge,2023-02,copy,age_CM,
+demo,HHHAge,2023-10,copy,HHHAge,
+demo,HHHAge,2024-02,copy,HHHAge,
+demo,HHHAge,2024-10,copy,HHHAge,
+demo,HHHAge,2025-10,copy,HHHAge,
+demo,HHHMarital,2018-10,copy,statut_matrimonial,codes harmonised in config/demo_codes.csv
+demo,HHHMarital,2019-02,copy,statut_matrimonial,codes harmonised in config/demo_codes.csv
+demo,HHHMarital,2019-10,copy,statut_matrimonial,codes harmonised in config/demo_codes.csv
+demo,HHHMarital,2020-02,copy,statut_matrimonial,codes harmonised in config/demo_codes.csv
+demo,HHHMarital,2020-10,copy,statut_matrimonial,codes harmonised in config/demo_codes.csv
+demo,HHHMarital,2021-02,copy,statut_matrimonial,codes harmonised in config/demo_codes.csv
+demo,HHHMarital,2021-10,copy,statut_matrimonial,codes harmonised in config/demo_codes.csv
+demo,HHHMarital,2022-02,copy,statut_matrimonial,codes harmonised in config/demo_codes.csv
+demo,HHHMarital,2022-10,copy,statut_matrimonial,codes harmonised in config/demo_codes.csv
+demo,HHHMarital,2023-02,copy,statut_matrimonial,codes harmonised in config/demo_codes.csv
+demo,HHHMarital,2023-10,copy,HHHStatus,codes harmonised in config/demo_codes.csv
+demo,HHHMarital,2024-02,missing,,not collected
+demo,HHHMarital,2024-10,copy,HHHStatus,codes harmonised in config/demo_codes.csv
+demo,HHHMarital,2025-10,copy,HHHStatus,codes harmonised in config/demo_codes.csv
+demo,HHSize,2018-10,copy,Taille_Totale_menage,
+demo,HHSize,2019-02,copy,Taille_Totale_menage,
+demo,HHSize,2019-10,copy,Taille_Totale_menage,
+demo,HHSize,2020-02,copy,Taille_Totale_menage,
+demo,HHSize,2020-10,copy,Taille_Totale_menage,
+demo,HHSize,2021-02,copy,Taille_Totale_menage,
+demo,HHSize,2021-10,copy,Taille_Totale_menage,
+demo,HHSize,2022-02,copy,Taille_Totale_menage,
+demo,HHSize,2022-10,copy,Taille_Totale_menage,
+demo,HHSize,2023-02,copy,Taille_Totale_menage,
+demo,HHSize,2023-10,copy,Taille_Totale_menage,
+demo,HHSize,2024-02,copy,Taille_Totale_menage,
+demo,HHSize,2024-10,copy,HHSize,
+demo,HHSize,2025-10,copy,Taille_Totale_menage_Cor,
+demo,income_main,2018-10,copy,source_revenu1,codes harmonised in config/demo_codes.csv
+demo,income_main,2019-02,copy,source_revenu1,codes harmonised in config/demo_codes.csv
+demo,income_main,2019-10,copy,source_revenu1,codes harmonised in config/demo_codes.csv
+demo,income_main,2020-02,copy,source_revenu1,codes harmonised in config/demo_codes.csv
+demo,income_main,2020-10,copy,source_revenu1,codes harmonised in config/demo_codes.csv
+demo,income_main,2021-02,copy,source_revenu1,codes harmonised in config/demo_codes.csv
+demo,income_main,2021-10,copy,source_revenu1,codes harmonised in config/demo_codes.csv
+demo,income_main,2022-02,copy,source_revenu1,codes harmonised in config/demo_codes.csv
+demo,income_main,2022-10,copy,source_revenu1,codes harmonised in config/demo_codes.csv
+demo,income_main,2023-02,copy,source_revenu1,codes harmonised in config/demo_codes.csv
+demo,income_main,2023-10,copy,HHIncFirst_SRi,codes harmonised in config/demo_codes.csv
+demo,income_main,2024-02,copy,HHIncFirst_SRi,codes harmonised in config/demo_codes.csv
+demo,income_main,2024-10,copy,HHIncFirst_SRi,codes harmonised in config/demo_codes.csv
+demo,income_main,2025-10,copy,HHIncFirst_SRi,codes harmonised in config/demo_codes.csv
+demo,HHHEdu,2018-10,missing,,not collected
+demo,edu_filter,2018-10,missing,,no filter question
+demo,HHHEdu,2019-02,missing,,"only a literacy flag (Chef_menage_illetre), no education level"
+demo,edu_filter,2019-02,missing,,no filter question
+demo,HHHEdu,2019-10,missing,,not collected
+demo,edu_filter,2019-10,missing,,no filter question
+demo,HHHEdu,2020-02,missing,,not collected
+demo,edu_filter,2020-02,missing,,no filter question
+demo,HHHEdu,2020-10,copy,niveau_etude_atteint,codes harmonised in config/demo_codes.csv
+demo,edu_filter,2020-10,copy,alphabetisation_CM,level asked only if 1 (literate / attended school); 0 = no formal education
+demo,HHHEdu,2021-02,copy,niveau_etude_atteint,codes harmonised in config/demo_codes.csv
+demo,edu_filter,2021-02,copy,alphabetisation_CM,level asked only if 1 (literate / attended school); 0 = no formal education
+demo,HHHEdu,2021-10,copy,niveau_etude_atteint,codes harmonised in config/demo_codes.csv
+demo,edu_filter,2021-10,copy,alphabetisation_CM,level asked only if 1 (literate / attended school); 0 = no formal education
+demo,HHHEdu,2022-02,copy,niveau_etude_atteint,codes harmonised in config/demo_codes.csv
+demo,edu_filter,2022-02,copy,alphabetisation_CM,level asked only if 1 (literate / attended school); 0 = no formal education
+demo,HHHEdu,2022-10,copy,niveau_etude_atteint,codes harmonised in config/demo_codes.csv
+demo,edu_filter,2022-10,copy,alphabetisation_CM,level asked only if 1 (literate / attended school); 0 = no formal education
+demo,HHHEdu,2023-02,copy,niveau_etude_atteint,codes harmonised in config/demo_codes.csv
+demo,edu_filter,2023-02,copy,alphabetisation_CM,level asked only if 1 (literate / attended school); 0 = no formal education
+demo,HHHEdu,2023-10,copy,HHHEduLevel,codes harmonised in config/demo_codes.csv
+demo,edu_filter,2023-10,copy,HHHEdu,level asked only if 1 (literate / attended school); 0 = no formal education
+demo,HHHEdu,2024-02,copy,HHHEduLevel,codes harmonised in config/demo_codes.csv
+demo,edu_filter,2024-02,copy,HHHEdu,level asked only if 1 (literate / attended school); 0 = no formal education
+demo,HHHEdu,2024-10,copy,HHHEduc,codes harmonised in config/demo_codes.csv
+demo,edu_filter,2024-10,missing,,no filter question
+demo,HHHEdu,2025-10,copy,HHHEduc,codes harmonised in config/demo_codes.csv
+demo,edu_filter,2025-10,missing,,no filter question
+demo,pop_group,2018-10,missing,,population group not recorded
+demo,pop_group,2019-02,missing,,population group not recorded
+demo,pop_group,2019-10,missing,,population group not recorded
+demo,pop_group,2020-02,missing,,population group not recorded
+demo,pop_group,2020-10,missing,,population group not recorded
+demo,pop_group,2021-02,missing,,population group not recorded
+demo,pop_group,2021-10,copy,type_population,
+demo,pop_group,2022-02,copy,type_population,
+demo,pop_group,2022-10,missing,,population group not recorded
+demo,pop_group,2023-02,missing,,population group not recorded
+demo,pop_group,2023-10,missing,,population group not recorded
+demo,pop_group,2024-02,copy,Type_population_cor,analysts' corrected variable (same codes as Type_population)
+demo,pop_group,2024-10,copy,HHStatus,
+demo,pop_group,2025-10,missing,,population group not recorded

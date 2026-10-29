@@ -10,7 +10,7 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 
 from ensa_harmonize import config  # noqa: E402
-from ensa_harmonize.domains import exp, fcs, hdds, hhs, lcs, rcsi  # noqa: E402
+from ensa_harmonize.domains import demo, exp, fcs, hdds, hhs, lcs, rcsi  # noqa: E402
 from ensa_harmonize.engine import any_source, max_or_last  # noqa: E402
 from ensa_harmonize.domains.common import categorise, item_matrix  # noqa: E402
 from ensa_harmonize.engine import spss_to_datetime, sum_sources, to_number  # noqa: E402
@@ -120,6 +120,38 @@ def test_lcs_common_items_asked_in_every_round(cfg):
     for item in cfg.settings["lcs"]["common_items"]:
         rules = cw[(cw["domain"] == "lcs") & (cw["target"] == item)]
         assert (rules["method"] != "missing").all(), item
+
+
+# ---- Demographics ------------------------------------------------------------------------------
+
+def demo_frame(**cols):
+    base = {k: [np.nan] for k in ("HHHSex", "HHHAge", "HHHEdu", "edu_filter", "HHHMarital", "HHSize", "income_main", "pop_group")}
+    base.update({k: [v] for k, v in cols.items()})
+    return pd.DataFrame(base, dtype=float)
+
+
+def test_demo_sex_coding_flips_between_rounds(cfg):
+    female = {"2018-10": 2, "2023-10": 0, "2024-10": 1}  # source code for a female head in each scheme
+    for rid, code in female.items():
+        out = demo.derive(demo_frame(HHHSex=code), cfg.rounds.loc[rid], cfg)
+        assert out["HHHSex"].item() == 2, rid
+
+
+def test_demo_unknown_code_stops_the_run(cfg):
+    with pytest.raises(ValueError):
+        demo.derive(demo_frame(HHHSex=7), cfg.rounds.loc["2018-10"], cfg)
+
+
+def test_demo_education_from_literacy_and_ranges(cfg):
+    out = demo.derive(demo_frame(edu_filter=0, HHHAge=2021, HHSize=0), cfg.rounds.loc["2022-02"], cfg)
+    assert out["HHHEdu"].item() == 0 and out["edu_imputed"].item() == 1
+    assert np.isnan(out["HHHAge"].item()) and np.isnan(out["HHSize"].item()) and out["demo_out_of_range"].item() == 2
+
+
+def test_demo_income_broad_groups_crops_and_livestock(cfg):
+    # Oct 2025 code 14 = small agricultural production incl. livestock -> not separable -> broad "agriculture and livestock"
+    out = demo.derive(demo_frame(income_main=14), cfg.rounds.loc["2025-10"], cfg)
+    assert out["income_main"].item() == 10 and out["income_main_broad"].item() == 1
 
 
 # ---- Expenditure -------------------------------------------------------------------------------

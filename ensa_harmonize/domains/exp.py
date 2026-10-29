@@ -38,7 +38,7 @@ def derive(t: pd.DataFrame, rnd: pd.Series, cfg) -> pd.DataFrame:
     out["exp_total"] = total.mask(invalid)
     out["exp_nonfood_derived"] = derived.astype(int)
     out["exp_invalid"] = invalid.astype(int)
-    med = out["exp_total"].median()
+    med = out["exp_total"].median() if out["exp_total"].notna().any() else np.nan
     out["exp_outlier"] = (out["exp_total"] > s["outlier_multiple"] * med).astype(int) if pd.notna(med) else 0
     out["FES"] = 100 * out["exp_food"] / out["exp_total"]
     b = s["fes_bounds"]

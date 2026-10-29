@@ -2,7 +2,7 @@
 
 load_harmonised <- function(dir) {
   need <- file.path(dir, c("ensa_core.csv", "ensa_fcs.csv", "ensa_rcsi.csv", "ensa_lcs.csv", "ensa_hhs.csv",
-                           "ensa_hdds.csv", "ensa_exp.csv"))
+                           "ensa_hdds.csv", "ensa_exp.csv", "ensa_demo.csv"))
   if (!all(file.exists(need))) {
     stop("Harmonised files not found in ", normalizePath(dir, mustWork = FALSE),
          ". Run the pipeline first: python run_harmonize.py")
@@ -20,6 +20,7 @@ load_harmonised <- function(dir) {
   hdds[, orig_HDDS := NULL][, orig_HDDS_phase := NULL]
   expd <- data.table::fread(need[7], na.strings = c("", "NA"))
   expd[, orig_FES := NULL]
+  demo <- data.table::fread(need[8], na.strings = c("", "NA"))
 
   # Domain files join one-to-one on round_id + hh_id.
   d <- merge(core, fcs, by = c("round_id", "hh_id"), all = FALSE)
@@ -28,6 +29,7 @@ load_harmonised <- function(dir) {
   d <- merge(d, hhs, by = c("round_id", "hh_id"), all = FALSE)
   d <- merge(d, hdds, by = c("round_id", "hh_id"), all = FALSE)
   d <- merge(d, expd, by = c("round_id", "hh_id"), all = FALSE)
+  d <- merge(d, demo, by = c("round_id", "hh_id"), all = FALSE)
   stopifnot(nrow(d) == nrow(core), !anyDuplicated(d$hh_id))
 
   rounds <- unique(d[, .(round_id, year, season, generation)])
@@ -82,6 +84,13 @@ load_harmonised <- function(dir) {
   # Household Dietary Diversity: Cadre Harmonise phases as 0/1 flags.
   for (k in 1:5) d[, (paste0("hdds_ph", k)) := na_if(fl(HDDS_phase == k), is.na(HDDS_phase))]
   d[, hdds_p3 := na_if(fl(HDDS_phase >= 3), is.na(HDDS_phase))]
+  # Demographics: profile flags.
+  d[, `:=`(
+    female_head = na_if(fl(HHHSex == 2), is.na(HHHSex)),
+    no_school = na_if(fl(HHHEdu == 0), is.na(HHHEdu)),
+    head_sex = factor(HHHSex, 1:2, c("Male-headed", "Female-headed"))
+  )]
+  for (k in 0:7) d[, (paste0("inc_b", k)) := na_if(fl(income_main_broad == k), is.na(income_main_broad))]
   # Food expenditure share: CARI categories as 0/1 flags.
   for (k in 1:4) d[, (paste0("fes_c", k)) := na_if(fl(FES_cat == k), is.na(FES_cat))]
   for (s in names(LCS_STRATEGIES)) {
@@ -103,6 +112,9 @@ LCS_STRATEGIES <- c(
   LCS_OutSchool = "Withdrew children from school", LCS_Marriage = "Child marriage (<18)",
   LCS_ResAsset = "Sold house or land", LCS_FemAnimal = "Sold last female animals", LCS_Begged = "Begged"
 )
+INCOME_BROAD <- c(inc_b1 = "Agriculture & livestock", inc_b2 = "Fishing, hunting, gathering", inc_b3 = "Trade",
+                  inc_b4 = "Labour (skilled, daily)", inc_b5 = "Salary / pension", inc_b6 = "Transfers, aid, remittances",
+                  inc_b7 = "Other", inc_b0 = "No other source")
 HDDS_GROUPS <- c(HDDSStapCer = "Cereals", HDDSStapRoot = "Roots & tubers", HDDSPulse = "Pulses & nuts",
                  HDDSVeg = "Vegetables", HDDSFruit = "Fruits", HDDSPrMeat = "Meat & offal", HDDSPrEgg = "Eggs",
                  HDDSPrFish = "Fish", HDDSDairy = "Milk & dairy", HDDSSugar = "Sugar", HDDSFat = "Oil & fat",

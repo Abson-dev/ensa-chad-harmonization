@@ -137,7 +137,7 @@ Expected:
 Python 3.11.x
 2.2.2 2.2.6 1.2.7
 ...........                                                              [100%]
-25 passed
+29 passed
 ```
 
 If the tests pass, the environment and the data paths are correct.
@@ -239,7 +239,7 @@ Run the tests after **any** change to code or `config/`.
 
 1. Click the **Testing** icon (flask) in the left bar.
 2. The first time, if prompted, choose **pytest** and the folder **tests** (already set in `.vscode/settings.json`).
-3. Click ▶ **Run Tests**. All 25 should turn green.
+3. Click ▶ **Run Tests**. All 29 should turn green.
 
 ### In the terminal
 
@@ -322,13 +322,13 @@ and check the QC tables in `output/qc/`. If the configuration is invalid, the ru
 4. Run the tests: any target you forgot is listed by name.
 5. Run the pipeline and review `output/qc/`.
 
-### Add a new domain (e.g. demographics)
+### Add a new domain (e.g. shocks)
 
-1. Add its rules to `config/crosswalk.csv` (`domain = demo`), one per target and round.
-2. Copy `ensa_harmonize/domains/rcsi.py` to `demo.py` and adapt `NAME`, `ITEMS`, `LABELS`, `VALUE_LABELS`, `derive()`, `qc()`. If answer codes differ between rounds, put them in a `config/<name>.csv` table read with `cfg.table("<name>")`, as `lcs.py` does with `lcs_responses.csv` and `lcs_severity.csv`.
+1. Add its rules to `config/crosswalk.csv` (`domain = shocks`), one per target and round.
+2. Copy `ensa_harmonize/domains/rcsi.py` to `shocks.py` and adapt `NAME`, `ITEMS`, `LABELS`, `VALUE_LABELS`, `derive()`, `qc()`. If answer codes differ between rounds, put them in a `config/<name>.csv` table read with `cfg.table("<name>")`, as `lcs.py` does with `lcs_responses.csv` and `lcs_severity.csv`.
 3. Register it in `ensa_harmonize/domains/__init__.py`.
 4. Add tests in `tests/test_rules.py`.
-5. Run `python run_harmonize.py --domains demo`.
+5. Run `python run_harmonize.py --domains shocks`.
 
 ---
 

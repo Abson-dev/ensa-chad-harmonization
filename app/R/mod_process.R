@@ -124,8 +124,9 @@ process_server <- function(id, d) {
                 lcs = "Livelihood coping: 14 strategies, max category (round-specific and comparable)",
                 hhs = "Household Hunger Scale (from Oct 2019): score, WFP category, IPC phase",
                 hdds = "Household Dietary Diversity Score (12 groups, 24 h) and CH phase",
-                exp = "Monthly food / non-food / total expenditure, food share (CARI)")
-      planned <- c(demo = "Head of household, household size, income")
+                exp = "Monthly food / non-food / total expenditure, food share (CARI)",
+                demo = "Household head (sex, age, education, marital status), household size, income, population group")
+      planned <- character(0) # add planned domains here as c(name = "description")
       card <- function(k, txt, ok) {
         htmltools::div(class = paste("domain-card", if (ok) "done" else "planned"),
                        htmltools::div(class = "d-flex justify-content-between",

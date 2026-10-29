@@ -177,6 +177,48 @@ p <- ggplot(s, aes(round_lab, N, fill = factor(generation))) +
 save_fig(p, "F01_sample", height = 3.4)
 ```
 
+# Household profile (demographics domain)
+
+```{r demo-calc}
+prof <- as.data.table(estimate_by(design, c("female_head", "HHSize", "no_school")))
+prof <- dcast(prof, round_id ~ var, value.var = c("est", "lo", "hi"))
+prof <- merge(R[, .(round_id, round_lab)], prof, by = "round_id")
+prof <- merge(prof, d[, .(age_med = median(HHHAge, na.rm = TRUE)), by = round_id], by = "round_id")[order(match(round_id, R$round_id))]
+inc <- weighted_grid(d[!is.na(income_main_broad)], names(INCOME_BROAD), by = c("round_id", "round_lab"), min_n = 0)
+inc <- melt(inc[, -"n"], id.vars = c("round_id", "round_lab"), variable.name = "k", value.name = "share")
+inc[, source := factor(INCOME_BROAD[as.character(k)], levels = rev(INCOME_BROAD))]
+agri_latest <- inc[round_id == latest & k == "inc_b1", share]
+```
+
+Households are headed by women in `r pct(min(prof$est_female_head))`–`r pct(max(prof$est_female_head))`% of cases depending on the round, and the household head's median age is about `r round(median(prof$age_med))` years. Households have `r num(min(prof$est_HHSize))`–`r num(max(prof$est_HHSize))` members on average (Table \@ref(tab:profile)). Agriculture and livestock are the main income source of `r pct(agri_latest)`% of households in `r lab(latest)` (Figure \@ref(fig:income)). The sex coding of the household head differs between questionnaires (it is reversed in October 2024 and 2025); it was harmonised explicitly.
+
+```{r profile}
+save_tab(prof, "T18_household_profile")
+ft(prof[, .(Round = round_lab, `Female-headed (%)` = pct(est_female_head), `95% CI` = ci(lo_female_head, hi_female_head),
+            `Head's median age` = int(round(age_med)), `Household size (mean)` = num(est_HHSize),
+            `Head with no formal education (%)` = pct(est_no_school))]) |>
+  flextable::add_footer_lines("Education of the head: not collected in Oct 2018, Feb 2019, Oct 2019 and Feb 2020; non-literate heads (level not asked) counted as no formal education. † Unweighted estimate.") |>
+  flextable::fontsize(size = 8, part = "all") |>
+  cap("Household and household-head profile by round (national)", "profile")
+```
+
+```{r income, fig.id = "income", fig.cap = "Main income source of the household (broad categories), by round (weighted)", fig.height = 4}
+save_tab(dcast(inc, source ~ round_lab, value.var = "share"), "T19_income_source")
+inc_col <- c("Agriculture & livestock" = "#2E8B57", "Fishing, hunting, gathering" = "#2F7FB5", "Trade" = "#C17F3A",
+             "Labour (skilled, daily)" = "#6C5CE7", "Salary / pension" = "#0F7C80", "Transfers, aid, remittances" = "#B83227",
+             "Other" = "#ADB5BD", "No other source" = "#E6E9EE")
+p <- ggplot(inc, aes(round_lab, share, fill = source)) +
+  geom_col(width = 0.72, colour = "white", linewidth = 0.3) +
+  geom_text(aes(label = ifelse(share >= 0.05, pct(share, 0), ""), group = source), position = position_stack(vjust = 0.5),
+            size = 2.4, colour = "white") +
+  scale_fill_manual(values = inc_col, name = NULL, breaks = names(inc_col)) +
+  scale_y_continuous(labels = scales::label_percent(), expand = c(0, 0)) +
+  guides(fill = guide_legend(nrow = 3)) +
+  labs(x = NULL, y = "Share of households", caption = "Code lists differ between questionnaires; broad categories are comparable. † Unweighted estimate.") +
+  theme_report() + theme(axis.text.x = element_text(angle = 40, hjust = 1), panel.grid.major.x = element_blank())
+save_fig(p, "F19_income_source", height = 4)
+```
+
 # Food consumption (FCS domain)
 
 ```{r fcs-text}
@@ -600,7 +642,7 @@ p <- ggplot(x, aes(round_lab, share, fill = cat)) +
 save_fig(p, "F18_exp_fes", height = 3.8)
 ```
 
-# Food consumption and coping combined
+# Cross-domain analysis
 
 ```{r combined-calc}
 rho <- corr_by_round(d, "FCS", "rCSI")
@@ -617,6 +659,32 @@ ft(cb[, .(Round = round_lab, `P+B FCS and rCSI phase 3+ (%)` = pct(est), `95% CI
           `Spearman ρ (FCS, rCSI)` = num(rho, 2))]) |>
   flextable::add_footer_lines("P+B = poor or borderline FCS (28/42). ρ < 0: lower consumption goes with more coping. † Unweighted estimate.") |>
   cap("Overlap of food consumption and coping, by round", "combined")
+```
+
+```{r by-sex-calc}
+sex_vars <- c(fcs_pb = "Poor + borderline FCS", rcsi_p3 = "rCSI phase 3+", lcs_ce = "LCS crisis + emergency",
+              hhs_p3 = "HHS phase 3+", hdds_p3 = "HDDS phase 3+", fes_c4 = "Food share ≥ 75%")
+by_sex <- rbindlist(lapply(names(sex_vars), function(v) {
+  x <- as.data.table(estimate_by(subset(design, round_id == latest & !is.na(head_sex)), v, by = ~head_sex))
+  x[, indicator := sex_vars[[v]]]
+}))
+w <- dcast(by_sex, indicator ~ head_sex, value.var = c("est", "lo", "hi"))
+w <- w[match(sex_vars, indicator)]
+w[, gap := 100 * (`est_Female-headed` - `est_Male-headed`)]
+w[, sig := (`lo_Female-headed` > `hi_Male-headed`) | (`hi_Female-headed` < `lo_Male-headed`)]
+worse <- w[sig == TRUE & gap > 0, indicator]
+```
+
+Table \@ref(tab:by-sex) compares households headed by women and by men in `r lab(latest)`. `r if (length(worse)) paste0("Female-headed households are significantly more affected (non-overlapping 95% confidence intervals) for: ", paste(worse, collapse = ", "), ".") else "No indicator shows a significant difference between female- and male-headed households (overlapping 95% confidence intervals)."`
+
+```{r by-sex}
+save_tab(w, "T20_indicators_by_sex_of_head")
+ft(w[, .(Indicator = indicator, `Male-headed (%)` = pct(`est_Male-headed`), `95% CI` = ci(`lo_Male-headed`, `hi_Male-headed`),
+         `Female-headed (%)` = pct(`est_Female-headed`), `95% CI ` = ci(`lo_Female-headed`, `hi_Female-headed`),
+         `Gap (pp)` = sprintf("%+.1f", gap), `Significant` = ifelse(sig, "yes", "no"))]) |>
+  flextable::add_footer_lines("Gap = female-headed minus male-headed, percentage points. Significant = non-overlapping 95% confidence intervals (a conservative test).") |>
+  flextable::fontsize(size = 8, part = "all") |>
+  cap(paste0("Food security indicators by sex of the household head, ", lab(latest)), "by-sex")
 ```
 
 ```{r joint, fig.id = "joint", fig.cap = paste0("Joint distribution of FCS group and rCSI phase, ", lab(latest), " (% of households, weighted)"), fig.height = 3}
