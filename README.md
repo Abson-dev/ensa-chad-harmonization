@@ -1,13 +1,21 @@
 # ENSA Chad 2018–2025 — Reproducible harmonisation of household food security surveys
 
-![Python](https://img.shields.io/badge/python-3.11-blue)
+![Python](https://img.shields.io/badge/Python-3.11-3776AB?logo=python&logoColor=white)
+![R](https://img.shields.io/badge/R-%E2%89%A54.3%20(tested%204.5.2)-276DC3?logo=r&logoColor=white)
+![Shiny](https://img.shields.io/badge/Shiny-1.14-1F77B4?logo=rstudioide&logoColor=white)
 ![Environment](https://img.shields.io/badge/env-conda--forge-green)
-![Tests](https://img.shields.io/badge/tests-11%20passing-brightgreen)
+![Pipeline tests](https://img.shields.io/badge/pipeline%20tests-11%20passing-brightgreen)
+![App checks](https://img.shields.io/badge/app%20checks-85%20passing-brightgreen)
 ![Status](https://img.shields.io/badge/status-pilot%20(3%20domains)-orange)
 
-A config-driven, tested and documented pipeline that harmonises **14 rounds** of Chad's national food security assessment (*Enquête Nationale de Sécurité Alimentaire*, ENSA), October 2018 to October 2025, **197,947 households**, into one comparable dataset per **thematic domain**.
+A config-driven, tested and documented workflow that harmonises **14 rounds** of Chad's national food security assessment (*Enquête Nationale de Sécurité Alimentaire*, ENSA), October 2018 to October 2025, **197,947 households**, into one comparable dataset per **thematic domain**. It has two parts:
+
+- a **Python pipeline** that reads the SPSS files, applies explicit mapping rules, recomputes the indicators and validates them;
+- an **R Shiny explorer** that presents the process, the crosswalk and the validation to reviewers.
 
 Across these rounds the questionnaire went through three codebook generations: French variable names (2018–2020), a hybrid with WFP modules (2021–2023) and the WFP standard codebook (2023–2025). Only 14 of 3,853 variable names, all KoBo system fields, are shared by every round. This repository turns that heterogeneity into explicit, auditable mapping rules and recomputes the indicators the same way for every round.
+
+![Overview page of the R Shiny explorer](docs/screenshots/01-overview.png)
 
 > **Data are not included.** The repository contains code and harmonisation rules only. See [Data](#data).
 
@@ -18,6 +26,7 @@ Across these rounds the questionnaire went through three codebook generations: F
 - [Highlights](#highlights)
 - [Domains](#domains)
 - [Data](#data)
+- [Software](#software)
 - [Quick start](#quick-start)
 - [Interactive explorer (R Shiny)](#interactive-explorer-r-shiny)
 - [Repository structure](#repository-structure)
@@ -80,9 +89,25 @@ The pipeline expects the original SPSS files laid out like this (folder names ar
 | | | | | Oct 2024 | 19,672 | 3 |
 | | | | | Oct 2025 | 12,932 | 3 |
 
+## Software
+
+| Part | Language | Role | Environment | Entry point | Tests |
+|---|---|---|---|---|---|
+| Harmonisation pipeline | **Python 3.11** | read SPSS files, apply rules, recompute and validate indicators, write CSV / SAV | [`environment.yml`](environment.yml) (conda-forge, pinned) or [`requirements.txt`](requirements.txt) | `run_harmonize.py` | `python -m pytest -q` (11) |
+| Harmonisation explorer | **R ≥ 4.3** (tested 4.5.2) | Shiny app for reviewers: process, crosswalk, validation, indicators | packages installed by [`app/install_packages.R`](app/install_packages.R) | `app/app.R`, `app/run_app.bat` | `Rscript tests/test_app.R` (85) |
+| App data preparation | **R** | aggregates the pipeline outputs for the app (no household data) | `data.table`, `jsonlite` | `app/prepare_app_data.R` | — |
+
+**Python packages** (pinned): pandas 2.2.2, numpy 2.2.6, pyreadstat 1.2.7, pytest 8.2.2.
+
+**R packages** (versions tested with R 4.5.2): shiny 1.14.0, bslib 0.11.0, bsicons 0.1.2, plotly 4.12.0, reactable 0.4.5, visNetwork 2.1.4, shinyWidgets 0.9.1, readxl 1.4.5, readr 2.1.6, dplyr 1.2.1, tidyr 1.3.2, jsonlite 2.0.0, plus data.table 1.18.0 for data preparation.
+
+Editors: VS Code (Python and R extensions; workspace settings in [`.vscode/`](.vscode/)), RStudio or Positron for the app.
+
 ## Quick start
 
 Full step-by-step guide for Windows, Miniforge and VS Code: **[SETUP.md](SETUP.md)**.
+
+### 1. Harmonise the data (Python)
 
 ```bash
 git clone https://github.com/Abson-dev/ensa-chad-harmonization.git harmonization
@@ -101,19 +126,43 @@ python run_harmonize.py --rounds 2024-10 2025-10 --no-hash # quick partial run
 python run_harmonize.py --formats csv                      # skip .sav output
 ```
 
-## Interactive explorer (R Shiny)
+### 2. Explore the results (R)
 
-[`app/`](app/) contains a Shiny app that presents the whole process for reviewers: an overview, a clickable pipeline diagram, the crosswalk workbook made interactive (coverage of 83 concepts × 14 rounds, a profile per concept), the fieldwork calendar and weights, validation against the original scores, FCS / rCSI indicators by round and region, and the data issues found.
-
-The app ships **aggregates and metadata only**. Its `data/` folder is not versioned; build it after a pipeline run:
+Install R from [CRAN](https://cran.r-project.org/) (RStudio is optional), then:
 
 ```bash
 cd app
+Rscript install_packages.R       # installs missing R packages (once)
 Rscript prepare_app_data.R       # aggregates ../output into app/data (cells < 30 households suppressed)
-Rscript -e "shiny::runApp()"     # or double-click run_app.bat on Windows
+Rscript tests/test_app.R         # 85 server-side checks of every page
+Rscript -e "shiny::runApp()"     # opens the app; on Windows you can double-click run_app.bat
 ```
 
-Details, sharing options and package versions: [app/README.md](app/README.md). For a non-technical user who receives the app folder with its `data/`, see [app/README_FIRST.txt](app/README_FIRST.txt).
+## Interactive explorer (R Shiny)
+
+[`app/`](app/) contains a Shiny app (bslib, plotly, reactable, visNetwork) that presents the whole process for reviewers.
+
+| Page | Content |
+|---|---|
+| Overview | Key figures, households per round, the three questionnaire generations, the approach |
+| Process | Clickable pipeline diagram, domain status, the 336 configuration rules and their methods |
+| Crosswalk | The crosswalk workbook made interactive: coverage matrix (83 concepts × 14 rounds), the table as in Excel, full variable details, a profile per concept, downloads |
+| Rounds | Fieldwork calendar by season, concepts per round, weights and date checks |
+| Validation | Agreement with the original analysts' scores; the reversed FCS group coding |
+| Indicators | FCS groups and rCSI Cadre Harmonisé phases by round and region (weighted / unweighted) |
+| Data issues | The 20 issues found, ranked by impact, with how each is handled |
+| About | Method, reproducibility, run provenance, data statement |
+
+| | |
+|---|---|
+| ![Pipeline diagram with step details](docs/screenshots/02-process.png) **Process**: click a step to see what it does | ![Coverage matrix of 83 concepts across 14 rounds](docs/screenshots/03-crosswalk-matrix.png) **Crosswalk**: where each concept lives in each round |
+| ![Crosswalk table laid out as in the Excel workbook](docs/screenshots/04-crosswalk-table.png) **Crosswalk table**: source variable per round, coloured by coverage | ![Concept profile showing the LCS slot swap](docs/screenshots/05-concept-profile.png) **Concept profile**: here, the LCS slot swap between Feb and Oct 2021 |
+| ![Fieldwork calendar and round inventory](docs/screenshots/06-rounds.png) **Rounds**: fieldwork windows, weights, checks | ![Validation against the original analysts' scores](docs/screenshots/07-validation.png) **Validation**: agreement and the reversed FCS coding |
+| ![Data issues ranked by impact](docs/screenshots/08-data-issues.png) **Data issues**: what was found and how it is handled | |
+
+The Indicators page is not shown here: its regional estimates are preliminary and are shared only with the data owners' agreement.
+
+The app ships **aggregates and metadata only**. Its `data/` folder is not versioned; build it after a pipeline run with `prepare_app_data.R` (see [Quick start](#2-explore-the-results-r)). Details and sharing options (Posit Connect / shinyapps.io, zipped folder): [app/README.md](app/README.md). For a non-technical user who receives the app folder with its `data/`: [app/README_FIRST.txt](app/README_FIRST.txt).
 
 ## Repository structure
 
@@ -130,7 +179,15 @@ harmonization/
 │   ├── pipeline.py          orchestration, writers, provenance manifest
 │   └── domains/             one module per domain: derive() + qc()
 ├── tests/test_rules.py      scoring rules, thresholds, conversions, config completeness
-├── app/                     R Shiny explorer (app.R, R/ modules, www/, run_app.bat, prepare_app_data.R)
+├── app/                     R Shiny explorer
+│   ├── app.R                page layout and server wiring
+│   ├── R/                   one module per page + data loading, theme, helpers
+│   ├── www/styles.css       visual design
+│   ├── tests/test_app.R     server-side checks of every page (shiny::testServer)
+│   ├── prepare_app_data.R   builds app/data from ../output (aggregates only; not versioned)
+│   ├── install_packages.R   installs missing R packages
+│   └── run_app.bat          double-click launcher for Windows
+├── docs/screenshots/        app screenshots used in this README
 ├── .vscode/                 interpreter, test and run/debug configuration
 ├── environment.yml          conda environment (conda-forge, pinned)
 ├── requirements.txt         pip alternative
@@ -210,8 +267,9 @@ Per-round QC tables (completeness, invalid values, weighted means and prevalence
 
 - **Deterministic:** the same inputs and config give byte-identical CSV and QC outputs (verified with SHA-256). The `.sav` outputs embed their creation time, so the CSVs are the reference outputs.
 - **Provenance:** `output/manifest.json` records the run time, pipeline version, Python and package versions, and SHA-256 of every input, config file and output.
-- **Pinned environment:** `environment.yml` (conda-forge) and `requirements.txt`.
-- **Tests:** `python -m pytest -q` checks the config completeness, formulas, thresholds, conversions and lookups.
+- **Pinned environments:** Python in `environment.yml` (conda-forge) and `requirements.txt`; R package versions listed in [Software](#software) and in `app/install_packages.R`.
+- **Tests:** `python -m pytest -q` checks the config completeness, formulas, thresholds, conversions and lookups; `Rscript app/tests/test_app.R` builds every page of the app and renders every output and filter combination.
+- **No data in the app:** `prepare_app_data.R` keeps only aggregates by round and region (cells under 30 households suppressed) and strips local paths from the manifest.
 
 ## Extending the pipeline
 
@@ -234,9 +292,9 @@ Details: [SETUP.md §10](SETUP.md#10-change-a-harmonisation-decision).
 
 ## Author, citation and license
 
-**Author:** [Abson-dev](https://github.com/Abson-dev)
+**Author:** [Abson-dev](https://github.com/Abson-dev). Built with Python (pandas, pyreadstat) and R (Shiny, bslib, plotly, reactable).
 
-If you use this pipeline, please cite the repository:
+If you use this pipeline or the explorer, please cite the repository:
 
 ```
 Abson-dev (2026). ENSA Chad 2018–2025 — Reproducible harmonisation of household food

@@ -20,7 +20,9 @@ load_app_data <- function(dir = "data") {
       round_id = paste0(substr(round_code, 3, 6), "-", substr(round_code, 1, 2)),
       round = factor(round, levels = lv),
       available = source != "(not available)",
-      coverage = coverage * 100
+      coverage = coverage * 100,
+      # KoBo labels in some rounds carry HTML styling (e.g. <span style="color:blue">)
+      label = trimws(gsub("\\s+", " ", gsub("<[^>]+>", " ", label)))
     )
 
   cw <- readxl::read_excel(xl, "Crosswalk")
