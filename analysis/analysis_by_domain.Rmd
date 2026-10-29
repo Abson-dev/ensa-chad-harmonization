@@ -69,6 +69,9 @@ hhs_nat <- dcast(as.data.table(estimate_by(hhs_design, c("HHS", "hhs_moderate", 
                  round_id ~ var, value.var = c("est", "lo", "hi"))
 hhs_nat <- merge(R[, .(round_id, round, round_lab, season, year, weighted)], hhs_nat, by = "round_id")[order(match(round_id, R$round_id))]
 hhs_first_oct <- hhs_nat[season == "Oct", round_id][1]
+hdds_nat <- dcast(as.data.table(estimate_by(design, c("HDDS", "hdds_p3", paste0("hdds_ph", 1:5)))),
+                  round_id ~ var, value.var = c("est", "lo", "hi"))
+hdds_nat <- merge(R[, .(round_id, round, round_lab, season, year, weighted)], hdds_nat, by = "round_id")[order(match(round_id, R$round_id))]
 fcs_nat <- merge(R[, .(round_id, round, round_lab, season, year, weighted)], fcs_nat, by = "round_id")[order(match(round_id, R$round_id))]
 rcsi_nat <- merge(R[, .(round_id, round, round_lab, season, year, weighted)], rcsi_nat, by = "round_id")[order(match(round_id, R$round_id))]
 
@@ -137,6 +140,7 @@ ft(t1[, .(round_lab, generation, households = int(households), regions, fieldwor
 
 - **Food Consumption Score (FCS)** — days of consumption of 9 food groups over the last 7 days, weighted (staples 2, pulses 3, vegetables 1, fruit 1, meat/fish/eggs 4, dairy 4, sugar 0.5, oil 0.5, condiments 0). Groups: poor ≤ 28, borderline 28.5–42, acceptable > 42 (Chad thresholds); the 21/35 thresholds are shown for sensitivity.
 - **Reduced Coping Strategies Index (rCSI)** — days of use of 5 strategies over the last 7 days, weighted (1, 2, 1, 3, 1); range 0–56. Cadre Harmonisé phases: phase 1 ≤ 3, phase 2 = 4–18, phase 3+ ≥ 19.
+- **Household Dietary Diversity Score (HDDS)** — number of 12 food groups eaten by the household in the past 24 hours (0–12). Cadre Harmonisé phases: 5 groups or more → 1, 4 → 2, 3 → 3, 2 → 4, 0–1 → 5. In October 2024, questions on food groups not eaten in the past 7 days were skipped; they are counted as not eaten.
 - **Household Hunger Scale (HHS)** — three questions on the past 30 days (no food in the house, went to sleep hungry, a whole day and night without eating), each scored 0 (never), 1 (rarely or sometimes) or 2 (often); score 0–6. WFP categories: little or none (0–1), moderate (2–3), severe (4–6). IPC / Cadre Harmonisé phases: 0 → 1, 1 → 2, 2–3 → 3, 4 → 4, 5–6 → 5. Collected from October 2019.
 - **Livelihood Coping Strategies (LCS)** — strategies used in the past 30 days because of a lack of food (answer "yes" or "no, already exhausted"); each household is classified by the most severe strategy used (none, stress, crisis, emergency). The list of strategies and their severities changed between questionnaires, so the **comparable** indicator uses the 7 strategies asked in all rounds with a fixed severity (stress: sold household assets, sold more animals, spent savings; crisis: sold productive assets; emergency: sold house or land, sold last female animals, begged). From October 2024 the module covers coping for any essential need; only coping to buy food is counted, as in earlier rounds.
 
@@ -288,6 +292,59 @@ save_fig(heat("fcs_pb", "% poor + borderline", "#9E2A1E"), "F04_fcs_region_heatm
 ```
 
 <!---BLOCK_LANDSCAPE_STOP--->
+
+# Dietary diversity (HDDS domain)
+
+```{r hdds-calc}
+hg <- weighted_grid(d, names(HDDS_GROUPS), by = c("round_id", "round_lab"), min_n = 0)
+hg <- melt(hg[, -"n"], id.vars = c("round_id", "round_lab"), variable.name = "item", value.name = "share")
+hg[, group := factor(HDDS_GROUPS[as.character(item)], levels = rev(HDDS_GROUPS))]
+low_latest <- hg[round_id == latest][order(share)][1:3]
+```
+
+The Household Dietary Diversity Score counts the food groups the household ate the day before the interview. The mean HDDS was `r num(g(hdds_nat, "est_HDDS", latest))` groups in `r lab(latest)` (`r num(g(hdds_nat, "est_HDDS", first_oct))` in `r lab(first_oct)`), and `r pct(g(hdds_nat, "est_hdds_p3", latest))`% of households ate 3 groups or fewer (phase 3 or above; Table \@ref(tab:hdds-national), Figure \@ref(fig:hdds-phases)). The least consumed groups in `r lab(latest)` were `r paste0(tolower(low_latest$group), " (", pct(low_latest$share, 0), "%)", collapse = ", ")` (Figure \@ref(fig:hdds-groups)). The 24-hour HDDS and the 7-day FCS describe the same diet over different periods.
+
+```{r hdds-national}
+save_tab(hdds_nat, "T15_hdds_national")
+ft(hdds_nat[, .(Round = round_lab, `Mean HDDS` = num(est_HDDS, 2), `95% CI` = ci(lo_HDDS, hi_HDDS, d = 2, scale = 1),
+                `Phase 1 (%)` = pct(est_hdds_ph1), `Phase 2 (%)` = pct(est_hdds_ph2),
+                `Phase 3+ (%)` = pct(est_hdds_p3), `95% CI ` = ci(lo_hdds_p3, hi_hdds_p3))]) |>
+  flextable::add_footer_lines("HDDS = number of 12 food groups eaten in the past 24 hours. Phase 3+ = 3 groups or fewer (Cadre Harmonisé). † Unweighted estimate.") |>
+  flextable::fontsize(size = 8, part = "all") |>
+  cap("Household Dietary Diversity Score by round (national, 95% CI)", "hdds-national")
+```
+
+```{r hdds-phases, fig.id = "hdds-phases", fig.cap = "Households by HDDS phase (Cadre Harmonisé), by round and season", fig.height = 3.8}
+x <- melt(hdds_nat[, c("round_lab", "season", paste0("est_hdds_ph", 1:5)), with = FALSE],
+          id.vars = c("round_lab", "season"), variable.name = "phase", value.name = "share")
+x[, phase := factor(paste("Phase", sub("est_hdds_ph", "", phase)), levels = rev(names(PAL$ipc)))]
+x[, season := factor(season, c("Feb", "Oct"), c("February rounds", "October rounds"))]
+p <- ggplot(x, aes(round_lab, share, fill = phase)) +
+  geom_col(width = 0.72, colour = "white", linewidth = 0.3) +
+  geom_text(aes(label = ifelse(share >= 0.04, pct(share, 0), ""), group = phase,
+                colour = phase %in% c("Phase 4", "Phase 5")), position = position_stack(vjust = 0.5), size = 2.5,
+            show.legend = FALSE) +
+  scale_colour_manual(values = c(`TRUE` = "white", `FALSE` = PAL$ink)) +
+  facet_grid(~season, scales = "free_x", space = "free_x") +
+  scale_fill_manual(values = PAL$ipc, name = NULL, breaks = names(PAL$ipc)) +
+  scale_y_continuous(labels = scales::label_percent(), expand = c(0, 0)) +
+  labs(x = NULL, y = "Share of households", caption = "† Unweighted estimate.") +
+  theme_report() + theme(axis.text.x = element_text(angle = 40, hjust = 1), panel.grid.major.x = element_blank())
+save_fig(p, "F16_hdds_phases", height = 3.8)
+```
+
+```{r hdds-groups, fig.id = "hdds-groups", fig.cap = "Households that ate each food group in the past 24 hours, by round (weighted)", fig.height = 3.8}
+save_tab(dcast(hg, group ~ round_lab, value.var = "share"), "T16_hdds_groups")
+p <- ggplot(hg, aes(round_lab, group, fill = share)) +
+  geom_tile(colour = "white", linewidth = 0.5) +
+  geom_text(aes(label = pct(share, 0)), size = 2.2, colour = ifelse(hg$share > 0.6, "white", PAL$ink)) +
+  scale_fill_gradient(low = "#F4F1EA", high = PAL$teal, labels = scales::label_percent(), limits = c(0, 1),
+                      name = "% of households") +
+  labs(x = NULL, y = NULL, caption = "† Unweighted estimate.") +
+  theme_report(9) + theme(axis.text.x = element_text(angle = 40, hjust = 1), panel.grid = element_blank(),
+                          legend.key.width = unit(1.2, "cm"))
+save_fig(p, "F17_hdds_groups", height = 3.8)
+```
 
 # Coping strategies (rCSI domain)
 

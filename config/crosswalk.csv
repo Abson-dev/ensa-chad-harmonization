@@ -671,3 +671,367 @@ hhs,orig_HHS_phase,2023-10,copy,Echelle_faim_1,
 hhs,orig_HHS_phase,2024-02,copy,Echelle_faim_1,
 hhs,orig_HHS_phase,2024-10,missing,,no pre-computed value in the source file
 hhs,orig_HHS_phase,2025-10,copy,Echelle_faim_1,
+hdds,HDDSStapCer,2018-10,copy,consommation_sorgho_veille,
+hdds,HDDSStapCer,2019-02,copy,consommation_sorgho_veille,
+hdds,HDDSStapCer,2019-10,copy,consommation_sorgho_veille,
+hdds,HDDSStapCer,2020-02,copy,consommation_sorgho_veille,
+hdds,HDDSStapCer,2020-10,copy,consommation_sorgho_veille,
+hdds,HDDSStapCer,2021-02,copy,HDDSStapCer,
+hdds,HDDSStapCer,2021-10,copy,HDDSStapCer,
+hdds,HDDSStapCer,2022-02,copy,HDDSStapCer,
+hdds,HDDSStapCer,2022-10,copy,HDDSStapCer,
+hdds,HDDSStapCer,2023-02,copy,HDDSStapCer,
+hdds,HDDSStapCer,2023-10,copy,HDDSStapCer,
+hdds,HDDSStapCer,2024-02,copy,HDDSStapCer,
+hdds,HDDSStapCer,2024-10,copy,HDDSStapCer,
+hdds,HDDSStapCer,2025-10,copy,HDDSStapCer,
+hdds,gate_HDDSStapCer,2018-10,missing,,no skip pattern in this round
+hdds,gate_HDDSStapCer,2019-02,missing,,no skip pattern in this round
+hdds,gate_HDDSStapCer,2019-10,missing,,no skip pattern in this round
+hdds,gate_HDDSStapCer,2020-02,missing,,no skip pattern in this round
+hdds,gate_HDDSStapCer,2020-10,missing,,no skip pattern in this round
+hdds,gate_HDDSStapCer,2021-02,missing,,no skip pattern in this round
+hdds,gate_HDDSStapCer,2021-10,missing,,no skip pattern in this round
+hdds,gate_HDDSStapCer,2022-02,missing,,no skip pattern in this round
+hdds,gate_HDDSStapCer,2022-10,missing,,no skip pattern in this round
+hdds,gate_HDDSStapCer,2023-02,missing,,no skip pattern in this round
+hdds,gate_HDDSStapCer,2023-10,missing,,no skip pattern in this round
+hdds,gate_HDDSStapCer,2024-02,missing,,no skip pattern in this round
+hdds,gate_HDDSStapCer,2024-10,copy,FCSStap,FCS days used to resolve the skip pattern
+hdds,gate_HDDSStapCer,2025-10,missing,,no skip pattern in this round
+hdds,HDDSStapRoot,2018-10,copy,consommation_tubercules_veille,
+hdds,HDDSStapRoot,2019-02,copy,consommation_tubercules_veille,
+hdds,HDDSStapRoot,2019-10,copy,consommation_tubercules_veille,
+hdds,HDDSStapRoot,2020-02,copy,consommation_tubercules_veille,
+hdds,HDDSStapRoot,2020-10,copy,consommation_tubercules_veille,
+hdds,HDDSStapRoot,2021-02,copy,HDDSStapRoot,
+hdds,HDDSStapRoot,2021-10,copy,HDDSStapRoot,
+hdds,HDDSStapRoot,2022-02,copy,HDDSStapRoot,
+hdds,HDDSStapRoot,2022-10,copy,HDDSStapRoot,
+hdds,HDDSStapRoot,2023-02,copy,HDDSStapRoot,
+hdds,HDDSStapRoot,2023-10,copy,HDDSStapRoot,
+hdds,HDDSStapRoot,2024-02,copy,HDDSStapRoot,
+hdds,HDDSStapRoot,2024-10,copy,HDDSStapRoot,
+hdds,HDDSStapRoot,2025-10,copy,HDDSStapRoot,
+hdds,gate_HDDSStapRoot,2018-10,missing,,no skip pattern in this round
+hdds,gate_HDDSStapRoot,2019-02,missing,,no skip pattern in this round
+hdds,gate_HDDSStapRoot,2019-10,missing,,no skip pattern in this round
+hdds,gate_HDDSStapRoot,2020-02,missing,,no skip pattern in this round
+hdds,gate_HDDSStapRoot,2020-10,missing,,no skip pattern in this round
+hdds,gate_HDDSStapRoot,2021-02,missing,,no skip pattern in this round
+hdds,gate_HDDSStapRoot,2021-10,missing,,no skip pattern in this round
+hdds,gate_HDDSStapRoot,2022-02,missing,,no skip pattern in this round
+hdds,gate_HDDSStapRoot,2022-10,missing,,no skip pattern in this round
+hdds,gate_HDDSStapRoot,2023-02,missing,,no skip pattern in this round
+hdds,gate_HDDSStapRoot,2023-10,missing,,no skip pattern in this round
+hdds,gate_HDDSStapRoot,2024-02,missing,,no skip pattern in this round
+hdds,gate_HDDSStapRoot,2024-10,copy,FCSStap,FCS days used to resolve the skip pattern
+hdds,gate_HDDSStapRoot,2025-10,missing,,no skip pattern in this round
+hdds,HDDSPulse,2018-10,copy,consommation_oleagineux_legumineuses_veille,
+hdds,HDDSPulse,2019-02,copy,consommation_oleagineux_legumineuses_veille,
+hdds,HDDSPulse,2019-10,copy,consommation_oleagineux_legumineuses_veille,
+hdds,HDDSPulse,2020-02,copy,consommation_oleagineux_legumineuses_veille,
+hdds,HDDSPulse,2020-10,copy,consommation_oleagineux_legumineuses_veille,
+hdds,HDDSPulse,2021-02,copy,HDDSPulse,
+hdds,HDDSPulse,2021-10,copy,HDDSPulse,
+hdds,HDDSPulse,2022-02,copy,HDDSPulse,
+hdds,HDDSPulse,2022-10,copy,HDDSPulse,
+hdds,HDDSPulse,2023-02,copy,HDDSPulse,
+hdds,HDDSPulse,2023-10,copy,HDDSPulse,
+hdds,HDDSPulse,2024-02,copy,HDDSPulse,
+hdds,HDDSPulse,2024-10,copy,HDDSPulse,asked only if eaten in the past 7 days (FCS); skipped = not eaten when the FCS gate is 0
+hdds,HDDSPulse,2025-10,copy,HDDSPulse,
+hdds,gate_HDDSPulse,2018-10,missing,,no skip pattern in this round
+hdds,gate_HDDSPulse,2019-02,missing,,no skip pattern in this round
+hdds,gate_HDDSPulse,2019-10,missing,,no skip pattern in this round
+hdds,gate_HDDSPulse,2020-02,missing,,no skip pattern in this round
+hdds,gate_HDDSPulse,2020-10,missing,,no skip pattern in this round
+hdds,gate_HDDSPulse,2021-02,missing,,no skip pattern in this round
+hdds,gate_HDDSPulse,2021-10,missing,,no skip pattern in this round
+hdds,gate_HDDSPulse,2022-02,missing,,no skip pattern in this round
+hdds,gate_HDDSPulse,2022-10,missing,,no skip pattern in this round
+hdds,gate_HDDSPulse,2023-02,missing,,no skip pattern in this round
+hdds,gate_HDDSPulse,2023-10,missing,,no skip pattern in this round
+hdds,gate_HDDSPulse,2024-02,missing,,no skip pattern in this round
+hdds,gate_HDDSPulse,2024-10,copy,FCSPulse,FCS days used to resolve the skip pattern
+hdds,gate_HDDSPulse,2025-10,missing,,no skip pattern in this round
+hdds,HDDSVeg,2018-10,copy,consommation_legumes_veille,
+hdds,HDDSVeg,2019-02,copy,consommation_legumes_veille,
+hdds,HDDSVeg,2019-10,copy,consommation_legumes_veille,
+hdds,HDDSVeg,2020-02,copy,consommation_legumes_veille,
+hdds,HDDSVeg,2020-10,copy,consommation_legumes_veille,
+hdds,HDDSVeg,2021-02,any,HDDSVegOrg|HDDSVegGre|HDDSVegOth,sub-groups combined: eaten if any sub-group was eaten
+hdds,HDDSVeg,2021-10,any,HDDSVegOrg|HDDSVegGre|HDDSVegOth,sub-groups combined: eaten if any sub-group was eaten
+hdds,HDDSVeg,2022-02,any,HDDSVegOrg|HDDSVegGre|HDDSVegOth,sub-groups combined: eaten if any sub-group was eaten
+hdds,HDDSVeg,2022-10,any,HDDSVegOrg|HDDSVegGre|HDDSVegOth,sub-groups combined: eaten if any sub-group was eaten
+hdds,HDDSVeg,2023-02,any,HDDSVegOrg|HDDSVegGre|HDDSVegOth,sub-groups combined: eaten if any sub-group was eaten
+hdds,HDDSVeg,2023-10,copy,HDDSVeg,
+hdds,HDDSVeg,2024-02,copy,HDDSVeg,
+hdds,HDDSVeg,2024-10,copy,HDDSVeg,asked only if eaten in the past 7 days (FCS); skipped = not eaten when the FCS gate is 0
+hdds,HDDSVeg,2025-10,copy,HDDSVeg,
+hdds,gate_HDDSVeg,2018-10,missing,,no skip pattern in this round
+hdds,gate_HDDSVeg,2019-02,missing,,no skip pattern in this round
+hdds,gate_HDDSVeg,2019-10,missing,,no skip pattern in this round
+hdds,gate_HDDSVeg,2020-02,missing,,no skip pattern in this round
+hdds,gate_HDDSVeg,2020-10,missing,,no skip pattern in this round
+hdds,gate_HDDSVeg,2021-02,missing,,no skip pattern in this round
+hdds,gate_HDDSVeg,2021-10,missing,,no skip pattern in this round
+hdds,gate_HDDSVeg,2022-02,missing,,no skip pattern in this round
+hdds,gate_HDDSVeg,2022-10,missing,,no skip pattern in this round
+hdds,gate_HDDSVeg,2023-02,missing,,no skip pattern in this round
+hdds,gate_HDDSVeg,2023-10,missing,,no skip pattern in this round
+hdds,gate_HDDSVeg,2024-02,missing,,no skip pattern in this round
+hdds,gate_HDDSVeg,2024-10,copy,FCSVeg,FCS days used to resolve the skip pattern
+hdds,gate_HDDSVeg,2025-10,missing,,no skip pattern in this round
+hdds,HDDSFruit,2018-10,copy,consommation_fruits_veille,
+hdds,HDDSFruit,2019-02,copy,consommation_fruits_veille,
+hdds,HDDSFruit,2019-10,copy,consommation_fruits_veille,
+hdds,HDDSFruit,2020-02,copy,consommation_fruits_veille,
+hdds,HDDSFruit,2020-10,copy,consommation_fruits_veille,
+hdds,HDDSFruit,2021-02,any,HDDSFruitOrg|HDDSFruitOth,sub-groups combined: eaten if any sub-group was eaten
+hdds,HDDSFruit,2021-10,any,HDDSFruitOrg|HDDSFruitOth,sub-groups combined: eaten if any sub-group was eaten
+hdds,HDDSFruit,2022-02,any,HDDSFruitOrg|HDDSFruitOth,sub-groups combined: eaten if any sub-group was eaten
+hdds,HDDSFruit,2022-10,any,HDDSFruitOrg|HDDSFruitOth,sub-groups combined: eaten if any sub-group was eaten
+hdds,HDDSFruit,2023-02,any,HDDSFruitOrg|HDDSFruitOth,sub-groups combined: eaten if any sub-group was eaten
+hdds,HDDSFruit,2023-10,copy,HDDSFruit,
+hdds,HDDSFruit,2024-02,copy,HDDSFruit,
+hdds,HDDSFruit,2024-10,copy,HDDSFruit,asked only if eaten in the past 7 days (FCS); skipped = not eaten when the FCS gate is 0
+hdds,HDDSFruit,2025-10,copy,HDDSFruit,
+hdds,gate_HDDSFruit,2018-10,missing,,no skip pattern in this round
+hdds,gate_HDDSFruit,2019-02,missing,,no skip pattern in this round
+hdds,gate_HDDSFruit,2019-10,missing,,no skip pattern in this round
+hdds,gate_HDDSFruit,2020-02,missing,,no skip pattern in this round
+hdds,gate_HDDSFruit,2020-10,missing,,no skip pattern in this round
+hdds,gate_HDDSFruit,2021-02,missing,,no skip pattern in this round
+hdds,gate_HDDSFruit,2021-10,missing,,no skip pattern in this round
+hdds,gate_HDDSFruit,2022-02,missing,,no skip pattern in this round
+hdds,gate_HDDSFruit,2022-10,missing,,no skip pattern in this round
+hdds,gate_HDDSFruit,2023-02,missing,,no skip pattern in this round
+hdds,gate_HDDSFruit,2023-10,missing,,no skip pattern in this round
+hdds,gate_HDDSFruit,2024-02,missing,,no skip pattern in this round
+hdds,gate_HDDSFruit,2024-10,copy,FCSFruit,FCS days used to resolve the skip pattern
+hdds,gate_HDDSFruit,2025-10,missing,,no skip pattern in this round
+hdds,HDDSPrMeat,2018-10,any,consommation_viande_veille|consommation_viande_abats_veille,sub-groups combined: eaten if any sub-group was eaten
+hdds,HDDSPrMeat,2019-02,any,consommation_viande_veille|consommation_viande_abats_veille,sub-groups combined: eaten if any sub-group was eaten
+hdds,HDDSPrMeat,2019-10,any,consommation_viande_veille|consommation_viande_abats_veille,sub-groups combined: eaten if any sub-group was eaten
+hdds,HDDSPrMeat,2020-02,any,consommation_viande_veille|consommation_viande_abats_veille,sub-groups combined: eaten if any sub-group was eaten
+hdds,HDDSPrMeat,2020-10,any,consommation_viande_veille|consommation_viande_abats_veille,sub-groups combined: eaten if any sub-group was eaten
+hdds,HDDSPrMeat,2021-02,any,consommation_viande_veille|consommation_viande_abats_veille,sub-groups combined: eaten if any sub-group was eaten
+hdds,HDDSPrMeat,2021-10,any,consommation_viande_veille|consommation_viande_abats_veille,sub-groups combined: eaten if any sub-group was eaten
+hdds,HDDSPrMeat,2022-02,any,consommation_viande_veille|consommation_viande_abats_veille,sub-groups combined: eaten if any sub-group was eaten
+hdds,HDDSPrMeat,2022-10,any,HDDSPrMeatF|HDDSPrMeatO,sub-groups combined: eaten if any sub-group was eaten
+hdds,HDDSPrMeat,2023-02,any,HDDSPrMeatF|HDDSPrMeatO,sub-groups combined: eaten if any sub-group was eaten
+hdds,HDDSPrMeat,2023-10,any,HDDSPrMeatF|HDDSPrMeatO,sub-groups combined: eaten if any sub-group was eaten
+hdds,HDDSPrMeat,2024-02,any,HDDSPrMeatF|HDDSPrMeatO,sub-groups combined: eaten if any sub-group was eaten
+hdds,HDDSPrMeat,2024-10,any,HDDSPrMeatF|HDDSPrMeatO,asked only if eaten in the past 7 days (FCS); skipped = not eaten when the FCS gate is 0
+hdds,HDDSPrMeat,2025-10,any,HDDSPrMeatF|HDDSPrMeatO,sub-groups combined: eaten if any sub-group was eaten
+hdds,gate_HDDSPrMeat,2018-10,missing,,no skip pattern in this round
+hdds,gate_HDDSPrMeat,2019-02,missing,,no skip pattern in this round
+hdds,gate_HDDSPrMeat,2019-10,missing,,no skip pattern in this round
+hdds,gate_HDDSPrMeat,2020-02,missing,,no skip pattern in this round
+hdds,gate_HDDSPrMeat,2020-10,missing,,no skip pattern in this round
+hdds,gate_HDDSPrMeat,2021-02,missing,,no skip pattern in this round
+hdds,gate_HDDSPrMeat,2021-10,missing,,no skip pattern in this round
+hdds,gate_HDDSPrMeat,2022-02,missing,,no skip pattern in this round
+hdds,gate_HDDSPrMeat,2022-10,missing,,no skip pattern in this round
+hdds,gate_HDDSPrMeat,2023-02,missing,,no skip pattern in this round
+hdds,gate_HDDSPrMeat,2023-10,missing,,no skip pattern in this round
+hdds,gate_HDDSPrMeat,2024-02,missing,,no skip pattern in this round
+hdds,gate_HDDSPrMeat,2024-10,max_or_last,FCSNPrMeatF|FCSNPrMeatO|FCSPr,FCS days used to resolve the skip pattern
+hdds,gate_HDDSPrMeat,2025-10,missing,,no skip pattern in this round
+hdds,HDDSPrEgg,2018-10,copy,consommation_oeuf_veille,
+hdds,HDDSPrEgg,2019-02,copy,consommation_oeuf_veille,
+hdds,HDDSPrEgg,2019-10,copy,consommation_oeuf_veille,
+hdds,HDDSPrEgg,2020-02,copy,consommation_oeuf_veille,
+hdds,HDDSPrEgg,2020-10,copy,consommation_oeuf_veille,
+hdds,HDDSPrEgg,2021-02,copy,HDDSPrEgg,
+hdds,HDDSPrEgg,2021-10,copy,HDDSPrEgg,
+hdds,HDDSPrEgg,2022-02,copy,HDDSPrEgg,
+hdds,HDDSPrEgg,2022-10,copy,HDDSPrEgg,
+hdds,HDDSPrEgg,2023-02,copy,HDDSPrEgg,
+hdds,HDDSPrEgg,2023-10,copy,HDDSPrEggs,
+hdds,HDDSPrEgg,2024-02,copy,HDDSPrEggs,
+hdds,HDDSPrEgg,2024-10,copy,HDDSPrEggs,asked only if eaten in the past 7 days (FCS); skipped = not eaten when the FCS gate is 0
+hdds,HDDSPrEgg,2025-10,copy,HDDSPrEggs,
+hdds,gate_HDDSPrEgg,2018-10,missing,,no skip pattern in this round
+hdds,gate_HDDSPrEgg,2019-02,missing,,no skip pattern in this round
+hdds,gate_HDDSPrEgg,2019-10,missing,,no skip pattern in this round
+hdds,gate_HDDSPrEgg,2020-02,missing,,no skip pattern in this round
+hdds,gate_HDDSPrEgg,2020-10,missing,,no skip pattern in this round
+hdds,gate_HDDSPrEgg,2021-02,missing,,no skip pattern in this round
+hdds,gate_HDDSPrEgg,2021-10,missing,,no skip pattern in this round
+hdds,gate_HDDSPrEgg,2022-02,missing,,no skip pattern in this round
+hdds,gate_HDDSPrEgg,2022-10,missing,,no skip pattern in this round
+hdds,gate_HDDSPrEgg,2023-02,missing,,no skip pattern in this round
+hdds,gate_HDDSPrEgg,2023-10,missing,,no skip pattern in this round
+hdds,gate_HDDSPrEgg,2024-02,missing,,no skip pattern in this round
+hdds,gate_HDDSPrEgg,2024-10,max_or_last,FCSNPrEggs|FCSPr,FCS days used to resolve the skip pattern
+hdds,gate_HDDSPrEgg,2025-10,missing,,no skip pattern in this round
+hdds,HDDSPrFish,2018-10,copy,consommation_poisson_veille,
+hdds,HDDSPrFish,2019-02,copy,consommation_poisson_veille,
+hdds,HDDSPrFish,2019-10,copy,consommation_poisson_veille,
+hdds,HDDSPrFish,2020-02,copy,consommation_poisson_veille,
+hdds,HDDSPrFish,2020-10,copy,consommation_poisson_veille,
+hdds,HDDSPrFish,2021-02,copy,HDDSPrFish,
+hdds,HDDSPrFish,2021-10,copy,HDDSPrFish,
+hdds,HDDSPrFish,2022-02,copy,HDDSPrFish,
+hdds,HDDSPrFish,2022-10,copy,HDDSPrFish,
+hdds,HDDSPrFish,2023-02,copy,HDDSPrFish,
+hdds,HDDSPrFish,2023-10,copy,HDDSPrFish,
+hdds,HDDSPrFish,2024-02,copy,HDDSPrFish,
+hdds,HDDSPrFish,2024-10,copy,HDDSPrFish,asked only if eaten in the past 7 days (FCS); skipped = not eaten when the FCS gate is 0
+hdds,HDDSPrFish,2025-10,copy,HDDSPrFish,
+hdds,gate_HDDSPrFish,2018-10,missing,,no skip pattern in this round
+hdds,gate_HDDSPrFish,2019-02,missing,,no skip pattern in this round
+hdds,gate_HDDSPrFish,2019-10,missing,,no skip pattern in this round
+hdds,gate_HDDSPrFish,2020-02,missing,,no skip pattern in this round
+hdds,gate_HDDSPrFish,2020-10,missing,,no skip pattern in this round
+hdds,gate_HDDSPrFish,2021-02,missing,,no skip pattern in this round
+hdds,gate_HDDSPrFish,2021-10,missing,,no skip pattern in this round
+hdds,gate_HDDSPrFish,2022-02,missing,,no skip pattern in this round
+hdds,gate_HDDSPrFish,2022-10,missing,,no skip pattern in this round
+hdds,gate_HDDSPrFish,2023-02,missing,,no skip pattern in this round
+hdds,gate_HDDSPrFish,2023-10,missing,,no skip pattern in this round
+hdds,gate_HDDSPrFish,2024-02,missing,,no skip pattern in this round
+hdds,gate_HDDSPrFish,2024-10,max_or_last,FCSNPrFish|FCSPr,FCS days used to resolve the skip pattern
+hdds,gate_HDDSPrFish,2025-10,missing,,no skip pattern in this round
+hdds,HDDSDairy,2018-10,copy,consommation_lait_veille,
+hdds,HDDSDairy,2019-02,copy,consommation_lait_veille,
+hdds,HDDSDairy,2019-10,copy,consommation_lait_veille,
+hdds,HDDSDairy,2020-02,copy,consommation_lait_veille,
+hdds,HDDSDairy,2020-10,copy,consommation_lait_veille,
+hdds,HDDSDairy,2021-02,copy,HDDSDairy,
+hdds,HDDSDairy,2021-10,copy,HDDSDairy,
+hdds,HDDSDairy,2022-02,copy,HDDSDairy,
+hdds,HDDSDairy,2022-10,copy,HDDSDairy,
+hdds,HDDSDairy,2023-02,copy,HDDSDairy,
+hdds,HDDSDairy,2023-10,copy,HDDSDairy,
+hdds,HDDSDairy,2024-02,copy,HDDSDairy,
+hdds,HDDSDairy,2024-10,copy,HDDSDairy,asked only if eaten in the past 7 days (FCS); skipped = not eaten when the FCS gate is 0
+hdds,HDDSDairy,2025-10,copy,HDDSDairy,
+hdds,gate_HDDSDairy,2018-10,missing,,no skip pattern in this round
+hdds,gate_HDDSDairy,2019-02,missing,,no skip pattern in this round
+hdds,gate_HDDSDairy,2019-10,missing,,no skip pattern in this round
+hdds,gate_HDDSDairy,2020-02,missing,,no skip pattern in this round
+hdds,gate_HDDSDairy,2020-10,missing,,no skip pattern in this round
+hdds,gate_HDDSDairy,2021-02,missing,,no skip pattern in this round
+hdds,gate_HDDSDairy,2021-10,missing,,no skip pattern in this round
+hdds,gate_HDDSDairy,2022-02,missing,,no skip pattern in this round
+hdds,gate_HDDSDairy,2022-10,missing,,no skip pattern in this round
+hdds,gate_HDDSDairy,2023-02,missing,,no skip pattern in this round
+hdds,gate_HDDSDairy,2023-10,missing,,no skip pattern in this round
+hdds,gate_HDDSDairy,2024-02,missing,,no skip pattern in this round
+hdds,gate_HDDSDairy,2024-10,copy,FCSDairy,FCS days used to resolve the skip pattern
+hdds,gate_HDDSDairy,2025-10,missing,,no skip pattern in this round
+hdds,HDDSSugar,2018-10,copy,consommation_sucre_veille,
+hdds,HDDSSugar,2019-02,copy,consommation_sucre_veille,
+hdds,HDDSSugar,2019-10,copy,consommation_sucre_veille,
+hdds,HDDSSugar,2020-02,copy,consommation_sucre_veille,
+hdds,HDDSSugar,2020-10,copy,consommation_sucre_veille,
+hdds,HDDSSugar,2021-02,copy,HDDSSugar,
+hdds,HDDSSugar,2021-10,copy,HDDSSugar,
+hdds,HDDSSugar,2022-02,copy,HDDSSugar,
+hdds,HDDSSugar,2022-10,copy,HDDSSugar,
+hdds,HDDSSugar,2023-02,copy,HDDSSugar,
+hdds,HDDSSugar,2023-10,copy,HDDSSugar,
+hdds,HDDSSugar,2024-02,copy,HDDSSugar,
+hdds,HDDSSugar,2024-10,copy,HDDSSugar,asked only if eaten in the past 7 days (FCS); skipped = not eaten when the FCS gate is 0
+hdds,HDDSSugar,2025-10,copy,HDDSSugar,
+hdds,gate_HDDSSugar,2018-10,missing,,no skip pattern in this round
+hdds,gate_HDDSSugar,2019-02,missing,,no skip pattern in this round
+hdds,gate_HDDSSugar,2019-10,missing,,no skip pattern in this round
+hdds,gate_HDDSSugar,2020-02,missing,,no skip pattern in this round
+hdds,gate_HDDSSugar,2020-10,missing,,no skip pattern in this round
+hdds,gate_HDDSSugar,2021-02,missing,,no skip pattern in this round
+hdds,gate_HDDSSugar,2021-10,missing,,no skip pattern in this round
+hdds,gate_HDDSSugar,2022-02,missing,,no skip pattern in this round
+hdds,gate_HDDSSugar,2022-10,missing,,no skip pattern in this round
+hdds,gate_HDDSSugar,2023-02,missing,,no skip pattern in this round
+hdds,gate_HDDSSugar,2023-10,missing,,no skip pattern in this round
+hdds,gate_HDDSSugar,2024-02,missing,,no skip pattern in this round
+hdds,gate_HDDSSugar,2024-10,copy,FCSSugar,FCS days used to resolve the skip pattern
+hdds,gate_HDDSSugar,2025-10,missing,,no skip pattern in this round
+hdds,HDDSFat,2018-10,copy,consommation_huile_veille,
+hdds,HDDSFat,2019-02,copy,consommation_huile_veille,
+hdds,HDDSFat,2019-10,copy,consommation_huile_veille,
+hdds,HDDSFat,2020-02,copy,consommation_huile_veille,
+hdds,HDDSFat,2020-10,copy,consommation_huile_veille,
+hdds,HDDSFat,2021-02,copy,HDDSFat,
+hdds,HDDSFat,2021-10,copy,HDDSFat,
+hdds,HDDSFat,2022-02,copy,HDDSFat,
+hdds,HDDSFat,2022-10,copy,HDDSFat,
+hdds,HDDSFat,2023-02,copy,HDDSFat,
+hdds,HDDSFat,2023-10,copy,HDDSFat,
+hdds,HDDSFat,2024-02,copy,HDDSFat,
+hdds,HDDSFat,2024-10,copy,HDDSFat,asked only if eaten in the past 7 days (FCS); skipped = not eaten when the FCS gate is 0
+hdds,HDDSFat,2025-10,copy,HDDSFat,
+hdds,gate_HDDSFat,2018-10,missing,,no skip pattern in this round
+hdds,gate_HDDSFat,2019-02,missing,,no skip pattern in this round
+hdds,gate_HDDSFat,2019-10,missing,,no skip pattern in this round
+hdds,gate_HDDSFat,2020-02,missing,,no skip pattern in this round
+hdds,gate_HDDSFat,2020-10,missing,,no skip pattern in this round
+hdds,gate_HDDSFat,2021-02,missing,,no skip pattern in this round
+hdds,gate_HDDSFat,2021-10,missing,,no skip pattern in this round
+hdds,gate_HDDSFat,2022-02,missing,,no skip pattern in this round
+hdds,gate_HDDSFat,2022-10,missing,,no skip pattern in this round
+hdds,gate_HDDSFat,2023-02,missing,,no skip pattern in this round
+hdds,gate_HDDSFat,2023-10,missing,,no skip pattern in this round
+hdds,gate_HDDSFat,2024-02,missing,,no skip pattern in this round
+hdds,gate_HDDSFat,2024-10,copy,FCSFat,FCS days used to resolve the skip pattern
+hdds,gate_HDDSFat,2025-10,missing,,no skip pattern in this round
+hdds,HDDSCond,2018-10,copy,consommation_condiments_veille,
+hdds,HDDSCond,2019-02,copy,consommation_condiments_veille,
+hdds,HDDSCond,2019-10,copy,consommation_condiments_veille,
+hdds,HDDSCond,2020-02,copy,consommation_condiments_veille,
+hdds,HDDSCond,2020-10,copy,consommation_condiments_veille,
+hdds,HDDSCond,2021-02,copy,HDDSCond,
+hdds,HDDSCond,2021-10,copy,HDDSCond,
+hdds,HDDSCond,2022-02,copy,HDDSCond,
+hdds,HDDSCond,2022-10,copy,HDDSCond,
+hdds,HDDSCond,2023-02,copy,HDDSCond,
+hdds,HDDSCond,2023-10,copy,HDDSCond,
+hdds,HDDSCond,2024-02,copy,HDDSCond,
+hdds,HDDSCond,2024-10,copy,HDDSCond,asked only if eaten in the past 7 days (FCS); skipped = not eaten when the FCS gate is 0
+hdds,HDDSCond,2025-10,copy,HDDSCond,
+hdds,gate_HDDSCond,2018-10,missing,,no skip pattern in this round
+hdds,gate_HDDSCond,2019-02,missing,,no skip pattern in this round
+hdds,gate_HDDSCond,2019-10,missing,,no skip pattern in this round
+hdds,gate_HDDSCond,2020-02,missing,,no skip pattern in this round
+hdds,gate_HDDSCond,2020-10,missing,,no skip pattern in this round
+hdds,gate_HDDSCond,2021-02,missing,,no skip pattern in this round
+hdds,gate_HDDSCond,2021-10,missing,,no skip pattern in this round
+hdds,gate_HDDSCond,2022-02,missing,,no skip pattern in this round
+hdds,gate_HDDSCond,2022-10,missing,,no skip pattern in this round
+hdds,gate_HDDSCond,2023-02,missing,,no skip pattern in this round
+hdds,gate_HDDSCond,2023-10,missing,,no skip pattern in this round
+hdds,gate_HDDSCond,2024-02,missing,,no skip pattern in this round
+hdds,gate_HDDSCond,2024-10,copy,FCSCond,FCS days used to resolve the skip pattern
+hdds,gate_HDDSCond,2025-10,missing,,no skip pattern in this round
+hdds,orig_HDDS,2018-10,copy,HDDS,
+hdds,orig_HDDS,2019-02,copy,HDDS_Analyse,
+hdds,orig_HDDS,2019-10,copy,HDDS,
+hdds,orig_HDDS,2020-02,copy,HDDS,
+hdds,orig_HDDS,2020-10,copy,HDDS_Cor,
+hdds,orig_HDDS,2021-02,copy,HDDS_Analyse,
+hdds,orig_HDDS,2021-10,copy,HDDS_Analyse,
+hdds,orig_HDDS,2022-02,copy,HDDS_Analyse,
+hdds,orig_HDDS,2022-10,copy,HDDS_Cor,
+hdds,orig_HDDS,2023-02,copy,HDDS_Cor,
+hdds,orig_HDDS,2023-10,copy,HDDS_Cor,
+hdds,orig_HDDS,2024-02,copy,HDDS_Cor,
+hdds,orig_HDDS,2024-10,missing,,"no usable pre-computed value (absent, empty or text)"
+hdds,orig_HDDS,2025-10,copy,HDDS_Cor,
+hdds,orig_HDDS_phase,2018-10,copy,HDDS_test_CH,
+hdds,orig_HDDS_phase,2019-02,copy,HDDS_test_CH,
+hdds,orig_HDDS_phase,2019-10,copy,HDDS_test_CH,
+hdds,orig_HDDS_phase,2020-02,missing,,"no usable pre-computed value (absent, empty or text)"
+hdds,orig_HDDS_phase,2020-10,missing,,"no usable pre-computed value (absent, empty or text)"
+hdds,orig_HDDS_phase,2021-02,missing,,"no usable pre-computed value (absent, empty or text)"
+hdds,orig_HDDS_phase,2021-10,missing,,"no usable pre-computed value (absent, empty or text)"
+hdds,orig_HDDS_phase,2022-02,missing,,"no usable pre-computed value (absent, empty or text)"
+hdds,orig_HDDS_phase,2022-10,missing,,"no usable pre-computed value (absent, empty or text)"
+hdds,orig_HDDS_phase,2023-02,missing,,"no usable pre-computed value (absent, empty or text)"
+hdds,orig_HDDS_phase,2023-10,copy,HDDS_CH_2,
+hdds,orig_HDDS_phase,2024-02,copy,HDDS_CH_2,
+hdds,orig_HDDS_phase,2024-10,missing,,"no usable pre-computed value (absent, empty or text)"
+hdds,orig_HDDS_phase,2025-10,copy,HDDSCat_IPC,

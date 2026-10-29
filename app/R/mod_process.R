@@ -122,9 +122,9 @@ process_server <- function(id, d) {
                 fcs = "Food Consumption Score and groups",
                 rcsi = "Reduced Coping Strategies Index and CH phase",
                 lcs = "Livelihood coping: 14 strategies, max category (round-specific and comparable)",
-                hhs = "Household Hunger Scale (from Oct 2019): score, WFP category, IPC phase")
+                hhs = "Household Hunger Scale (from Oct 2019): score, WFP category, IPC phase",
+                hdds = "Household Dietary Diversity Score (12 groups, 24 h) and CH phase")
       planned <- c(
-                   hdds = "Household Dietary Diversity Score",
                    exp = "Food / non-food expenditure, food share",
                    demo = "Head of household, household size, income")
       card <- function(k, txt, ok) {

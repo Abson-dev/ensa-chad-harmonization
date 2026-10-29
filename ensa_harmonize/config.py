@@ -5,7 +5,7 @@ import tomllib
 
 import pandas as pd
 
-METHODS = {"copy", "copy_label", "sum", "sum_cap7", "missing"}
+METHODS = {"copy", "copy_label", "sum", "sum_cap7", "any", "max_or_last", "missing"}
 
 
 @dataclass

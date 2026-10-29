@@ -60,7 +60,25 @@ def apply_rules(df: pd.DataFrame, meta, rules: pd.DataFrame) -> pd.DataFrame:
             out[rule.target] = sum_sources(df, srcs, cap=None)
         elif rule.method == "sum_cap7":
             out[rule.target] = sum_sources(df, srcs, cap=7)
+        elif rule.method == "any":
+            out[rule.target] = any_source(df, srcs)
+        elif rule.method == "max_or_last":
+            out[rule.target] = max_or_last(df, srcs)
     return out
+
+
+def any_source(df: pd.DataFrame, srcs: list[str]) -> pd.Series:
+    """1 if any source is 1, 0 if none is 1 but at least one is 0, missing if all are missing."""
+    x = df[srcs].apply(to_number)
+    return (x == 1).any(axis=1).astype(float).where(x.notna().any(axis=1))
+
+
+def max_or_last(df: pd.DataFrame, srcs: list[str]) -> pd.Series:
+    """Row maximum of all sources but the last; the last source when they are all missing
+    (e.g. sub-group days, falling back to the main group)."""
+    x = df[srcs].apply(to_number)
+    head = x.iloc[:, :-1].max(axis=1) if len(srcs) > 1 else pd.Series(np.nan, index=df.index)
+    return head.fillna(x.iloc[:, -1])
 
 
 def sum_sources(df: pd.DataFrame, srcs: list[str], cap=None) -> pd.Series:

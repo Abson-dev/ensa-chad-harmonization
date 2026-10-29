@@ -10,7 +10,8 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 
 from ensa_harmonize import config  # noqa: E402
-from ensa_harmonize.domains import fcs, hhs, lcs, rcsi  # noqa: E402
+from ensa_harmonize.domains import fcs, hdds, hhs, lcs, rcsi  # noqa: E402
+from ensa_harmonize.engine import any_source, max_or_last  # noqa: E402
 from ensa_harmonize.domains.common import categorise, item_matrix  # noqa: E402
 from ensa_harmonize.engine import spss_to_datetime, sum_sources, to_number  # noqa: E402
 
@@ -119,6 +120,33 @@ def test_lcs_common_items_asked_in_every_round(cfg):
     for item in cfg.settings["lcs"]["common_items"]:
         rules = cw[(cw["domain"] == "lcs") & (cw["target"] == item)]
         assert (rules["method"] != "missing").all(), item
+
+
+# ---- Household Dietary Diversity -------------------------------------------------------------
+
+def test_any_and_max_or_last():
+    df = pd.DataFrame({"a": [1, 0, None, None, 0], "b": [0, 0, 1, None, None], "g": [5, 0, 2, 0, None]})
+    assert any_source(df, ["a", "b"]).tolist()[:3] == [1, 0, 1] and np.isnan(any_source(df, ["a", "b"]).iloc[3])
+    # sub-group maximum first, main group only when all sub-groups are missing
+    assert max_or_last(df, ["a", "b", "g"]).tolist()[:4] == [1, 0, 1, 0]
+
+
+def test_hdds_skip_set_to_not_eaten_only_when_gate_is_zero(cfg):
+    t = pd.DataFrame({i: [1.0, 1.0] for i in hdds.ITEMS})
+    for i in hdds.ITEMS:
+        t[f"gate_{i}"] = np.nan
+    t.loc[:, "HDDSPrEgg"] = np.nan          # both skipped
+    t.loc[:, "gate_HDDSPrEgg"] = [0.0, 3.0]  # gate 0 -> not eaten; gate > 0 -> stays missing
+    t["orig_HDDS"] = np.nan
+    t["orig_HDDS_phase"] = np.nan
+    out = hdds.derive(t, cfg.rounds.loc["2024-10"], cfg)
+    assert out["HDDS"].iloc[0] == 11 and np.isnan(out["HDDS"].iloc[1])
+    assert out["hdds_n_imputed"].tolist() == [1, 0]
+
+
+def test_hdds_phase_thresholds(cfg):
+    phase = cfg.settings["hdds"]["phase_by_score"]
+    assert len(phase) == 13 and [phase[k] for k in (0, 1, 2, 3, 4, 5, 12)] == [5, 5, 4, 3, 2, 1, 1]
 
 
 # ---- Household Hunger Scale ------------------------------------------------------------------
