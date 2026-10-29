@@ -1,5 +1,5 @@
 """Domain registry. To add a domain: write a module with NAME, LABELS, VALUE_LABELS,
 derive() and qc(), add its rules to config/crosswalk.csv, and register it here."""
-from . import core, fcs, hdds, hhs, lcs, rcsi
+from . import core, exp, fcs, hdds, hhs, lcs, rcsi
 
-DOMAINS = {m.NAME: m for m in (core, fcs, rcsi, lcs, hhs, hdds)}
+DOMAINS = {m.NAME: m for m in (core, fcs, rcsi, lcs, hhs, hdds, exp)}

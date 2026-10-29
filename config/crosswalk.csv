@@ -1035,3 +1035,59 @@ hdds,orig_HDDS_phase,2023-10,copy,HDDS_CH_2,
 hdds,orig_HDDS_phase,2024-02,copy,HDDS_CH_2,
 hdds,orig_HDDS_phase,2024-10,missing,,"no usable pre-computed value (absent, empty or text)"
 hdds,orig_HDDS_phase,2025-10,copy,HDDSCat_IPC,
+exp,exp_food,2018-10,copy,Depenses_alimentaires_mensuelles,analysts' monthly aggregate
+exp,exp_food,2019-02,copy,Depenses_alimentaires_mensuelles,analysts' monthly aggregate
+exp,exp_food,2019-10,copy,Depenses_alimentaires_mensuelles,analysts' monthly aggregate
+exp,exp_food,2020-02,copy,Depenses_alimentaires_mensuelles,analysts' monthly aggregate
+exp,exp_food,2020-10,copy,Depenses_alimentaires_mensuelles_Cor,analysts' corrected (_Cor) monthly aggregate
+exp,exp_food,2021-02,copy,Depenses_alimentaires_mensuelles_Cor,analysts' corrected (_Cor) monthly aggregate
+exp,exp_food,2021-10,copy,Depenses_alimentaires_mensuelles_Cor,analysts' corrected (_Cor) monthly aggregate
+exp,exp_food,2022-02,copy,Depenses_alimentaires_mensuelles_Cor,analysts' corrected (_Cor) monthly aggregate
+exp,exp_food,2022-10,copy,Depenses_alimentaires_mensuelles_Cor,analysts' corrected (_Cor) monthly aggregate
+exp,exp_food,2023-02,copy,Depenses_alimentaires_mensuelles_Cor,analysts' corrected (_Cor) monthly aggregate
+exp,exp_food,2023-10,copy,Depenses_alimentaires_mensuelles,analysts' monthly aggregate
+exp,exp_food,2024-02,copy,Depenses_alimentaires_mensuelles,analysts' monthly aggregate
+exp,exp_food,2024-10,missing,,only item-level answers; the analysts' aggregation (cleaning of cereal values) cannot be reproduced
+exp,exp_food,2025-10,copy,Depenses_alimentaires_mensuelles,analysts' monthly aggregate
+exp,exp_nonfood,2018-10,missing,,not stored: derived as total - food
+exp,exp_nonfood,2019-02,missing,,not stored: derived as total - food
+exp,exp_nonfood,2019-10,missing,,not stored: derived as total - food
+exp,exp_nonfood,2020-02,missing,,not stored: derived as total - food
+exp,exp_nonfood,2020-10,copy,Depenses_totales_NonAltre_mensuelles_Cor,analysts' corrected (_Cor) monthly aggregate
+exp,exp_nonfood,2021-02,missing,,not stored: derived as total - food
+exp,exp_nonfood,2021-10,missing,,not stored: derived as total - food
+exp,exp_nonfood,2022-02,missing,,not stored: derived as total - food
+exp,exp_nonfood,2022-10,missing,,not stored: derived as total - food
+exp,exp_nonfood,2023-02,missing,,not stored: derived as total - food
+exp,exp_nonfood,2023-10,copy,Depenses_non_alimentaires_mensuelles,analysts' monthly aggregate
+exp,exp_nonfood,2024-02,copy,Depenses_non_alimentaires_mensuelles,analysts' monthly aggregate
+exp,exp_nonfood,2024-10,missing,,only item-level answers; the analysts' aggregation (cleaning of cereal values) cannot be reproduced
+exp,exp_nonfood,2025-10,copy,Depenses_non_alimentaires_mensuelles,analysts' monthly aggregate
+exp,exp_total,2018-10,copy,Depenses_totales_mensuelles,analysts' monthly aggregate
+exp,exp_total,2019-02,copy,Depenses_totales_mensuelles,analysts' monthly aggregate
+exp,exp_total,2019-10,copy,Depenses_totales_mensuelles,analysts' monthly aggregate
+exp,exp_total,2020-02,copy,Depenses_totales_mensuelles,analysts' monthly aggregate
+exp,exp_total,2020-10,copy,Depenses_totales_mensuelles_Cor,analysts' corrected (_Cor) monthly aggregate
+exp,exp_total,2021-02,copy,Depenses_totales_mensuelles_Cor,analysts' corrected (_Cor) monthly aggregate
+exp,exp_total,2021-10,copy,Depenses_totales_mensuelles_Cor,analysts' corrected (_Cor) monthly aggregate
+exp,exp_total,2022-02,copy,Depenses_totales_mensuelles_Cor,analysts' corrected (_Cor) monthly aggregate
+exp,exp_total,2022-10,copy,Depenses_totales_mensuelles_Cor,analysts' corrected (_Cor) monthly aggregate
+exp,exp_total,2023-02,copy,Depenses_totales_mensuelles_Cor,analysts' corrected (_Cor) monthly aggregate
+exp,exp_total,2023-10,copy,Depenses_totales_mensuelles,analysts' monthly aggregate
+exp,exp_total,2024-02,copy,Depenses_totales_mensuelles,analysts' monthly aggregate
+exp,exp_total,2024-10,missing,,only item-level answers; the analysts' aggregation (cleaning of cereal values) cannot be reproduced
+exp,exp_total,2025-10,copy,Depenses_totales_mensuelles,analysts' monthly aggregate
+exp,orig_FES,2018-10,copy,Part_depenses_altres,analysts' monthly aggregate
+exp,orig_FES,2019-02,copy,Part_depenses_altres,analysts' monthly aggregate
+exp,orig_FES,2019-10,copy,Part_depenses_altres,analysts' monthly aggregate
+exp,orig_FES,2020-02,copy,Part_Depenses_altres,analysts' monthly aggregate
+exp,orig_FES,2020-10,copy,Part_depenses_altres_Cor,analysts' corrected (_Cor) monthly aggregate
+exp,orig_FES,2021-02,copy,Part_depenses_altres_Cor,analysts' corrected (_Cor) monthly aggregate
+exp,orig_FES,2021-10,copy,Part_depenses_altres_Cor,analysts' corrected (_Cor) monthly aggregate
+exp,orig_FES,2022-02,copy,Part_depenses_altres_Cor,analysts' corrected (_Cor) monthly aggregate
+exp,orig_FES,2022-10,copy,Part_depenses_altres_Cor,analysts' corrected (_Cor) monthly aggregate
+exp,orig_FES,2023-02,copy,Part_depenses_altres_Cor,analysts' corrected (_Cor) monthly aggregate
+exp,orig_FES,2023-10,copy,Part_depenses_altres,analysts' monthly aggregate
+exp,orig_FES,2024-02,copy,Part_depenses_altres,analysts' monthly aggregate
+exp,orig_FES,2024-10,missing,,only item-level answers; the analysts' aggregation (cleaning of cereal values) cannot be reproduced
+exp,orig_FES,2025-10,copy,Part_depenses_altres,analysts' monthly aggregate

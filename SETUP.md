@@ -137,7 +137,7 @@ Expected:
 Python 3.11.x
 2.2.2 2.2.6 1.2.7
 ...........                                                              [100%]
-23 passed
+25 passed
 ```
 
 If the tests pass, the environment and the data paths are correct.
@@ -239,7 +239,7 @@ Run the tests after **any** change to code or `config/`.
 
 1. Click the **Testing** icon (flask) in the left bar.
 2. The first time, if prompted, choose **pytest** and the folder **tests** (already set in `.vscode/settings.json`).
-3. Click ▶ **Run Tests**. All 23 should turn green.
+3. Click ▶ **Run Tests**. All 25 should turn green.
 
 ### In the terminal
 

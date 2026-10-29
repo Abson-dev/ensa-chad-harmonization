@@ -10,7 +10,7 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 
 from ensa_harmonize import config  # noqa: E402
-from ensa_harmonize.domains import fcs, hdds, hhs, lcs, rcsi  # noqa: E402
+from ensa_harmonize.domains import exp, fcs, hdds, hhs, lcs, rcsi  # noqa: E402
 from ensa_harmonize.engine import any_source, max_or_last  # noqa: E402
 from ensa_harmonize.domains.common import categorise, item_matrix  # noqa: E402
 from ensa_harmonize.engine import spss_to_datetime, sum_sources, to_number  # noqa: E402
@@ -120,6 +120,24 @@ def test_lcs_common_items_asked_in_every_round(cfg):
     for item in cfg.settings["lcs"]["common_items"]:
         rules = cw[(cw["domain"] == "lcs") & (cw["target"] == item)]
         assert (rules["method"] != "missing").all(), item
+
+
+# ---- Expenditure -------------------------------------------------------------------------------
+
+def test_exp_share_category_and_derived_nonfood(cfg):
+    t = pd.DataFrame({"exp_food": [40.0, 60.0, 70.0, 90.0], "exp_total": [100.0, 100.0, 100.0, 100.0],
+                      "exp_nonfood": [np.nan] * 4, "orig_FES": [np.nan] * 4})
+    out = exp.derive(t, cfg.rounds.loc["2018-10"], cfg)
+    assert out["FES"].tolist() == [40, 60, 70, 90]
+    assert out["FES_cat"].tolist() == [1, 2, 3, 4]
+    assert out["exp_nonfood"].tolist() == [60, 40, 30, 10] and out["exp_nonfood_derived"].all()
+
+
+def test_exp_invalid_totals_set_to_missing(cfg):
+    t = pd.DataFrame({"exp_food": [10.0, 50.0, -5.0], "exp_total": [0.0, 40.0, 100.0],
+                      "exp_nonfood": [np.nan] * 3, "orig_FES": [np.nan] * 3})
+    out = exp.derive(t, cfg.rounds.loc["2018-10"], cfg)
+    assert out["FES"].isna().all() and out["exp_invalid"].tolist() == [1, 1, 1]
 
 
 # ---- Household Dietary Diversity -------------------------------------------------------------

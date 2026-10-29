@@ -4,9 +4,9 @@
 ![R](https://img.shields.io/badge/R-%E2%89%A54.3%20(tested%204.5.2)-276DC3?logo=r&logoColor=white)
 ![Shiny](https://img.shields.io/badge/Shiny-1.14-1F77B4?logo=rstudioide&logoColor=white)
 ![Environment](https://img.shields.io/badge/env-conda--forge-green)
-![Pipeline tests](https://img.shields.io/badge/pipeline%20tests-23%20passing-brightgreen)
+![Pipeline tests](https://img.shields.io/badge/pipeline%20tests-25%20passing-brightgreen)
 ![App checks](https://img.shields.io/badge/app%20checks-85%20passing-brightgreen)
-![Status](https://img.shields.io/badge/status-6%20of%208%20domains-orange)
+![Status](https://img.shields.io/badge/status-7%20of%208%20domains-orange)
 
 A config-driven, tested and documented workflow that harmonises **14 rounds** of Chad's national food security assessment (*Enquête Nationale de Sécurité Alimentaire*, ENSA), October 2018 to October 2025, **197,947 households**, into one comparable dataset per **thematic domain**. It has two parts:
 
@@ -60,7 +60,7 @@ Across these rounds the questionnaire went through three codebook generations: F
 | `lcs` | ✅ done | 14 livelihood coping strategies on the WFP answer scale; maximum coping category, round-specific and comparable across rounds |
 | `hhs` | ✅ done | Household Hunger Scale (from Oct 2019): 3 questions and frequencies, score 0–6, WFP category, IPC / CH phase |
 | `hdds` | ✅ done | 12 food groups eaten in the past 24 hours, Household Dietary Diversity Score, Cadre Harmonisé phase |
-| `exp` | 🔜 planned | Food / non-food expenditure, food expenditure share |
+| `exp` | ✅ done | Monthly food / non-food / total expenditure (analysts' aggregates), food expenditure share and CARI category; not available for Oct 2024 |
 | `demo` | 🔜 planned | Head of household characteristics, household size, income source |
 
 The variable mapping for the planned domains has already been worked out (crosswalk workbook, 83 concepts × 14 rounds); they need their rules and a domain module.
@@ -93,7 +93,7 @@ The pipeline expects the original SPSS files laid out like this (folder names ar
 
 | Part | Language | Role | Environment | Entry point | Tests |
 |---|---|---|---|---|---|
-| Harmonisation pipeline | **Python 3.11** | read SPSS files, apply rules, recompute and validate indicators, write CSV / SAV | [`environment.yml`](environment.yml) (conda-forge, pinned) or [`requirements.txt`](requirements.txt) | `run_harmonize.py` | `python -m pytest -q` (23) |
+| Harmonisation pipeline | **Python 3.11** | read SPSS files, apply rules, recompute and validate indicators, write CSV / SAV | [`environment.yml`](environment.yml) (conda-forge, pinned) or [`requirements.txt`](requirements.txt) | `run_harmonize.py` | `python -m pytest -q` (25) |
 | Harmonisation explorer | **R ≥ 4.3** (tested 4.5.2) | Shiny app for reviewers: process, crosswalk, validation, indicators | packages installed by [`app/install_packages.R`](app/install_packages.R) | `app/app.R`, `app/run_app.bat` | `Rscript tests/test_app.R` (85) |
 | App data preparation | **R** | aggregates the pipeline outputs for the app (no household data) | `data.table`, `jsonlite` | `app/prepare_app_data.R` | — |
 | Analysis by domain | **R Markdown** | merges the domain files; survey-weighted tables and figures; Word report | officedown, flextable, survey, ggplot2 (+ Pandoc) | `analysis/render_report.R`, `analysis/render_report.bat` | — |
@@ -115,7 +115,7 @@ git clone https://github.com/Abson-dev/ensa-chad-harmonization.git harmonization
 cd harmonization
 conda env create -f environment.yml      # Python 3.11 + pinned packages from conda-forge
 conda activate ensa-chad
-python -m pytest -q                      # 23 rule tests
+python -m pytest -q                      # 25 rule tests
 python run_harmonize.py                  # all domains, all rounds (about 2-3 min)
 ```
 
@@ -282,6 +282,13 @@ Per-round QC tables (completeness, invalid values, weighted means and prevalence
 - rCSI = LessQlty + 2×Borrow + MealSize + 3×MealAdult + MealNb (0–56). Cadre Harmonisé phase: ≤3 / 4–18 / ≥19.
 - **Oct 2024 skip pattern:** "restrict adults so children can eat" was not asked in households without children. It is set to 0 for those households (1,078, flagged per household); the 185 skipped answers in households with children stay missing.
 
+### exp
+- **Source:** the analysts' monthly aggregates (food from all sources, non-food, total; nominal FCFA), the `_Cor` corrected versions where they exist. They are internally consistent in every round: stored share = food / total for 100% of households, and food + non-food = total wherever non-food is stored. Non-food is derived as total − food when not stored.
+- **Invalid totals** (≤ 0, negative food, food > total; 26 households) are set to missing and flagged; totals above 20 × the round median are flagged only.
+- **FES** = 100 × food / total, recomputed; CARI category < 50, 50–65, 65–75, ≥ 75% (`settings.toml`).
+- **Oct 2024 not available:** that round has only item-level answers. Tested on Oct 2025, which has both, the non-food formula (1-month items + 3-month items ÷ 3) reproduces the analysts' total for 96.7% of households, but food does not: cereals are about 3.6× lower in the analysts' aggregate than in the raw answers (undocumented cleaning). Rather than mix methods, Oct 2024 is left missing. The analysts' SPSS syntax would allow it to be rebuilt.
+- **Comparability:** the median food share is 66–71% in Oct 2018 – Feb 2023 and 72–84% from Oct 2023, when the WFP-codebook module (expenditure by source and item, different recall periods) was introduced. Part of the jump is likely methodological.
+
 ### hdds
 - 12 groups (24-hour recall), all coded 0/1. In Feb 2021 – Feb 2023 vegetables, fruit and meat are split into sub-groups; they are combined with the `any` method (eaten if any sub-group was eaten). Meat (flesh and organ) is combined in every round.
 - **Oct 2024 skip pattern:** a 24-hour question was asked only if the group was eaten in the past 7 days. A skipped answer is set to 0 when the matching FCS 7-day answer is 0 (sub-group days for meat, fish and eggs, else the main group: `gate_*` rules, `max_or_last` method). In the data, every skipped answer has a gate of 0; 72,090 group answers were resolved, flagged as `hdds_n_imputed`.
@@ -314,6 +321,10 @@ Per-round QC tables (completeness, invalid values, weighted means and prevalence
 | LCS strategy slots renumbered, item set and severities changed | Feb 2021 onward | Content-based mapping; round-specific and comparable (common-set) indicators |
 | LCS module switched to essential needs (coping for any need, then reason) | Oct 2024 onward | Comparable indicator keeps coping to buy food only |
 | Analysts' LCS max category built on varying, undocumented item sets | 7 rounds | Recomputed with documented rules; differences reported in QC |
+| No expenditure aggregates; analysts' food aggregation not reproducible | Oct 2024 | Expenditure left missing, documented |
+| Food expenditure share level shift with the new expenditure module | Oct 2023 onward | Flagged in the report; compare generation-3 rounds with each other |
+| HDDS 24-hour questions skipped when the group was not eaten in 7 days | Oct 2024 | Set to "not eaten" when the FCS gate is 0 (every skipped answer has a zero gate) |
+| Undocumented code 2 on an HHS question | Oct 2019 | Accepted as "yes" in that round only (all answered "often"), flagged |
 | Region name variants (Hajer/Hadjer Lamis, Wardi Fira, …) | Several | Explicit lookup table |
 | Many pre-computed indicators stored as text | Gen 2 | Converted, then recomputed |
 
@@ -340,6 +351,7 @@ Details: [SETUP.md §10](SETUP.md#10-change-a-harmonisation-decision).
 | `ensa_core.csv/.sav` | 197,947 | round_id, hh_id, year, season, generation, uuid, svy_date, date_flag, admin1, admin1_raw, admin2, admin3, weight, weight_norm, weight_flag |
 | `ensa_fcs.csv/.sav` | 197,947 | round_id, hh_id, 9 food groups, fcs_n_missing, fcs_n_invalid, FCS, FCSCat21, FCSCat28, orig_FCS, orig_FCSCat28 |
 | `ensa_rcsi.csv/.sav` | 197,947 | round_id, hh_id, 5 strategies, rcsi_mealadult_imputed, rcsi_n_missing, rcsi_n_invalid, rCSI, rCSI_CH, orig_rCSI |
+| `ensa_exp.csv/.sav` | 197,947 | round_id, hh_id, exp_food, exp_nonfood, exp_total, exp_nonfood_derived, exp_invalid, exp_outlier, FES, FES_cat, orig_FES |
 | `ensa_hdds.csv/.sav` | 197,947 | round_id, hh_id, 12 food groups, hdds_n_imputed, hdds_n_missing, hdds_n_invalid, HDDS, HDDS_phase, orig_HDDS, orig_HDDS_phase |
 | `ensa_hhs.csv/.sav` | 197,947 | round_id, hh_id, 3 questions + frequencies, hhs_n_missing, hhs_inconsistent, hhs_code_exception, HHS, HHSCat, HHS_phase, orig_HHS, orig_HHS_phase |
 | `ensa_lcs.csv/.sav` | 197,947 | round_id, hh_id, 14 strategies (WFP codes), lcs_n_asked, lcs_n_answered, lcs_n_used, LCS_stress, LCS_crisis, LCS_emergency, LCS_max, LCS_max_common, lcs_food_reason, lcs_not_for_food, orig_LCS |

@@ -72,6 +72,13 @@ hhs_first_oct <- hhs_nat[season == "Oct", round_id][1]
 hdds_nat <- dcast(as.data.table(estimate_by(design, c("HDDS", "hdds_p3", paste0("hdds_ph", 1:5)))),
                   round_id ~ var, value.var = c("est", "lo", "hi"))
 hdds_nat <- merge(R[, .(round_id, round, round_lab, season, year, weighted)], hdds_nat, by = "round_id")[order(match(round_id, R$round_id))]
+# Expenditure: not available in Oct 2024.
+exp_design <- subset(design, !is.na(FES))
+exp_nat <- dcast(as.data.table(estimate_by(exp_design, c("FES", paste0("fes_c", 1:4)))),
+                 round_id ~ var, value.var = c("est", "lo", "hi"))
+exp_med <- d[!is.na(FES), .(food_med = median(exp_food), total_med = median(exp_total)), by = round_id]
+exp_nat <- merge(merge(R[, .(round_id, round, round_lab, season, year, weighted, generation)], exp_nat, by = "round_id"),
+                 exp_med, by = "round_id")[order(match(round_id, R$round_id))]
 fcs_nat <- merge(R[, .(round_id, round, round_lab, season, year, weighted)], fcs_nat, by = "round_id")[order(match(round_id, R$round_id))]
 rcsi_nat <- merge(R[, .(round_id, round, round_lab, season, year, weighted)], rcsi_nat, by = "round_id")[order(match(round_id, R$round_id))]
 
@@ -552,6 +559,46 @@ save_fig(heat("hhs_p3", "% HHS phase 3+", "#7A1F00"), "F15_hhs_region_heatmap", 
 ```
 
 <!---BLOCK_LANDSCAPE_STOP--->
+
+# Expenditure (exp domain)
+
+```{r exp-calc}
+g12 <- exp_nat[generation %in% 1:2]; g3 <- exp_nat[generation == 3]
+```
+
+Household expenditure comes from the monthly aggregates computed by the original analysts (food from all sources, non-food, total; nominal FCFA). The share of the budget spent on food is a CARI indicator: households spending 75% or more on food are the most vulnerable. Between `r g12$round_lab[1]` and `r tail(g12$round_lab, 1)` (questionnaire generations 1 and 2), the mean food share ranged from `r num(min(g12$est_FES))`% to `r num(max(g12$est_FES))`%; in the generation-3 rounds it reached `r num(max(g3$est_FES))`% (Table \@ref(tab:exp-national), Figure \@ref(fig:exp-fes)).
+
+**Caution.** The jump coincides with the switch to the WFP-codebook expenditure module in October 2023 (food expenditure by source and food item, different recall periods). Part of it is likely methodological; compare generation-3 rounds with each other rather than with earlier rounds. Expenditure is not available for October 2024 (item-level answers only, and the analysts' aggregation could not be reproduced).
+
+```{r exp-national}
+save_tab(exp_nat, "T17_exp_national")
+ft(exp_nat[, .(Round = round_lab, Gen = generation, `Median food (FCFA)` = int(round(food_med)),
+               `Median total (FCFA)` = int(round(total_med)), `Food share (%)` = num(est_FES),
+               `95% CI` = ci(lo_FES, hi_FES, scale = 1), `Share ≥ 75% (%)` = pct(est_fes_c4),
+               `95% CI ` = ci(lo_fes_c4, hi_fes_c4))]) |>
+  flextable::add_footer_lines("Monthly household expenditure, nominal FCFA (not adjusted for inflation). Food share = food / total. Generation 3 (from Oct 2023) uses a different expenditure module. Oct 2024: not available. † Unweighted estimate.") |>
+  flextable::fontsize(size = 8, part = "all") |>
+  cap("Household expenditure and food expenditure share by round (national, 95% CI)", "exp-national")
+```
+
+```{r exp-fes, fig.id = "exp-fes", fig.cap = "Households by food expenditure share (CARI categories), by round and season", fig.height = 3.8}
+x <- melt(exp_nat[, .(round_lab, season, `< 50%` = est_fes_c1, `50–65%` = est_fes_c2, `65–75%` = est_fes_c3, `≥ 75%` = est_fes_c4)],
+          id.vars = c("round_lab", "season"), variable.name = "cat", value.name = "share")
+x[, season := factor(season, c("Feb", "Oct"), c("February rounds", "October rounds"))]
+fes_col <- c(`< 50%` = "#CDFACD", `50–65%` = "#FAE61E", `65–75%` = "#E67800", `≥ 75%` = "#C80000")
+x[, cat := factor(cat, levels = rev(names(fes_col)))]
+p <- ggplot(x, aes(round_lab, share, fill = cat)) +
+  geom_col(width = 0.72, colour = "white", linewidth = 0.3) +
+  geom_text(aes(label = ifelse(share >= 0.04, pct(share, 0), ""), group = cat, colour = cat == "≥ 75%"),
+            position = position_stack(vjust = 0.5), size = 2.5, show.legend = FALSE) +
+  scale_colour_manual(values = c(`TRUE` = "white", `FALSE` = PAL$ink)) +
+  facet_grid(~season, scales = "free_x", space = "free_x") +
+  scale_fill_manual(values = fes_col, name = "Food share", breaks = names(fes_col)) +
+  scale_y_continuous(labels = scales::label_percent(), expand = c(0, 0)) +
+  labs(x = NULL, y = "Share of households", caption = "From Oct 2023: different expenditure module. Oct 2024: not available. † Unweighted estimate.") +
+  theme_report() + theme(axis.text.x = element_text(angle = 40, hjust = 1), panel.grid.major.x = element_blank())
+save_fig(p, "F18_exp_fes", height = 3.8)
+```
 
 # Food consumption and coping combined
 
