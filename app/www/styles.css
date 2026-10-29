@@ -1,0 +1,79 @@
+/* ENSA Chad harmonisation explorer */
+:root { --navy: #17324D; --teal: #0F7C80; --sand: #F4F1EA; --muted: #6B7785; --grid: #E6E9EE; }
+
+body { background: #F7F8FA; }
+.navbar { box-shadow: 0 2px 10px rgba(23, 50, 77, .18); }
+.navbar .brand { font-weight: 700; letter-spacing: .2px; }
+.navbar .nav-link { font-weight: 500; }
+.bslib-page-navbar > .container-fluid, .tab-content > .tab-pane { padding-top: 1rem; }
+main, .tab-content { max-width: 1480px; margin: 0 auto; }
+
+.hero {
+  background: linear-gradient(120deg, var(--navy) 0%, #1F4E6B 55%, var(--teal) 100%);
+  color: #fff; border-radius: .9rem; padding: 2.2rem 2.4rem; margin-bottom: 1.2rem;
+  box-shadow: 0 6px 24px rgba(23, 50, 77, .18);
+}
+.hero h1 { font-weight: 750; font-size: clamp(1.5rem, 2.6vw, 2.2rem); margin: .3rem 0 .6rem; }
+.hero p { max-width: 900px; opacity: .92; font-size: 1.05rem; margin: 0; }
+.hero-kicker { text-transform: uppercase; letter-spacing: .12em; font-size: .78rem; opacity: .8; }
+
+.page-intro { margin: .4rem 0 1.1rem; }
+.page-intro h2 { font-weight: 720; color: var(--navy); font-size: 1.6rem; margin-bottom: .25rem; }
+.page-intro .lead { color: var(--muted); font-size: 1rem; max-width: 980px; }
+
+.card { box-shadow: 0 1px 3px rgba(16, 24, 40, .06); border-color: var(--grid); }
+.card-header.card-title-sm, .card-title-sm { font-weight: 650; color: var(--navy); background: #fff; }
+.kpis .value-box-title { font-size: .85rem; text-transform: uppercase; letter-spacing: .04em; }
+.kpis .value-box-value { font-weight: 750; }
+
+.pill { display: inline-block; padding: .12rem .55rem; border-radius: 999px; font-size: .75rem;
+  font-weight: 600; line-height: 1.4; white-space: nowrap; }
+
+.callout { display: flex; gap: .7rem; align-items: flex-start; padding: .8rem 1rem; border-radius: .6rem;
+  margin: .4rem 0 1rem; border-left: 4px solid; }
+.callout-info { background: #EEF5FB; border-color: #2F7FB5; }
+.callout-warning { background: #FFF6E8; border-color: #E58E26; }
+.callout-success { background: #EAF5EE; border-color: #2E8B57; }
+
+.steps { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem; }
+.step { position: relative; background: var(--sand); border-radius: .7rem; padding: 1.1rem 1.1rem .4rem; }
+.step-num { position: absolute; top: .7rem; right: .9rem; font-size: 2rem; font-weight: 800; color: rgba(23,50,77,.12); }
+.step-icon { color: var(--teal); margin-bottom: .4rem; }
+.step h5 { font-weight: 700; color: var(--navy); font-size: 1rem; }
+
+.gen-list { display: flex; flex-direction: column; gap: .8rem; }
+.gen-item { border-left: 5px solid; padding: .3rem .8rem; background: #FAFBFC; border-radius: 0 .5rem .5rem 0; }
+.gen-head { display: flex; flex-direction: column; margin-bottom: .2rem; }
+
+.domain-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: .8rem; }
+.domain-card { border: 1px solid var(--grid); border-radius: .6rem; padding: .7rem .8rem; background: #fff; }
+.domain-card.done { border-left: 4px solid #2E8B57; }
+.domain-card.planned { border-left: 4px solid #ADB5BD; opacity: .85; }
+.domain-card strong { font-family: Consolas, monospace; }
+
+.legend-block { font-size: .82rem; }
+.legend-row { display: flex; align-items: center; gap: .5rem; margin-top: .3rem; }
+.swatch { width: 16px; height: 16px; border-radius: 3px; border: 1px solid #D0D5DD; flex: none; }
+
+.concept-card { margin-top: 1rem; border-top: 4px solid var(--teal); }
+.cov-bar { position: relative; height: 18px; background: #EEF0F3; border-radius: 4px; overflow: hidden; }
+.cov-fill { position: absolute; left: 0; top: 0; bottom: 0; opacity: .85; }
+.cov-bar span { position: relative; font-size: .75rem; padding-left: .35rem; font-weight: 600; }
+
+.issue-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(330px, 1fr)); gap: 1rem; }
+.issue-card { background: #fff; border: 1px solid var(--grid); border-top: 4px solid; border-radius: .7rem;
+  padding: 1rem 1.1rem; box-shadow: 0 1px 3px rgba(16, 24, 40, .05); }
+.issue-card h5 { font-size: 1rem; font-weight: 700; color: var(--navy); margin: 0; }
+.issue-rounds { font-size: .8rem; color: var(--muted); margin: .4rem 0 .5rem; }
+.issue-fix { font-size: .85rem; background: #F4F7F6; border-radius: .4rem; padding: .5rem .6rem; }
+
+.code-block { background: #10202F; color: #E6EDF3; padding: .9rem 1rem; border-radius: .5rem; font-size: .82rem; }
+.app-footer { text-align: center; font-size: .8rem; color: var(--muted); padding: 1.5rem 0 1rem; }
+.app-footer a { color: var(--teal); }
+
+.rt-th { font-weight: 650; }
+
+/* Tabbed cards: make panels use the full card width so widgets size to it, not to their content. */
+.card > .tab-content, .card > .tab-content > .tab-pane, .card > .tab-content > .tab-pane > .card-body {
+  width: 100%; align-self: stretch; }
+@media (max-width: 768px) { .hero { padding: 1.4rem; } }

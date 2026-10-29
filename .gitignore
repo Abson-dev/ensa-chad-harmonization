@@ -1,6 +1,9 @@
 # Household-level outputs: regenerate with run_harmonize.py, never publish
 output/
 
+# Shiny app data: aggregates by region; share deliberately, not via a public repo
+app/data/
+
 # Raw survey microdata (not redistributable)
 *.sav
 *.dta

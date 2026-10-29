@@ -19,6 +19,7 @@ Across these rounds the questionnaire went through three codebook generations: F
 - [Domains](#domains)
 - [Data](#data)
 - [Quick start](#quick-start)
+- [Interactive explorer (R Shiny)](#interactive-explorer-r-shiny)
 - [Repository structure](#repository-structure)
 - [How harmonisation works](#how-harmonisation-works)
 - [Validation](#validation)
@@ -100,6 +101,20 @@ python run_harmonize.py --rounds 2024-10 2025-10 --no-hash # quick partial run
 python run_harmonize.py --formats csv                      # skip .sav output
 ```
 
+## Interactive explorer (R Shiny)
+
+[`app/`](app/) contains a Shiny app that presents the whole process for reviewers: an overview, a clickable pipeline diagram, the crosswalk workbook made interactive (coverage of 83 concepts × 14 rounds, a profile per concept), the fieldwork calendar and weights, validation against the original scores, FCS / rCSI indicators by round and region, and the data issues found.
+
+The app ships **aggregates and metadata only**. Its `data/` folder is not versioned; build it after a pipeline run:
+
+```bash
+cd app
+Rscript prepare_app_data.R       # aggregates ../output into app/data (cells < 30 households suppressed)
+Rscript -e "shiny::runApp()"     # or double-click run_app.bat on Windows
+```
+
+Details, sharing options and package versions: [app/README.md](app/README.md). For a non-technical user who receives the app folder with its `data/`, see [app/README_FIRST.txt](app/README_FIRST.txt).
+
 ## Repository structure
 
 ```
@@ -115,6 +130,7 @@ harmonization/
 │   ├── pipeline.py          orchestration, writers, provenance manifest
 │   └── domains/             one module per domain: derive() + qc()
 ├── tests/test_rules.py      scoring rules, thresholds, conversions, config completeness
+├── app/                     R Shiny explorer (app.R, R/ modules, www/, run_app.bat, prepare_app_data.R)
 ├── .vscode/                 interpreter, test and run/debug configuration
 ├── environment.yml          conda environment (conda-forge, pinned)
 ├── requirements.txt         pip alternative
