@@ -1,5 +1,6 @@
 """Unit tests for the harmonisation rules. Run from harmonization/:  python -m pytest -q"""
 import sys
+from datetime import datetime
 from pathlib import Path
 
 import numpy as np
@@ -80,8 +81,9 @@ def test_text_stored_numbers_are_converted():
 
 
 def test_spss_date_conversion():
-    # 2024-11-01 00:00 UTC in SPSS seconds since 1582-10-14
-    secs = pd.Timestamp("2024-11-01").value // 10**9 + 12219292800
+    # 2024-11-01 00:00 in SPSS seconds since 1582-10-14, counted from the calendar (not from the
+    # module's constant, so a wrong constant cannot pass)
+    secs = (datetime(2024, 11, 1) - datetime(1582, 10, 14)).total_seconds()
     assert spss_to_datetime(pd.Series([secs])).iloc[0] == pd.Timestamp("2024-11-01")
 
 

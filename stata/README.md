@@ -42,8 +42,8 @@ The analysts' pre-computed variables (`orig_*`) are checked as straight copies. 
 ## Last run (30 Oct 2026, Stata 19)
 
 - **Households:** all 197,947, in all 14 rounds, are in the final files with no extra household.
-- **FCS, rCSI, LCS, HHS, HDDS, expenditure, demographics:** every merged variable is consistent in every round.
-- **Core:** consistent except `svy_date`. Every interview date in the final file is **one day late**: the pipeline's SPSS epoch constant (`ensa_harmonize/engine.py`, `SPSS_EPOCH_OFFSET = 12219292800`) is one day short of the correct 12219379200 seconds (14 Oct 1582 to 1 Jan 1970). Fix pending.
+- **All 8 domains:** every merged variable is consistent with the original rounds, in every round.
+- The first run found every interview date (`svy_date`) **one day late**: the pipeline's SPSS epoch constant (`ensa_harmonize/engine.py`) was one day short (12219292800 instead of 12219379200 seconds, 14 Oct 1582 to 1 Jan 1970). It is fixed, the unit test now derives the epoch from the calendar, and the rerun is consistent.
 
 ## Results (`output/stata_checks/`, not versioned)
 

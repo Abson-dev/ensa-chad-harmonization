@@ -3,8 +3,8 @@ import numpy as np
 import pandas as pd
 import pyreadstat
 
-# Seconds between the SPSS epoch (1582-10-14) and the Unix epoch (1970-01-01).
-SPSS_EPOCH_OFFSET = 12219292800
+# Seconds between the SPSS epoch (1582-10-14) and the Unix epoch (1970-01-01): 141,428 days.
+SPSS_EPOCH_OFFSET = 12219379200
 
 
 def required_sources(rules: pd.DataFrame) -> list[str]:
