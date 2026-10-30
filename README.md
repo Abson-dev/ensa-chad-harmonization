@@ -167,7 +167,7 @@ The report has one chapter per domain (sample, household profile, FCS, HDDS, rCS
 |---|---|
 | ![Pipeline diagram with step details](docs/screenshots/02-process.png) **Process**: click a step to see what it does | ![Coverage matrix of 83 concepts across 14 rounds](docs/screenshots/03-crosswalk-matrix.png) **Crosswalk**: where each concept lives in each round |
 | ![Crosswalk table laid out as in the Excel workbook](docs/screenshots/04-crosswalk-table.png) **Crosswalk table**: source variable per round, coloured by coverage | ![Concept profile showing the LCS slot swap](docs/screenshots/05-concept-profile.png) **Concept profile**: here, the LCS slot swap between Feb and Oct 2021 |
-| ![Fieldwork calendar and round inventory](docs/screenshots/06-rounds.png) **Rounds**: fieldwork windows, weights, checks | ![Validation against the original analysts' scores](docs/screenshots/07-validation.png) **Validation**: agreement and the reversed FCS coding |
+| ![Fieldwork calendar and round inventory](docs/screenshots/06-rounds.png) **Rounds**: fieldwork windows, weights, checks | ![Validation against the original analysts' variables](docs/screenshots/07-validation.png) **Validation**: agreement with the analysts for 6 indicators, and the reversed FCS coding |
 | ![Data issues ranked by impact](docs/screenshots/08-data-issues.png) **Data issues**: what was found and how it is handled | |
 
 The Indicators page is not shown here: its regional estimates are preliminary and are shared only with the data owners' agreement.

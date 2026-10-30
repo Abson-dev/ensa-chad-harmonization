@@ -20,7 +20,7 @@ DOMAIN_NAMES <- c(core = "core", fcs = "FCS", rcsi = "rCSI", lcs = "LCS", hhs = 
                   exp = "expenditure", demo = "demographics")
 
 # Facts from the metadata scan of the 14 source files (see the crosswalk README sheet).
-FACTS <- list(distinct_vars = 3853, shared_vars = 14, tests = 11)
+FACTS <- list(distinct_vars = 3853, shared_vars = 14, tests = 29)
 
 app_theme <- function() {
   bslib::bs_theme(

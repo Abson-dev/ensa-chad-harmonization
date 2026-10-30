@@ -1,15 +1,27 @@
 # Harmonisation process: pipeline diagram, domain status and the rule set behind each domain.
 
+DOMAIN_DETAIL <- c(
+  core = "Keys (round_id, hh_id), interview date with fieldwork-window check, standardised regions, sampling weight and per-round normalised weight.",
+  fcs = "9 food groups → Food Consumption Score (WFP weights) → groups at 21/35 and 28/42 thresholds.",
+  rcsi = "5 strategies → reduced Coping Strategies Index → Cadre Harmonisé phase; Oct 2024 skip pattern resolved by rule.",
+  lcs = "14 livelihood strategies on three answer scales → maximum category, round-specific and comparable (7 common strategies, coping for food).",
+  hhs = "3 hunger experiences × frequency (from Oct 2019) → Household Hunger Scale, WFP category and IPC phase.",
+  hdds = "12 food groups eaten in the last 24 h → dietary diversity score and Cadre Harmonisé phase; Oct 2024 skips resolved from the FCS module.",
+  exp = "Analysts' monthly food and non-food aggregates → total expenditure and food share (CARI); Oct 2024 not reproducible, left missing.",
+  demo = "Household head (sex, age, education, marital status), household size, income source, population group; per-round code lists recoded.")
+
 PIPELINE_NODES <- function(d) {
   n_rules <- nrow(d$rules)
+  dom <- names(DOMAIN_DETAIL)
+  nd <- length(dom)
   data.frame(
-    id = 1:12,
+    id = seq_len(nd + 9),
     label = c("14 SPSS files\n(raw .sav)", "Metadata scan", "Crosswalk workbook",
-              "Configuration", "Harmonisation engine", "core", "fcs", "rcsi",
+              "Configuration", "Harmonisation engine", dom,
               "Domain files\n(CSV + SAV)", "QC tables", "Provenance\nmanifest", "Unit tests"),
-    group = c("input", "step", "doc", "config", "step", "domain", "domain", "domain",
+    group = c("input", "step", "doc", "config", "step", rep("domain", nd),
               "output", "output", "output", "check"),
-    level = c(1, 2, 3, 3, 4, 5, 5, 5, 6, 6, 6, 4),
+    level = c(1, 2, 3, 3, 4, rep(5, nd), 6, 6, 6, 4),
     detail = c(
       sprintf("%s households in 14 rounds, Oct 2018 – Oct 2025. Raw files are read in place and never modified.",
               fmt_int(sum(d$rounds$households, na.rm = TRUE))),
@@ -19,9 +31,7 @@ PIPELINE_NODES <- function(d) {
               nrow(d$concepts)),
       sprintf("crosswalk.csv (%d rules: one per domain × target × round), rounds.csv, admin1_names.csv (32 spellings → 23 regions) and settings.toml (weights, thresholds). All decisions live here, not in code.", n_rules),
       "Reads only the columns needed, applies one method per rule (copy, copy_label, sum, sum_cap7, any, max_or_last, missing) and stops on any gap, unknown region spelling or duplicate ID.",
-      "Keys (round_id, hh_id), interview date with fieldwork-window check, standardised regions, sampling weight and per-round normalised weight.",
-      "9 food groups → Food Consumption Score (WFP weights) → groups at 21/35 and 28/42 thresholds.",
-      "5 strategies → reduced Coping Strategies Index → Cadre Harmonisé phase; Oct 2024 skip pattern resolved by rule.",
+      unname(DOMAIN_DETAIL),
       "One file per domain, joinable on round_id + hh_id, with variable and value labels in SPSS format.",
       "Per round: completeness, invalid values, weighted indicators and agreement with the original analysts' scores.",
       "SHA-256 of every input, configuration file and output, plus software versions. Reruns give byte-identical CSV outputs.",
@@ -41,7 +51,7 @@ process_ui <- function(id, d) {
       bslib::card(
         full_screen = TRUE,
         bslib::card_header("Pipeline", class = "card-title-sm"),
-        visNetwork::visNetworkOutput(ns("flow"), height = "460px")
+        visNetwork::visNetworkOutput(ns("flow"), height = "540px")
       ),
       bslib::card(
         bslib::card_header("Step details", class = "card-title-sm"),
@@ -84,10 +94,13 @@ process_server <- function(id, d) {
         dplyr::mutate(title = detail, shape = "box",
                       font.color = ifelse(group %in% c("input", "step"), "#ffffff", COL$ink),
                       font.size = 16, margin = 12)
-      edges <- data.frame(from = c(1, 2, 3, 3, 4, 5, 5, 5, 6, 7, 8, 6, 7, 8, 5, 12),
-                          to = c(2, 3, 4, 4, 5, 6, 7, 8, 9, 9, 9, 10, 10, 10, 11, 5))
-      edges <- unique(edges)
-      edges$dashes <- edges$from == 12
+      dom_id <- nodes$id[nodes$group == "domain"]
+      out_id <- nodes$id[nodes$group == "output"]
+      test_id <- nodes$id[nodes$group == "check"]
+      edges <- data.frame(from = c(1, 2, 3, 4, rep(5, length(dom_id)), dom_id, dom_id, 5, test_id),
+                          to = c(2, 3, 4, 5, dom_id, rep(out_id[1], length(dom_id)),
+                                 rep(out_id[2], length(dom_id)), out_id[3], 5))
+      edges$dashes <- edges$from == test_id
       visNetwork::visNetwork(vn, edges) |>
         visNetwork::visGroups(groupname = "input", color = list(background = COL$navy, border = COL$navy)) |>
         visNetwork::visGroups(groupname = "step", color = list(background = COL$teal, border = COL$teal)) |>
@@ -98,7 +111,7 @@ process_server <- function(id, d) {
         visNetwork::visGroups(groupname = "check", color = list(background = "#FFF8E1", border = "#E58E26")) |>
         visNetwork::visEdges(arrows = "to", color = list(color = "#9AA5B1", highlight = COL$teal),
                              smooth = list(type = "cubicBezier", forceDirection = "horizontal")) |>
-        visNetwork::visHierarchicalLayout(direction = "LR", levelSeparation = 175, nodeSpacing = 95) |>
+        visNetwork::visHierarchicalLayout(direction = "LR", levelSeparation = 175, nodeSpacing = 50) |>
         visNetwork::visOptions(highlightNearest = list(enabled = TRUE, degree = 1)) |>
         visNetwork::visInteraction(dragNodes = FALSE, zoomView = FALSE, navigationButtons = FALSE) |>
         visNetwork::visEvents(select = sprintf(
