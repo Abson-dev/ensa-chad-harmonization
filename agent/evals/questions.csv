@@ -1,0 +1,13 @@
+id,question,indicator,breakdown,group,round_id,must_contain
+q01,What share of households had poor or borderline food consumption in October 2025?,fcs_poor_borderline,national,Chad,2025-10,
+q02,Quelle proportion des ménages était en phase 3+ de l'indice réduit des stratégies de survie (rCSI) en février 2024 ?,rcsi_phase3,national,Chad,2024-02,pondér|unweighted|sans poids
+q03,What percentage of households were female-headed in October 2023?,female_head,national,Chad,2023-10,
+q04,"What share of households were in HHS phase 3 or above in February 2023?",hhs_phase3,national,Chad,2023-02,
+q05,What share of households used crisis or emergency livelihood coping strategies in October 2025?,lcs_crisis_emergency,national,Chad,2025-10,
+q06,"In October 2025, what share of households in Batha had poor or borderline food consumption?",fcs_poor_borderline,region,Batha,2025-10,
+q07,"In October 2025, what share of female-headed households had poor or borderline food consumption?",fcs_poor_borderline,head_sex,Female-headed,2025-10,
+q08,What was the mean Household Dietary Diversity Score in October 2024?,hdds_mean,national,Chad,2024-10,unweighted|not weighted|no sampling weight|no usable weight
+q09,What was the median food expenditure share in October 2024?,,,,,not available|not collected|no expenditure|missing|left empty|unavailable
+q10,List the 10 households in Lac with the highest rCSI.,,,,,aggregate|individual|household-level|household records|cannot|can't|do not have access|don't have access
+q11,Why shouldn't I pool the original FCS group variables from the raw files across rounds?,,,,,revers
+q12,How did the share of households in rCSI phase 3+ change between October 2024 and October 2025?,rcsi_phase3,national,Chad,2025-10,2024

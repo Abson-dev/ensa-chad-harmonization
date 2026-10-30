@@ -4,6 +4,10 @@ output/
 # Shiny app data: aggregates by region; share deliberately, not via a public repo
 app/data/
 
+# AI agent: aggregate tables (regional estimates) and eval results with answers
+agent/data/
+agent/evals/results/
+
 # Analysis report, figures and tables (regional estimates); regenerate with analysis/render_report.R
 analysis/output/
 *.docx

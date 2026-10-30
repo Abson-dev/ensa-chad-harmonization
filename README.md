@@ -97,6 +97,7 @@ The pipeline expects the original SPSS files laid out like this (folder names ar
 | Harmonisation explorer | **R ≥ 4.3** (tested 4.5.2) | Shiny app for reviewers: process, crosswalk, validation, indicators | packages installed by [`app/install_packages.R`](app/install_packages.R) | `app/app.R`, `app/run_app.bat` | `Rscript tests/test_app.R` (85) |
 | App data preparation | **R** | aggregates the pipeline outputs for the app (no household data) | `data.table`, `jsonlite` | `app/prepare_app_data.R` | — |
 | Analysis by domain | **R Markdown** | merges the domain files; survey-weighted tables and figures; Word report | officedown, flextable, survey, ggplot2 (+ Pandoc) | `analysis/render_report.R`, `analysis/render_report.bat` | — |
+| Data assistant (AI agent) | **Python** + Anthropic API | answers questions in English or French from aggregate tables only (no household data sent) | own conda env `ensa-agent`: [`agent/environment.yml`](agent/environment.yml) | `agent/ask.py` ([agent/README.md](agent/README.md)) | `pytest agent/tests` (9, offline) + 12 evals |
 
 **Python packages** (pinned): pandas 2.2.2, numpy 2.2.6, pyreadstat 1.2.7, pytest 8.2.2.
 
@@ -203,6 +204,10 @@ harmonization/
 │   ├── analysis_by_domain.Rmd
 │   ├── R/                   data loading and merging, survey estimates, report style
 │   └── render_report.R      / render_report.bat (double-click)
+├── agent/                   AI data assistant: aggregate tables -> read-only tools -> Claude
+│   ├── build_agent_data.py  household files -> aggregates (cells < 30 HH suppressed; not versioned)
+│   ├── ensa_agent/          indicators, tools, instructions, agent loop
+│   └── ask.py               command line (one question or interactive)
 ├── docs/screenshots/        app screenshots used in this README
 ├── .vscode/                 interpreter, test and run/debug configuration
 ├── environment.yml          conda environment (conda-forge, pinned)

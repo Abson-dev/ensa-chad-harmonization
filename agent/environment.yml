@@ -1,0 +1,15 @@
+# Conda environment for the ENSA data assistant (separate from the pipeline environment ensa-chad).
+# Create:  conda env create -f agent/environment.yml
+# Update:  conda env update -f agent/environment.yml --prune
+name: ensa-agent
+channels:
+  - conda-forge
+dependencies:
+  - python=3.11
+  - pandas=2.2.2
+  - numpy=2.2.6
+  - openpyxl          # reads the Data flags sheet of the crosswalk workbook
+  - pytest=8.2.2
+  - pip
+  - pip:
+      - anthropic==2.3.0

@@ -13,6 +13,13 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent
 sys.path.insert(0, str(ROOT))
 
+try:
+    import pyreadstat  # noqa: F401
+except ModuleNotFoundError:
+    sys.exit("pyreadstat is missing: the pipeline runs in the 'ensa-chad' environment.\n"
+             "  conda activate ensa-chad\n  python run_harmonize.py\n"
+             "(The 'ensa-agent' environment is only for the agent/ folder.)")
+
 from ensa_harmonize import config, pipeline  # noqa: E402
 from ensa_harmonize.domains import DOMAINS  # noqa: E402
 

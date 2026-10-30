@@ -1,0 +1,4 @@
+# ENSA data assistant, pip alternative to agent/environment.yml (conda env ensa-agent).
+# Also needs pandas==2.2.2, numpy==2.2.6 and pytest==8.2.2. Version used to build and test it:
+anthropic==2.3.0
+openpyxl            # reads the Data flags sheet of the crosswalk workbook
