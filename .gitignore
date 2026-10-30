@@ -3,6 +3,8 @@ output/
 
 # Shiny app data: aggregates by region; share deliberately, not via a public repo
 app/data/
+# Posit deployment records (account and app URL)
+app/rsconnect/
 
 # AI agent: aggregate tables (regional estimates) and eval results with answers
 agent/data/
