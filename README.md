@@ -99,7 +99,7 @@ The pipeline expects the original SPSS files laid out like this (folder names ar
 | Dashboard | **R ≥ 4.3** (tested 4.5.2) | Shiny app: situation by round, trends, regions, validation, method, data export; login when published | packages installed by [`app/install_packages.R`](app/install_packages.R) | `app/app.R`, `app/run_app.bat`, `app/publish.R` | `Rscript tests/test_app.R` (173) |
 | App data preparation | **R** | aggregates the pipeline outputs for the app (no household data) | `data.table`, `jsonlite` | `app/prepare_app_data.R` | — |
 | Analysis by domain | **R Markdown** | merges the domain files; survey-weighted tables and figures; Word report | officedown, flextable, survey, ggplot2 (+ Pandoc) | `analysis/render_report.R`, `analysis/render_report.bat` | — |
-| Data assistant (AI agent) | **Python** + Anthropic API | answers questions in English or French from aggregate tables only (no household data sent) | own conda env `ensa-agent`: [`agent/environment.yml`](agent/environment.yml) | `agent/ask.py` ([agent/README.md](agent/README.md)) | `pytest agent/tests` (9, offline) + 12 evals |
+| Data assistant (AI agent) | **Python** + Anthropic API | answers in English or French on how the data were merged and what they show, from aggregates and metadata only | own repository: [ensa-chad-data-assistant](https://github.com/Abson-dev/ensa-chad-data-assistant) | see its README | see its README |
 | Merging consistency checks | **Stata ≥ 16** | rebuilds every harmonised variable from the original rounds (crosswalk rule + documented recode) and compares it household by household with the final files | — | `stata/00_run_all.do` ([stata/README.md](stata/README.md)) | report in `output/stata_checks/` |
 
 **Python packages** (pinned): pandas 2.2.2, numpy 2.2.6, pyreadstat 1.2.7, pytest 8.2.2.
@@ -179,6 +179,10 @@ The report has one chapter per domain (sample, household profile, FCS, HDDS, rCS
 
 The app ships **aggregates and metadata only**. Its `data/` folder is not versioned; build it after a pipeline run with `prepare_app_data.R` (see [Quick start](#2-explore-the-results-r)). Publishing with a login and other sharing options: [app/README.md](app/README.md). For a non-technical user who receives the app folder with its `data/`: [app/README_FIRST.txt](app/README_FIRST.txt).
 
+## AI data assistant
+
+An assistant that answers questions on how the data were merged and what they show has its own repository: [ensa-chad-data-assistant](https://github.com/Abson-dev/ensa-chad-data-assistant). It reads the outputs of this pipeline, with this repository cloned next to it as `harmonization/`.
+
 ## Repository structure
 
 ```
@@ -211,10 +215,6 @@ harmonization/
 │   ├── analysis_by_domain.Rmd
 │   ├── R/                   data loading and merging, survey estimates, report style
 │   └── render_report.R      / render_report.bat (double-click)
-├── agent/                   AI data assistant: aggregate tables -> read-only tools -> Claude
-│   ├── build_agent_data.py  household files -> aggregates (cells < 30 HH suppressed; not versioned)
-│   ├── ensa_agent/          indicators, tools, instructions, agent loop
-│   └── ask.py               command line (one question or interactive)
 ├── stata/                   Stata do-files: final files vs original rounds, per domain and variable
 │   ├── 00_run_all.do        runs all checks, writes output/stata_checks/check_summary.xlsx
 │   ├── check_<domain>.do    one per domain (core, fcs, rcsi, lcs, hhs, hdds, exp, demo)

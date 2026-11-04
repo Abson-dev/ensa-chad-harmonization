@@ -18,7 +18,7 @@ try:
 except ModuleNotFoundError:
     sys.exit("pyreadstat is missing: the pipeline runs in the 'ensa-chad' environment.\n"
              "  conda activate ensa-chad\n  python run_harmonize.py\n"
-             "(The 'ensa-agent' environment is only for the agent/ folder.)")
+             "(The 'ensa-agent' environment is only for the ensa-chad-data-assistant repository.)")
 
 from ensa_harmonize import config, pipeline  # noqa: E402
 from ensa_harmonize.domains import DOMAINS  # noqa: E402
