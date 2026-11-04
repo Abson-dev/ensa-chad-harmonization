@@ -65,18 +65,19 @@ Rscript tests/test_app.R     # every page and output, for every round; figures a
 
 ## Share with the IFPRI team
 
-1. **Publish with a login** on Posit Connect Cloud (one link, named accounts). From the `app/` folder:
+1. **Publish with a login** on shinyapps.io (one link, named accounts). From the `app/` folder:
    ```bash
-   # Once, in an interactive R session: link the Posit account
-   #   rsconnect::connectCloudUser()
+   # Once: link the account, with the token from the Tokens page of shinyapps.io
+   #   rsconnect::setAccountInfo(name = "...", token = "...", secret = "...")
    Rscript manage_accounts.R first.name other.name   # creates the accounts; list ALL accounts to keep
    Rscript publish.R                                 # lists what would be sent; sends nothing
    Rscript publish.R --publish                       # sends it
    ```
+   For Posit Connect Cloud: link it once with `rsconnect::connectCloudUser()`, then `Rscript publish.R --publish --target=connect`.
    - Passwords are written to `accounts_passwords.csv`. Send each one individually through a safe channel, then delete that file.
    - `publish.R` sends only the files on its allow-list, and refuses to run without accounts, if `.Renviron` would disable the login, or if a file looks like household data.
-   - The app starts only with its accounts database and secret. On a Free or Basic Connect Cloud plan its URL is public and the login is what protects it; on Enhanced or above the content can also be private.
-   - **Before sending the link,** open it in a private browser window: you should see the login page, with no data. The hosted version was not tested before publication, so check this the first time.
+   - The app starts only with its accounts database and secret. Its URL can be public: the login is what protects the data.
+   - **Before sending the link,** open it in a private browser window: you should see the login page, with no data.
    - After a data refresh, or to change the accounts, run the same commands again.
 2. **Zip the `app/` folder** (with `data/`) and share it; recipients double-click `run_app.bat` (see `README_FIRST.txt`). Leave out `accounts.sqlite`, `accounts_passwords.csv` and `.Renviron`.
 

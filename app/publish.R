@@ -1,10 +1,11 @@
-# Publish the app to Posit Connect Cloud, behind the login. From the app/ folder:
+# Publish the app, behind the login. From the app/ folder:
 #   Rscript publish.R             lists what would be sent; sends nothing
-#   Rscript publish.R --publish   sends it (updates ensa-chad-food-security)
+#   Rscript publish.R --publish   sends it to shinyapps.io (updates ensa-chad-food-security)
+#   Rscript publish.R --publish --target=connect   sends it to Posit Connect Cloud instead
 #
 # Allow-list: only the files listed here leave this computer. It refuses to run without login
-# accounts, and if a file looks like household data. With a Connect Cloud plan that allows it the
-# app is also private; on a Free or Basic plan its URL is public and the login is what protects it.
+# accounts, and if a file looks like household data. The app's URL can be public (shinyapps.io,
+# Connect Cloud Free or Basic): the login is what protects the data.
 
 args <- commandArgs(trailingOnly = TRUE)
 if (!file.exists("app.R")) stop("Run this script from the app/ folder.", call. = FALSE)
@@ -35,13 +36,16 @@ if (!"--publish" %in% args) {
   quit(save = "no")
 }
 
+to_connect <- "--target=connect" %in% args
+server <- if (to_connect) "posit.cloud" else "shinyapps.io"
 accounts <- rsconnect::accounts()
-cloud <- accounts[grepl("posit.cloud", accounts$server, fixed = TRUE), , drop = FALSE]
-if (!nrow(cloud)) {
-  stop("No Posit Connect Cloud account on this computer. Link it once, in an interactive R session:\n",
-       "  rsconnect::connectCloudUser()", call. = FALSE)
+target <- accounts[grepl(server, accounts$server, fixed = TRUE), , drop = FALSE]
+if (!nrow(target)) {
+  stop("No ", server, " account on this computer. Link it once: ",
+       if (to_connect) "rsconnect::connectCloudUser() in an interactive R session."
+       else "rsconnect::setAccountInfo(name, token, secret), from the Tokens page of shinyapps.io.", call. = FALSE)
 }
 rsconnect::deployApp(
   appDir = ".", appFiles = files, appName = APP_NAME, appTitle = "ENSA Chad food security",
-  account = cloud$name[1], server = cloud$server[1], forceUpdate = TRUE, launch.browser = FALSE, lint = FALSE
+  account = target$name[1], server = target$server[1], forceUpdate = TRUE, launch.browser = FALSE, lint = FALSE
 )
