@@ -25,7 +25,12 @@ core <- fread(file.path(out, "ensa_core.csv"), encoding = "UTF-8",
               select = c("round_id", "hh_id", "admin1", "weight", "weight_flag", "date_flag"))
 fcs <- fread(file.path(out, "ensa_fcs.csv"), select = c("hh_id", "FCS", "FCSCat28"))
 rcsi <- fread(file.path(out, "ensa_rcsi.csv"), select = c("hh_id", "rCSI", "rCSI_CH"))
-d <- merge(merge(core, fcs, by = "hh_id"), rcsi, by = "hh_id")
+lcs <- fread(file.path(out, "ensa_lcs.csv"), select = c("hh_id", "LCS_max_common"))
+hhs <- fread(file.path(out, "ensa_hhs.csv"), select = c("hh_id", "HHS_phase"))
+hdds <- fread(file.path(out, "ensa_hdds.csv"), select = c("hh_id", "HDDS", "HDDS_phase"))
+exp <- fread(file.path(out, "ensa_exp.csv"), select = c("hh_id", "FES", "FES_cat"))
+demo <- fread(file.path(out, "ensa_demo.csv"), select = c("hh_id", "HHHSex", "HHSize"))
+d <- Reduce(function(a, b) merge(a, b, by = "hh_id"), list(core, fcs, rcsi, lcs, hhs, hdds, exp, demo))
 d[, w := fifelse(weight_flag == "ok", weight, NA_real_)]
 
 wmean <- function(x, w) {
@@ -34,9 +39,17 @@ wmean <- function(x, w) {
 }
 share <- function(cond, w) 100 * wmean(as.numeric(cond), w)
 
-summarise <- function(x) {
+# Unweighted and weighted value of a 0/1 flag or a score; missing below min_n valid households,
+# so that a region is not reported on a handful of answers to a partly collected module.
+both <- function(name, value, w, min_n) {
+  ok <- !is.na(value)
+  v <- if (sum(ok) < min_n) c(NA_real_, NA_real_) else c(mean(value[ok]), wmean(value, w))
+  stats::setNames(as.list(v), paste0(name, c("_u", "_w")))
+}
+
+summarise <- function(x, min_n = 1) {
   one <- rep(1, nrow(x))
-  list(
+  c(list(
     households = nrow(x),
     weighted_available = any(!is.na(x$w)),
     fcs_mean_u = mean(x$FCS, na.rm = TRUE),
@@ -55,11 +68,20 @@ summarise <- function(x) {
     rcsi_p1_w = share(x$rCSI_CH == 1, x$w * !is.na(x$rCSI_CH)),
     rcsi_p2_w = share(x$rCSI_CH == 2, x$w * !is.na(x$rCSI_CH)),
     rcsi_p3_w = share(x$rCSI_CH == 3, x$w * !is.na(x$rCSI_CH))
-  )
+  ),
+  both("lcs_ce", 100 * (x$LCS_max_common >= 3), x$w, min_n),
+  both("hhs_p3", 100 * (x$HHS_phase >= 3), x$w, min_n),
+  both("hdds_p3", 100 * (x$HDDS_phase >= 3), x$w, min_n),
+  both("hdds_mean", x$HDDS, x$w, min_n),
+  both("fes_75", 100 * (x$FES_cat == 4), x$w, min_n),
+  both("fes_mean", x$FES, x$w, min_n),
+  both("female_head", 100 * (x$HHHSex == 2), x$w, min_n),
+  both("hh_size", x$HHSize, x$w, min_n))
 }
 
 by_round <- d[, summarise(.SD), by = round_id]
-by_region <- d[!is.na(admin1), summarise(.SD), by = .(round_id, admin1)]
+# Households with no region recorded count nationally, not as a region of their own (fread reads them as "").
+by_region <- d[!is.na(admin1) & admin1 != "", summarise(.SD, min_n = MIN_CELL), by = .(round_id, admin1)]
 num <- setdiff(names(by_region), c("round_id", "admin1", "households", "weighted_available"))
 by_region[households < MIN_CELL, (num) := NA_real_]
 
@@ -84,6 +106,17 @@ if (file.exists(wb_src) && (!file.exists(wb_app) || file.mtime(wb_src) > file.mt
   file.copy(wb_src, wb_app, overwrite = TRUE)
 }
 stopifnot("Crosswalk workbook missing from app/data" = file.exists(wb_app))
+
+# Result of the independent Stata check (stata/00_run_all.do), by domain; no household identifiers.
+stata_src <- file.path(out, "stata_checks", "check_summary.xlsx")
+stata_app <- file.path(dat, "stata_check.csv")
+if (file.exists(stata_src)) {
+  s <- as.data.table(readxl::read_excel(stata_src, sheet = "by_variable"))
+  fwrite(s[, .(variables = .N, cells_ok = sum(rounds_ok), cells_not_collected = sum(rounds_not_collected),
+               cells_mismatch = sum(rounds_mismatch), values_mismatch = sum(mismatch)), by = domain], stata_app)
+} else if (file.exists(stata_app)) {
+  file.remove(stata_app)
+}
 
 cat(sprintf("App data written to %s\n  rounds: %d, region x round cells: %d (suppressed < %d HH: %d)\n",
             dat, nrow(by_round), nrow(by_region), MIN_CELL, sum(by_region$households < MIN_CELL)))

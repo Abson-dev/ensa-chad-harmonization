@@ -39,6 +39,8 @@ if errorlevel 1 (
 )
 
 REM --- Launch ---
+REM This window serves the app to this computer only, so no login is asked (a server requires one).
+set "ENSA_LOCAL=1"
 echo.
 echo Opening the application in your browser...
 echo Close this window to stop the application.

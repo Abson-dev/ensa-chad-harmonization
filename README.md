@@ -11,11 +11,13 @@
 A config-driven, tested and documented workflow that harmonises **14 rounds** of Chad's national food security assessment (*Enquête Nationale de Sécurité Alimentaire*, ENSA), October 2018 to October 2025, **197,947 households**, into one comparable dataset per **thematic domain**. It has two parts:
 
 - a **Python pipeline** that reads the SPSS files, applies explicit mapping rules, recomputes the indicators and validates them;
-- an **R Shiny explorer** that presents the process, the crosswalk and the validation to reviewers.
+- an **R Shiny dashboard** that shows the situation of each round, its trends and regions, and presents the process, the crosswalk and the validation to reviewers.
 
 Across these rounds the questionnaire went through three codebook generations: French variable names (2018–2020), a hybrid with WFP modules (2021–2023) and the WFP standard codebook (2023–2025). Only 14 of 3,853 variable names, all KoBo system fields, are shared by every round. This repository turns that heterogeneity into explicit, auditable mapping rules and recomputes the indicators the same way for every round.
 
-![Overview page of the R Shiny explorer](docs/screenshots/01-overview.png)
+![Overview page of the R Shiny dashboard, with synthetic estimates](docs/screenshots/01-overview.png)
+
+*The R Shiny dashboard. The estimates in this screenshot are synthetic.*
 
 > **Data are not included.** The repository contains code and harmonisation rules only. See [Data](#data).
 
@@ -28,7 +30,7 @@ Across these rounds the questionnaire went through three codebook generations: F
 - [Data](#data)
 - [Software](#software)
 - [Quick start](#quick-start)
-- [Interactive explorer (R Shiny)](#interactive-explorer-r-shiny)
+- [Interactive dashboard (R Shiny)](#interactive-dashboard-r-shiny)
 - [Repository structure](#repository-structure)
 - [How harmonisation works](#how-harmonisation-works)
 - [Validation](#validation)
@@ -94,7 +96,7 @@ The pipeline expects the original SPSS files laid out like this (folder names ar
 | Part | Language | Role | Environment | Entry point | Tests |
 |---|---|---|---|---|---|
 | Harmonisation pipeline | **Python 3.11** | read SPSS files, apply rules, recompute and validate indicators, write CSV / SAV | [`environment.yml`](environment.yml) (conda-forge, pinned) or [`requirements.txt`](requirements.txt) | `run_harmonize.py` | `python -m pytest -q` (29) |
-| Harmonisation explorer | **R ≥ 4.3** (tested 4.5.2) | Shiny app for reviewers: process, crosswalk, validation, indicators | packages installed by [`app/install_packages.R`](app/install_packages.R) | `app/app.R`, `app/run_app.bat` | `Rscript tests/test_app.R` (85) |
+| Dashboard | **R ≥ 4.3** (tested 4.5.2) | Shiny app: situation by round, trends, regions, validation, method, data export; login when published | packages installed by [`app/install_packages.R`](app/install_packages.R) | `app/app.R`, `app/run_app.bat`, `app/publish.R` | `Rscript tests/test_app.R` (173) |
 | App data preparation | **R** | aggregates the pipeline outputs for the app (no household data) | `data.table`, `jsonlite` | `app/prepare_app_data.R` | — |
 | Analysis by domain | **R Markdown** | merges the domain files; survey-weighted tables and figures; Word report | officedown, flextable, survey, ggplot2 (+ Pandoc) | `analysis/render_report.R`, `analysis/render_report.bat` | — |
 | Data assistant (AI agent) | **Python** + Anthropic API | answers questions in English or French from aggregate tables only (no household data sent) | own conda env `ensa-agent`: [`agent/environment.yml`](agent/environment.yml) | `agent/ask.py` ([agent/README.md](agent/README.md)) | `pytest agent/tests` (9, offline) + 12 evals |
@@ -150,31 +152,32 @@ Rscript render_report.R          # Word report + CSV tables + PNG figures in ana
 
 The report has one chapter per domain (sample, household profile, FCS, HDDS, rCSI, LCS, HHS, expenditure) and a cross-domain chapter (indicators by sex of the head, food consumption × coping), with survey-weighted estimates and 95% confidence intervals; see [analysis/README.md](analysis/README.md).
 
-## Interactive explorer (R Shiny)
+## Interactive dashboard (R Shiny)
 
-[`app/`](app/) contains a Shiny app (bslib, plotly, reactable, visNetwork) that presents the whole process for reviewers.
+[`app/`](app/) contains a Shiny dashboard (bslib, plotly, reactable, DT, visNetwork). A **reference round** chosen in the left panel drives the Overview, Trends and Regions pages.
 
 | Page | Content |
 |---|---|
-| Overview | Key figures, households per round, the three questionnaire generations, the approach |
-| Process | Clickable pipeline diagram, domain status, the 336 configuration rules and their methods |
-| Crosswalk | The crosswalk workbook made interactive: coverage matrix (83 concepts × 14 rounds), the table as in Excel, full variable details, a profile per concept, downloads |
-| Rounds | Fieldwork calendar by season, concepts per round, weights and date checks |
-| Validation | Agreement with the original analysts' scores; the reversed FCS group coding |
-| Indicators | FCS groups and rCSI Cadre Harmonisé phases by round and region (weighted / unweighted) |
+| Overview | Situation of the round: key figures, points of attention, indicators against the same season |
+| Trends | One indicator over time, February with February and October with October, nationally or by region |
+| Regions | Profile of a region against the national value, ranking of all regions, region × round map |
+| Validation | Agreement with the original analysts' scores; the reversed FCS coding; the Stata check against the original files |
 | Data issues | The 20 issues found, ranked by impact, with how each is handled |
+| Method | Approach; clickable pipeline and rules; the crosswalk made interactive (83 concepts × 14 rounds); fieldwork and weights |
+| Data | Aggregate indicators, to filter and download as CSV or Excel |
 | About | Method, reproducibility, run provenance, data statement |
+
+**All estimates in these screenshots are synthetic** (`app/make_demo_data.R`), as the banner in each says: the real regional estimates are preliminary and are shared only with the data owners' agreement.
 
 | | |
 |---|---|
-| ![Pipeline diagram with step details](docs/screenshots/02-process.png) **Process**: click a step to see what it does | ![Coverage matrix of 83 concepts across 14 rounds](docs/screenshots/03-crosswalk-matrix.png) **Crosswalk**: where each concept lives in each round |
-| ![Crosswalk table laid out as in the Excel workbook](docs/screenshots/04-crosswalk-table.png) **Crosswalk table**: source variable per round, coloured by coverage | ![Concept profile showing the LCS slot swap](docs/screenshots/05-concept-profile.png) **Concept profile**: here, the LCS slot swap between Feb and Oct 2021 |
-| ![Fieldwork calendar and round inventory](docs/screenshots/06-rounds.png) **Rounds**: fieldwork windows, weights, checks | ![Validation against the original analysts' variables](docs/screenshots/07-validation.png) **Validation**: agreement with the analysts for 6 indicators, and the reversed FCS coding |
-| ![Data issues ranked by impact](docs/screenshots/08-data-issues.png) **Data issues**: what was found and how it is handled | |
+| ![Trends page with synthetic data](docs/screenshots/02-trends.png) **Trends**: same-season comparison | ![Regions page with synthetic data](docs/screenshots/03-regions.png) **Regions**: profile, ranking and map |
+| ![Validation against the original analysts' variables](docs/screenshots/07-validation.png) **Validation**: agreement with the analysts for 6 indicators, the reversed FCS coding and the Stata check | ![Data issues ranked by impact](docs/screenshots/08-data-issues.png) **Data issues**: what was found and how it is handled |
+| ![Pipeline diagram with step details](docs/screenshots/04-process.png) **Process**: click a step to see what it does | ![Coverage matrix of 83 concepts across 14 rounds](docs/screenshots/05-crosswalk-matrix.png) **Crosswalk**: where each concept lives in each round |
+| ![Fieldwork calendar and round inventory](docs/screenshots/06-rounds.png) **Rounds**: fieldwork windows, weights, checks | ![Data page with filters and exports](docs/screenshots/10-data.png) **Data**: filter and export the aggregates |
+| ![Approach page](docs/screenshots/09-approach.png) **Approach**: the three questionnaire generations and the four steps | ![Login page](docs/screenshots/11-login.png) **Login**: required on the published version |
 
-The Indicators page is not shown here: its regional estimates are preliminary and are shared only with the data owners' agreement.
-
-The app ships **aggregates and metadata only**. Its `data/` folder is not versioned; build it after a pipeline run with `prepare_app_data.R` (see [Quick start](#2-explore-the-results-r)). Details and sharing options (Posit Connect / shinyapps.io, zipped folder): [app/README.md](app/README.md). For a non-technical user who receives the app folder with its `data/`: [app/README_FIRST.txt](app/README_FIRST.txt).
+The app ships **aggregates and metadata only**. Its `data/` folder is not versioned; build it after a pipeline run with `prepare_app_data.R` (see [Quick start](#2-explore-the-results-r)). Publishing with a login and other sharing options: [app/README.md](app/README.md). For a non-technical user who receives the app folder with its `data/`: [app/README_FIRST.txt](app/README_FIRST.txt).
 
 ## Repository structure
 
@@ -193,12 +196,15 @@ harmonization/
 │   ├── pipeline.py          orchestration, writers, provenance manifest
 │   └── domains/             one module per domain: derive() + qc()
 ├── tests/test_rules.py      scoring rules, thresholds, conversions, config completeness
-├── app/                     R Shiny explorer
-│   ├── app.R                page layout and server wiring
-│   ├── R/                   one module per page + data loading, theme, helpers
+├── app/                     R Shiny dashboard
+│   ├── app.R                page layout, reference round and server wiring
+│   ├── R/                   one module per page + data loading, indicators, login, theme
 │   ├── www/styles.css       visual design
-│   ├── tests/test_app.R     server-side checks of every page (shiny::testServer)
+│   ├── tests/test_app.R     checks of every page, the figures, the data boundary and the login
 │   ├── prepare_app_data.R   builds app/data from ../output (aggregates only; not versioned)
+│   ├── make_demo_data.R     synthetic estimates for screenshots and demonstrations
+│   ├── manage_accounts.R    creates the login accounts (not versioned)
+│   ├── publish.R            publishes to Posit Connect Cloud from an allow-list; a dry run by default
 │   ├── install_packages.R   installs missing R packages
 │   └── run_app.bat          double-click launcher for Windows
 ├── analysis/                analysis by domain: R Markdown → Word report, CSV tables, PNG figures

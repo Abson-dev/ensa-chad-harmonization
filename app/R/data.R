@@ -1,6 +1,35 @@
 # Load everything the app shows. All inputs are metadata or aggregates (see prepare_app_data.R).
 
-load_app_data <- function(dir = "data") {
+# Synthetic mode (ENSA_DEMO=1): invented estimates from make_demo_data.R, for screenshots and demonstrations.
+demo_mode <- function() identical(Sys.getenv("ENSA_DEMO"), "1")
+app_data_dir <- function() {
+  if (!demo_mode()) return("data")
+  if (!dir.exists("demo_data")) stop("demo_data is missing: run Rscript make_demo_data.R", call. = FALSE)
+  "demo_data"
+}
+
+# One row per geography x round x indicator, for the Data page and its exports.
+indicators_long <- function(ind_round, ind_region, rounds) {
+  one <- function(x, geo) {
+    do.call(rbind, lapply(seq_len(nrow(IND)), function(i) {
+      id <- IND$id[i]
+      data.frame(geography = geo, level = if ("admin1" %in% names(x)) "Region" else "National",
+                 round_id = x$round_id, domain = IND$domain[i], indicator = IND$label[i], unit = IND$unit[i],
+                 weighted = round(x[[paste0(id, "_w")]], 2), unweighted = round(x[[paste0(id, "_u")]], 2),
+                 households = x$households)
+    }))
+  }
+  out <- rbind(one(ind_round, "Chad"), one(as.data.frame(ind_region), ind_region$admin1))
+  out <- out[!(is.na(out$weighted) & is.na(out$unweighted)), ]
+  i <- match(out$round_id, rounds$round_id)
+  out$round <- rounds$round[i]
+  out$season <- month.name[rounds$month[i]]
+  out$generation <- rounds$generation[i]
+  out[, c("level", "geography", "round_id", "round", "season", "generation", "domain", "indicator", "unit",
+          "weighted", "unweighted", "households")]
+}
+
+load_app_data <- function(dir = app_data_dir()) {
   f <- function(x) file.path(dir, x)
   xl <- f("ENSA_Chad_crosswalk_2018-2025.xlsx")
 
@@ -48,6 +77,17 @@ load_app_data <- function(dir = "data") {
 
   add_round <- function(x) dplyr::mutate(x, round = factor(lv[match(round_id, rounds$round_id)], levels = lv))
   read_qc <- function(x) add_round(readr::read_csv(f(x), show_col_types = FALSE))
+  # Sums of categories shown as one indicator.
+  add_sums <- function(x) {
+    for (e in c("u", "w")) {
+      x[[paste0("fcs_pb_", e)]] <- x[[paste0("fcs_poor_", e)]] + x[[paste0("fcs_border_", e)]]
+      x[[paste0("rcsi_p23_", e)]] <- x[[paste0("rcsi_p2_", e)]] + x[[paste0("rcsi_p3_", e)]]
+    }
+    x
+  }
+  ind_round <- add_sums(read_qc("indicators_by_round.csv"))
+  ind_region <- add_sums(read_qc("indicators_by_round_region.csv"))
+  stata_file <- f("stata_check.csv")
 
   list(
     rounds = rounds,
@@ -63,8 +103,11 @@ load_app_data <- function(dir = "data") {
     qc_hhs = read_qc("qc_hhs_by_round.csv"),
     qc_hdds = read_qc("qc_hdds_by_round.csv"),
     qc_exp = read_qc("qc_exp_by_round.csv"),
-    ind_round = read_qc("indicators_by_round.csv"),
-    ind_region = read_qc("indicators_by_round_region.csv"),
+    qc_demo = read_qc("qc_demo_by_round.csv"),
+    ind_round = ind_round,
+    ind_region = ind_region,
+    ind_long = indicators_long(ind_round, ind_region, rounds),
+    stata_check = if (file.exists(stata_file)) readr::read_csv(stata_file, show_col_types = FALSE),
     manifest = jsonlite::fromJSON(f("manifest.json")),
     settings = readLines(f("settings.toml"), encoding = "UTF-8"),
     xlsx_path = xl

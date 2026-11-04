@@ -8,6 +8,16 @@ agreement_long <- function(d) {
   dplyr::mutate(x, indicator = factor(indicator, levels = unique(indicator)))
 }
 
+# Result of stata/00_run_all.do: final files rebuilt from the original rounds in Stata.
+stata_kpi <- function(s) {
+  cells <- sum(s$cells_ok) + sum(s$cells_mismatch)
+  mis <- sum(s$cells_mismatch)
+  kpi("Source vs final (Stata)", sprintf("%s / %s", fmt_int(sum(s$cells_ok)), fmt_int(cells)),
+      if (mis == 0) "variable × round cells identical to the originals, rebuilt independently"
+      else sprintf("%d variable × round cells differ: see output/stata_checks", mis),
+      "arrow-left-right", if (mis == 0) "teal" else "red")
+}
+
 validation_ui <- function(id, d) {
   ns <- shiny::NS(id)
   f <- d$qc_fcs
@@ -16,18 +26,15 @@ validation_ui <- function(id, d) {
   htmltools::tagList(
     page_intro("Validation",
                "Every indicator is recomputed from the item answers, then compared with the value the original analysts computed in each round (scores: within ±0.5 points; categories: same category; food share: within 0.5 points)."),
-    bslib::layout_column_wrap(
-      width = "220px", fill = FALSE,
-      bslib::value_box("Identical to the analysts", sprintf("%d / %d", sum(a$agree >= 99.5), nrow(a)),
-                       "indicator × round comparisons with ≥ 99.5% agreement",
-                       showcase = bsicons::bs_icon("bullseye"), theme = bslib::value_box_theme(bg = "#EAF5EE", fg = "#1E6B41")),
-      bslib::value_box("Indicators checked", nlevels(a$indicator), paste(levels(a$indicator), collapse = " · "),
-                       showcase = bsicons::bs_icon("check2-all"), theme = bslib::value_box_theme(bg = "#E8F4F4", fg = COL$teal)),
-      bslib::value_box("Reversed FCS groups", sprintf("%d rounds", n_rev), "original codes 1 = Acceptable … 3 = Poor",
-                       showcase = bsicons::bs_icon("arrow-down-up"), theme = bslib::value_box_theme(bg = "#FDECEA", fg = "#8A2318")),
-      bslib::value_box("Unit tests", FACTS$tests, "formulas, thresholds, config, conversions",
-                       showcase = bsicons::bs_icon("clipboard-check"), theme = bslib::value_box_theme(bg = "#F1F3F5", fg = COL$navy))
-    ),
+    do.call(bslib::layout_column_wrap, c(
+      list(width = "185px", fill = FALSE, heights_equal = "row",
+           kpi("Identical to the analysts", sprintf("%d / %d", sum(a$agree >= 99.5), nrow(a)),
+               "indicator × round comparisons with ≥ 99.5% agreement", "bullseye", "teal"),
+           kpi("Indicators checked", nlevels(a$indicator), paste(levels(a$indicator), collapse = " · "), "check2-all", "blue"),
+           kpi("Reversed FCS groups", sprintf("%d rounds", n_rev), "original codes 1 = Acceptable … 3 = Poor", "arrow-down-up", "red"),
+           kpi("Unit tests", FACTS$tests, "formulas, thresholds, config, conversions", "clipboard-check", "slate")),
+      if (!is.null(d$stata_check)) list(stata_kpi(d$stata_check))
+    )),
     bslib::layout_columns(
       col_widths = c(6, 6),
       bslib::card(

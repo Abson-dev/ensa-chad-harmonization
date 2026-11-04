@@ -4,16 +4,17 @@ ENSA CHAD 2018-2025 - HARMONISATION EXPLORER (R SHINY)
 This application shows how the 14 rounds of Chad's national food security assessment
 (ENSA, Oct 2018 - Oct 2025, 197,947 households) were harmonised into comparable datasets:
 
-  - Overview     : key figures, households per round, the three questionnaire generations;
-  - Process      : interactive pipeline diagram (click a step), domains, harmonisation rules;
-  - Crosswalk    : the crosswalk workbook made interactive - coverage of 83 concepts in 14
-                   rounds, source variable per round, profile of each concept (click a row
-                   or a cell), downloads of the workbook and details;
-  - Rounds       : fieldwork calendar, sampling weights, date checks;
-  - Validation   : recomputed indicators vs the original analysts' scores;
-  - Indicators   : FCS groups and rCSI Cadre Harmonise phases by round and region
-                   (preliminary harmonised estimates, not official ENSA results);
+  Choose the reference round in the left panel. Estimates are preliminary, not official
+  ENSA results.
+
+  - Overview     : situation of the round, points of attention, same-season comparison;
+  - Trends       : one indicator over time, February with February, October with October;
+  - Regions      : profile of a region, ranking of all regions, region x round map;
+  - Validation   : agreement with the original analysts' scores and the original files;
   - Data issues  : the 20 issues found and how each is handled;
+  - Method       : approach, pipeline and rules, the crosswalk workbook made interactive
+                   (83 concepts in 14 rounds), fieldwork and weights of each round;
+  - Data         : filter the aggregate indicators, download as CSV or Excel;
   - About        : method, reproducibility, provenance.
 
 The application contains NO household-level data: only variable metadata, quality checks
@@ -51,7 +52,7 @@ and aggregate indicators (region x round cells under 30 households are suppresse
                                     options(download.file.method = "wininet")
                                     install.packages(c("shiny","bslib","bsicons","plotly",
                                       "reactable","visNetwork","shinyWidgets","readxl",
-                                      "readr","dplyr","tidyr","jsonlite"))
+                                      "readr","dplyr","tidyr","jsonlite","DT","writexl"))
   "The data folder ... is missing"  The folder was sent without its "data" sub-folder;
                                     ask the sender for the complete folder.
   The browser does not open         Copy the address shown in the black window

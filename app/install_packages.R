@@ -2,9 +2,10 @@
 # Versions the application was tested with (R 4.5.2):
 #   shiny 1.14.0, bslib 0.11.0, bsicons 0.1.2, plotly 4.12.0, reactable 0.4.5, visNetwork 2.1.4,
 #   shinyWidgets 0.9.1, readxl 1.4.5, readr 2.1.6, dplyr 1.2.1, tidyr 1.3.2, jsonlite 2.0.0
+# The published version also needs shinymanager (login), openssl and rsconnect: not needed to run it locally.
 
 pkgs <- c("shiny", "bslib", "bsicons", "plotly", "reactable", "visNetwork", "shinyWidgets",
-          "readxl", "readr", "dplyr", "tidyr", "jsonlite", "htmltools", "rlang")
+          "readxl", "readr", "dplyr", "tidyr", "jsonlite", "htmltools", "rlang", "DT", "writexl")
 repo <- "https://cloud.r-project.org"
 
 missing <- pkgs[!vapply(pkgs, requireNamespace, logical(1), quietly = TRUE)]

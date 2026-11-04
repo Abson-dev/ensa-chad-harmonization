@@ -5,6 +5,11 @@ output/
 app/data/
 # Posit deployment records (account and app URL)
 app/rsconnect/
+# Login accounts and their secret; synthetic data are rebuilt with make_demo_data.R
+app/accounts.sqlite
+app/accounts_passwords.csv
+app/.Renviron
+app/demo_data/
 
 # AI agent: aggregate tables (regional estimates) and eval results with answers
 agent/data/

@@ -1,33 +1,25 @@
-overview_ui <- function(id, d) {
+# Approach: how 14 rounds became one comparable dataset.
+
+approach_ui <- function(id, d) {
   ns <- shiny::NS(id)
   n_hh <- sum(d$rounds$households, na.rm = TRUE)
   n_dom_done <- length(unique(d$rules$domain))
   first <- d$rounds$round[1]; last <- d$rounds$round[nrow(d$rounds)]
 
   htmltools::tagList(
-    htmltools::div(
-      class = "hero",
-      htmltools::div(class = "hero-kicker", "ENSA Chad · Enquête Nationale de Sécurité Alimentaire"),
-      htmltools::h1("Harmonising 14 survey rounds into one comparable dataset"),
-      htmltools::p(sprintf(
-        "From %s to %s, three questionnaire generations used different variable names, codes and modules. This app documents how every concept was mapped, recomputed and validated so that results can be compared across rounds.",
-        first, last))
-    ),
+    page_intro("Harmonising 14 survey rounds into one comparable dataset",
+               sprintf("From %s to %s, three questionnaire generations used different variable names, codes and modules. These pages document how every concept was mapped, recomputed and validated.", first, last),
+               "signpost-split"),
     bslib::layout_column_wrap(
-      width = "200px", fill = FALSE, class = "kpis",
-      bslib::value_box("Survey rounds", nrow(d$rounds), paste(first, "–", last),
-                       showcase = bsicons::bs_icon("calendar3"), theme = "primary"),
-      bslib::value_box("Households", fmt_int(n_hh), "household interviews",
-                       showcase = bsicons::bs_icon("people-fill"), theme = "secondary"),
-      bslib::value_box("Source variables", fmt_int(FACTS$distinct_vars),
-                       sprintf("distinct names; only %d shared by all rounds", FACTS$shared_vars),
-                       showcase = bsicons::bs_icon("table"), theme = bslib::value_box_theme(bg = "#FDF3E7", fg = "#7A4A12")),
-      bslib::value_box("Concepts mapped", nrow(d$concepts), "in the crosswalk workbook",
-                       showcase = bsicons::bs_icon("diagram-3"), theme = bslib::value_box_theme(bg = "#E8F4F4", fg = COL$teal)),
-      bslib::value_box("Domains harmonised", paste0(n_dom_done, " / 8"),
-                       if (n_dom_done >= 8) "all domains, joinable on round + household" else
-                         paste(paste(DOMAIN_NAMES[intersect(names(DOMAIN_NAMES), d$rules$domain)], collapse = ", "), "· more planned"),
-                       showcase = bsicons::bs_icon("check2-circle"), theme = bslib::value_box_theme(bg = "#EAF5EE", fg = "#1E6B41"))
+      width = "190px", fill = FALSE, heights_equal = "row",
+      kpi("Survey rounds", nrow(d$rounds), paste(first, "–", last), "calendar3", "teal"),
+      kpi("Households", fmt_int(n_hh), "household interviews", "people", "slate"),
+      kpi("Source variables", fmt_int(FACTS$distinct_vars), sprintf("distinct names; only %d shared by all rounds", FACTS$shared_vars), "table", "orange"),
+      kpi("Concepts mapped", nrow(d$concepts), "in the crosswalk workbook", "diagram-3", "blue"),
+      kpi("Domains harmonised", paste0(n_dom_done, " / 8"),
+          if (n_dom_done >= 8) "all domains, joinable on round + household" else
+            paste(paste(DOMAIN_NAMES[intersect(names(DOMAIN_NAMES), d$rules$domain)], collapse = ", "), "· more planned"),
+          "check2-circle", "teal")
     ),
     bslib::layout_columns(
       col_widths = c(7, 5),
@@ -52,7 +44,7 @@ overview_ui <- function(id, d) {
         step_box(2, "sliders", "Rules as configuration",
                  sprintf("Encoded every mapping as one explicit rule (%d rules for the domains done), including documented 'not available' cases.", nrow(d$rules))),
         step_box(3, "calculator", "Recompute indicators",
-                 "Rebuilt FCS and rCSI from the item answers with the WFP formulas, identically for every round."),
+                 "Rebuilt FCS, rCSI, LCS, HHS, HDDS and the food share from the item answers with the WFP formulas, identically for every round."),
         step_box(4, "patch-check", "Validate & document",
                  "Compared with the original analysts' scores, ran unit tests, and recorded hashes of every input and output.")
       )
@@ -92,7 +84,7 @@ step_box <- function(n, icon, title, text) {
   )
 }
 
-overview_server <- function(id, d) {
+approach_server <- function(id, d) {
   shiny::moduleServer(id, function(input, output, session) {
     output$hh_plot <- plotly::renderPlotly({
       r <- d$rounds |> dplyr::mutate(gen = factor(GEN_LABEL[as.character(generation)], levels = GEN_LABEL),
