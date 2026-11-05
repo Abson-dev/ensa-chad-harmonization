@@ -53,7 +53,7 @@ trends_server <- function(id, d, ref) {
           current <- s$round_id == rid
           kpi(as.character(s$round), fmt_ind(cmp$value, id),
               if (is.na(cmp$value)) "Not available" else change_tag(cmp, id),
-              "calendar3", if (current) "teal" else "slate")
+              "calendar3", if (current) "blue" else "slate")
         })
       )
     })
@@ -63,7 +63,7 @@ trends_server <- function(id, d, ref) {
       x$year <- as.integer(substr(x$round_id, 1, 4))
       x$r <- ind_value(x, id, input$estimate)$v
       x$fb <- ind_value(x, id, input$estimate)$fb
-      series <- list(October = list(m = "10", col = COL$teal), February = list(m = "02", col = "#C17F3A"))
+      series <- list(October = list(m = "10", col = COL$blue), February = list(m = "02", col = "#F0512D"))
       p <- plotly::plot_ly()
       for (nm in names(series)) {
         s <- x[substr(x$round_id, 6, 7) == series[[nm]]$m, ]
@@ -116,7 +116,7 @@ trends_server <- function(id, d, ref) {
           color = cols[[k]], line = list(color = "#ffffff", width = 0.5),
           pattern = list(shape = ifelse(s$fb, "/", ""), fillmode = "overlay", fgcolor = "rgba(255,255,255,0.55)", size = 7, solidity = 0.25)),
           text = ifelse(is.na(s$v), "", sprintf("%.0f", s$v)), textposition = "inside",
-          insidetextfont = list(color = if (k %in% c("Phase 1", "Phase 2")) COL$ink else "#fff", size = 11),
+          insidetextfont = list(color = if (k %in% c("Phase 1", "Phase 2", "Borderline")) COL$ink else "#fff", size = 11),
           hovertemplate = paste0("%{x} · ", k, ": %{y:.1f}%", ifelse(s$fb, " (unweighted)", ""), "<extra></extra>"))
       }
       p |> plotly_style(barmode = "stack", xaxis = list(title = "", tickangle = -40),

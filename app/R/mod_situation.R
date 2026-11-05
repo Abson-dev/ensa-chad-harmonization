@@ -112,9 +112,9 @@ situation_server <- function(id, d, ref) {
             "people", "slate"),
         card("fcs_pb", "Poor + borderline FCS", "basket", "orange"),
         card("rcsi_p3", "rCSI phase 3+", "shield-exclamation", "red"),
-        card("lcs_ce", "Crisis + emergency coping", "life-preserver", "amber"),
+        card("lcs_ce", "Crisis + emergency coping", "life-preserver", "brown"),
         card("hhs_p3", "Hunger scale phase 3+", "exclamation-diamond", "blue"),
-        card("fes_75", "Food share of spending 75%+", "cash-coin", "teal")
+        card("fes_75", "Food share of spending 75%+", "cash-coin", "navy")
       )
     })
 
@@ -127,8 +127,8 @@ situation_server <- function(id, d, ref) {
       ind_reactable(ind_table(nat, IND_MAIN, keep, rid), nat, IND_MAIN, rid)
     })
 
-    output$g_fcs <- plotly::renderPlotly(season_bars(nat, "fcs_pb", ref(), "#F0B37E", "#C96A1B"))
-    output$g_rcsi <- plotly::renderPlotly(season_bars(nat, "rcsi_p3", ref(), "#DD9A92", "#B83227"))
-    output$g_lcs <- plotly::renderPlotly(season_bars(nat, "lcs_ce", ref(), "#E8CF8C", "#B58A10"))
+    output$g_fcs <- plotly::renderPlotly(season_bars(nat, "fcs_pb", ref(), "#FBC4A8", "#F0512D"))
+    output$g_rcsi <- plotly::renderPlotly(season_bars(nat, "rcsi_p3", ref(), "#F9B9B7", "#E3002B"))
+    output$g_lcs <- plotly::renderPlotly(season_bars(nat, "lcs_ce", ref(), "#ECB897", "#AA5628"))
   })
 }

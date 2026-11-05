@@ -15,7 +15,7 @@ stata_kpi <- function(s) {
   kpi("Source vs final (Stata)", sprintf("%s / %s", fmt_int(sum(s$cells_ok)), fmt_int(cells)),
       if (mis == 0) "variable × round cells identical to the originals, rebuilt independently"
       else sprintf("%d variable × round cells differ: see output/stata_checks", mis),
-      "arrow-left-right", if (mis == 0) "teal" else "red")
+      "arrow-left-right", if (mis == 0) "navy" else "red")
 }
 
 validation_ui <- function(id, d) {
@@ -29,7 +29,7 @@ validation_ui <- function(id, d) {
     do.call(bslib::layout_column_wrap, c(
       list(width = "185px", fill = FALSE, heights_equal = "row",
            kpi("Identical to the analysts", sprintf("%d / %d", sum(a$agree >= 99.5), nrow(a)),
-               "indicator × round comparisons with ≥ 99.5% agreement", "bullseye", "teal"),
+               "indicator × round comparisons with ≥ 99.5% agreement", "bullseye", "navy"),
            kpi("Indicators checked", nlevels(a$indicator), paste(levels(a$indicator), collapse = " · "), "check2-all", "blue"),
            kpi("Reversed FCS groups", sprintf("%d rounds", n_rev), "original codes 1 = Acceptable … 3 = Poor", "arrow-down-up", "red"),
            kpi("Unit tests", FACTS$tests, "formulas, thresholds, config, conversions", "clipboard-check", "slate")),
@@ -73,11 +73,11 @@ validation_server <- function(id, d) {
                                      sprintf("%s · %s<br>Agreement: %s<br>Households compared: %s",
                                              indicator, round, fmt_pct(agree, 2), fmt_int(n))))
       plotly::plot_ly(x, x = ~round, y = ~indicator, z = ~agree, type = "heatmap", zmin = 50, zmax = 100,
-                      colorscale = list(c(0, "#B83227"), c(0.6, "#F2C14E"), c(0.9, "#9BD0A9"), c(1, "#1E6B41")),
+                      colorscale = list(c(0, "#F04B5D"), c(0.6, "#ECE1B1"), c(0.9, "#AFDBBB"), c(1, "#74C48A")),  # light enough for dark labels on every cell
                       xgap = 2, ygap = 2, text = ~hover, hoverinfo = "text",
                       colorbar = list(title = "", ticksuffix = "%", len = 0.8, thickness = 10)) |>
         plotly::add_annotations(x = ~round, y = ~indicator, text = ~label, showarrow = FALSE,
-                                font = list(size = 11, color = ifelse(!is.na(x$agree) & x$agree > 90, "#ffffff", COL$ink))) |>
+                                font = list(size = 11, color = COL$ink)) |>
         plotly_style(xaxis = list(title = "", tickangle = -40),
                      yaxis = list(title = "", autorange = "reversed"))
     })
@@ -86,9 +86,9 @@ validation_server <- function(id, d) {
       x <- d$qc_fcs
       rev_rounds <- as.character(x$round[!is.na(x$vs_orig_cat28_agree_if_reversed_pct) & x$vs_orig_cat28_agree_if_reversed_pct > 99])
       plotly::plot_ly(x, x = ~round) |>
-        plotly::add_bars(y = ~vs_orig_cat28_agree_pct, name = "as coded", marker = list(color = "#9AA5B1"),
+        plotly::add_bars(y = ~vs_orig_cat28_agree_pct, name = "as coded", marker = list(color = "#939598"),
                          hovertemplate = "%{x}: %{y:.1f}% as coded<extra></extra>") |>
-        plotly::add_bars(y = ~vs_orig_cat28_agree_if_reversed_pct, name = "codes reversed", marker = list(color = "#B83227"),
+        plotly::add_bars(y = ~vs_orig_cat28_agree_if_reversed_pct, name = "codes reversed", marker = list(color = "#E3002B"),
                          hovertemplate = "%{x}: %{y:.1f}% if reversed<extra></extra>") |>
         plotly_style(barmode = "group", xaxis = list(title = "", tickangle = -40),
                      yaxis = list(title = "% agreement", range = c(0, 105), ticksuffix = "%"),

@@ -103,13 +103,13 @@ process_server <- function(id, d) {
       edges$dashes <- edges$from == test_id
       visNetwork::visNetwork(vn, edges) |>
         visNetwork::visGroups(groupname = "input", color = list(background = COL$navy, border = COL$navy)) |>
-        visNetwork::visGroups(groupname = "step", color = list(background = COL$teal, border = COL$teal)) |>
-        visNetwork::visGroups(groupname = "doc", color = list(background = "#FDF3E7", border = GEN_COL[["1"]])) |>
-        visNetwork::visGroups(groupname = "config", color = list(background = "#EEF2FF", border = "#6C5CE7")) |>
-        visNetwork::visGroups(groupname = "domain", color = list(background = "#EAF5EE", border = "#2E8B57")) |>
-        visNetwork::visGroups(groupname = "output", color = list(background = "#F1F3F5", border = "#6B7785")) |>
-        visNetwork::visGroups(groupname = "check", color = list(background = "#FFF8E1", border = "#E58E26")) |>
-        visNetwork::visEdges(arrows = "to", color = list(color = "#9AA5B1", highlight = COL$teal),
+        visNetwork::visGroups(groupname = "step", color = list(background = COL$blue, border = COL$blue)) |>
+        visNetwork::visGroups(groupname = "doc", color = list(background = "#F4D7C4", border = GEN_COL[["1"]])) |>
+        visNetwork::visGroups(groupname = "config", color = list(background = "#FBD4DD", border = "#950158")) |>
+        visNetwork::visGroups(groupname = "domain", color = list(background = "#D5ECDD", border = "#03924A")) |>
+        visNetwork::visGroups(groupname = "output", color = list(background = "#F1F3F5", border = "#636466")) |>
+        visNetwork::visGroups(groupname = "check", color = list(background = "#F9F4DF", border = "#F0512D")) |>
+        visNetwork::visEdges(arrows = "to", color = list(color = "#939598", highlight = COL$blue),
                              smooth = list(type = "cubicBezier", forceDirection = "horizontal")) |>
         visNetwork::visHierarchicalLayout(direction = "LR", levelSeparation = 175, nodeSpacing = 50) |>
         visNetwork::visOptions(highlightNearest = list(enabled = TRUE, degree = 1)) |>
@@ -144,7 +144,7 @@ process_server <- function(id, d) {
         htmltools::div(class = paste("domain-card", if (ok) "done" else "planned"),
                        htmltools::div(class = "d-flex justify-content-between",
                                       htmltools::strong(k),
-                                      if (ok) pill("done", "#2E8B57") else pill("planned", "#ADB5BD")),
+                                      if (ok) pill("done", "#035537") else pill("planned", "#636466")),
                        htmltools::div(class = "small", txt))
       }
       htmltools::div(class = "domain-grid",

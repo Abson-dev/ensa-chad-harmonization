@@ -54,7 +54,7 @@ regions_server <- function(id, d, ref) {
             if (length(hh)) sprintf("%s in %s", input$region, d$rounds$round[d$rounds$round_id == rid]) else "Not surveyed in this round", "people", "slate"),
         card("fcs_pb", "Poor + borderline FCS", "basket", "orange"),
         card("rcsi_p3", "rCSI phase 3+", "shield-exclamation", "red"),
-        card("lcs_ce", "Crisis + emergency coping", "life-preserver", "amber"),
+        card("lcs_ce", "Crisis + emergency coping", "life-preserver", "brown"),
         card("hdds_p3", "Dietary diversity phase 3+", "egg-fried", "blue")
       )
     })
@@ -77,7 +77,7 @@ regions_server <- function(id, d, ref) {
       x <- x[order(x$v), ]
       n <- ind_value(nat[nat$round_id == rid, ], id)$v
       plotly::plot_ly(x, y = factor(x$admin1, levels = x$admin1), x = ~v, type = "bar", orientation = "h",
-                      marker = list(color = ifelse(x$admin1 == input$region, COL$navy, "#9FCFCF")),
+                      marker = list(color = ifelse(x$admin1 == input$region, COL$navy, "#89D1F4")),
                       text = fmt_ind(x$v, id), textposition = "outside", cliponaxis = FALSE,
                       hovertemplate = "%{y}: %{text}<extra></extra>") |>
         plotly_style(legend = FALSE, margin = list(t = 26, r = 44, b = 10, l = 10),
@@ -122,7 +122,7 @@ regions_server <- function(id, d, ref) {
       p <- plotly::plot_ly() |>
         plotly::add_trace(x = n$round, y = ind_value(n, id)$v, type = "scatter", mode = "lines+markers", name = "National",
                           line = list(color = COL$navy, width = 3, dash = "dot"), marker = list(size = 7))
-      pal <- c("#0F7C80", "#C17F3A", "#6C5CE7", "#B83227", "#2E8B57", "#2F7FB5")
+      pal <- c("#007DBC", "#F0512D", "#950158", "#03924A", "#AA5628", "#008EB2")
       for (k in seq_along(input$compare)) {
         xr <- reg[reg$admin1 == input$compare[k], ]
         xr <- xr[order(xr$round_id), ]

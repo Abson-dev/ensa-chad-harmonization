@@ -12,14 +12,14 @@ approach_ui <- function(id, d) {
                "signpost-split"),
     bslib::layout_column_wrap(
       width = "190px", fill = FALSE, heights_equal = "row",
-      kpi("Survey rounds", nrow(d$rounds), paste(first, "–", last), "calendar3", "teal"),
+      kpi("Survey rounds", nrow(d$rounds), paste(first, "–", last), "calendar3", "navy"),
       kpi("Households", fmt_int(n_hh), "household interviews", "people", "slate"),
       kpi("Source variables", fmt_int(FACTS$distinct_vars), sprintf("distinct names; only %d shared by all rounds", FACTS$shared_vars), "table", "orange"),
       kpi("Concepts mapped", nrow(d$concepts), "in the crosswalk workbook", "diagram-3", "blue"),
       kpi("Domains harmonised", paste0(n_dom_done, " / 8"),
           if (n_dom_done >= 8) "all domains, joinable on round + household" else
             paste(paste(DOMAIN_NAMES[intersect(names(DOMAIN_NAMES), d$rules$domain)], collapse = ", "), "· more planned"),
-          "check2-circle", "teal")
+          "check2-circle", "navy")
     ),
     bslib::layout_columns(
       col_widths = c(7, 5),

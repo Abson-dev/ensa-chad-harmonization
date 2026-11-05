@@ -1,20 +1,21 @@
 # Theme, palettes and small UI helpers shared by all pages.
 
+# Colours: WFP Visual Brand Guide v6.0 (October 2025), pages 26-29. Keep in step with www/styles.css.
 COL <- list(
-  navy = "#17324D", teal = "#0F7C80", sand = "#F4F1EA", ink = "#1F2933", muted = "#6B7785",
+  navy = "#002F5A", blue = "#007DBC", sand = "#F9F4DF", ink = "#231F20", muted = "#636466",
   grid = "#E6E9EE", na = "#E9ECEF"
 )
-GEN_COL <- c("1" = "#C17F3A", "2" = "#2F7FB5", "3" = "#2E8B57")
+GEN_COL <- c("1" = "#AA5628", "2" = "#007DBC", "3" = "#035537")
 GEN_LABEL <- c("1" = "Gen 1 · French codebook", "2" = "Gen 2 · hybrid / WFP modules",
                "3" = "Gen 3 · WFP standard codebook")
-FCS_COL <- c(Poor = "#B83227", Borderline = "#E58E26", Acceptable = "#3C9D5D")
-# Cadre Harmonise / IPC phase colours.
+FCS_COL <- c(Poor = "#E3002B", Borderline = "#F8A07E", Acceptable = "#03924A")
+# Cadre Harmonise / IPC phase colours: the IPC standard, also in WFP's wfpthemes package. Not to be rebranded.
 CH_COL <- c("Phase 1" = "#CDFACD", "Phase 2" = "#FAE61E", "Phase 3+" = "#E67800")
-METHOD_COL <- c(copy = "#2F7FB5", copy_label = "#6C5CE7", sum = "#0F7C80", sum_cap7 = "#C17F3A",
-                any = "#2E8B57", max_or_last = "#B83227", missing = "#ADB5BD")
+METHOD_COL <- c(copy = "#007DBC", copy_label = "#950158", sum = "#002F5A", sum_cap7 = "#AA5628",
+                any = "#035537", max_or_last = "#E3002B", missing = "#636466")
 # Any method added to the pipeline later still gets a colour instead of breaking the Process page.
-method_colour <- function(m) if (m %in% names(METHOD_COL)) METHOD_COL[[m]] else "#6B7785"
-COVERAGE_SCALE <- list(c(0, "#C8553D"), c(0.5, "#F2C14E"), c(0.95, "#8CC084"), c(1, "#2E8B57"))
+method_colour <- function(m) if (m %in% names(METHOD_COL)) METHOD_COL[[m]] else "#636466"
+COVERAGE_SCALE <- list(c(0, "#E3002B"), c(0.5, "#ECE1B1"), c(0.95, "#74C48A"), c(1, "#03924A"))
 
 DOMAIN_NAMES <- c(core = "core", fcs = "FCS", rcsi = "rCSI", lcs = "LCS", hhs = "HHS", hdds = "HDDS",
                   exp = "expenditure", demo = "demographics")
@@ -25,10 +26,10 @@ FACTS <- list(distinct_vars = 3853, shared_vars = 14, tests = 29)
 app_theme <- function() {
   bslib::bs_theme(
     version = 5,
-    bg = "#FFFFFF", fg = COL$ink, primary = COL$teal, secondary = COL$navy,
-    success = "#2E8B57", warning = "#E58E26", danger = "#B83227", info = "#2F7FB5",
-    base_font = bslib::font_collection("Inter", "Segoe UI", "Roboto", "Helvetica Neue", "Arial", "sans-serif"),
-    heading_font = bslib::font_collection("Inter", "Segoe UI", "Roboto", "Arial", "sans-serif"),
+    bg = "#FFFFFF", fg = COL$ink, primary = COL$blue, secondary = COL$navy,
+    success = "#03924A", warning = "#F0512D", danger = "#E3002B", info = "#008EB2",
+    base_font = bslib::font_collection("Open Sans", "Segoe UI", "Roboto", "Helvetica Neue", "Arial", "sans-serif"),
+    heading_font = bslib::font_collection("Open Sans", "Segoe UI", "Roboto", "Arial", "sans-serif"),
     "navbar-bg" = COL$navy, "border-radius" = "0.6rem", "card-border-color" = COL$grid
   )
 }
@@ -40,12 +41,12 @@ fmt_pct <- function(x, d = 1) ifelse(is.na(x), "–", paste0(formatC(x, format =
 # (axis, legend and margin lists are merged, not replaced).
 plotly_style <- function(p, legend = TRUE, ...) {
   base <- list(
-    font = list(family = "Inter, Segoe UI, Arial, sans-serif", size = 12, color = COL$ink),
+    font = list(family = "Open Sans, Segoe UI, Arial, sans-serif", size = 12, color = COL$ink),
     paper_bgcolor = "rgba(0,0,0,0)", plot_bgcolor = "rgba(0,0,0,0)",
     xaxis = list(gridcolor = COL$grid, zeroline = FALSE, title = list(text = ""), automargin = TRUE),
     yaxis = list(gridcolor = COL$grid, zeroline = FALSE, title = list(text = ""), automargin = TRUE),
     legend = list(orientation = "h", y = 1.14, x = 0, yanchor = "bottom"),
-    showlegend = legend, hoverlabel = list(font = list(family = "Inter, Segoe UI, Arial")),
+    showlegend = legend, hoverlabel = list(font = list(family = "Open Sans, Segoe UI, Arial")),
     margin = list(t = if (legend) 75 else 30, r = 20, b = 30, l = 50)
   )
   extra <- list(...)
@@ -80,7 +81,7 @@ brand <- function() {
                  htmltools::span(class = "brand-sub", "Harmonised surveys, 2018–2025"))
 }
 
-# tone: teal, blue, orange, red, amber, slate.
+# tone: navy, blue, orange, red, brown, slate.
 kpi <- function(title, value, detail, icon, tone = "slate") {
   bslib::value_box(title, value, htmltools::div(class = "kpi-detail", detail), class = paste0("kpi tone-", tone),
                    showcase = bsicons::bs_icon(icon), showcase_layout = bslib::showcase_left_center(width = 0.22))
@@ -225,9 +226,9 @@ metric_label <- function(id) ind_info(id)$label
 # Regional heatmap colour scale, by which end of the indicator is the worse one.
 heat_scale <- function(id) {
   switch(ind_info(id)$worse,
-         low = list(c(0, "#B83227"), c(0.5, "#F2C14E"), c(1, "#2E8B57")),
-         high = list(c(0, "#F7F7F2"), c(0.35, "#F6D58E"), c(0.7, "#E8833A"), c(1, "#9E2A1E")),
-         list(c(0, "#EEF5F5"), c(1, "#0F7C80")))
+         low = list(c(0, "#E3002B"), c(0.5, "#F9F4DF"), c(1, "#007DBC")),
+         high = list(c(0, "#F9F4DF"), c(1/3, "#F8A07E"), c(2/3, "#F0512D"), c(1, "#9A331B")),
+         list(c(0, "#B9E5FB"), c(0.5, "#007DBC"), c(1, "#004670")))
 }
 
 pill <- function(text, colour, text_colour = "#fff") {

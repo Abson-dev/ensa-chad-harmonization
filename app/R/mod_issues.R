@@ -8,7 +8,7 @@ ISSUE_IMPACT <- c(
   "Corrected FCS items" = "Low", "HDDS skip patterns" = "Low", "HHS" = "Low", "HHS frequency items" = "Low",
   "Cadre Harmonise variables" = "Low"
 )
-IMPACT_COL <- c(High = "#B83227", Medium = "#E58E26", Low = "#2F7FB5")
+IMPACT_COL <- c(High = "#E3002B", Medium = "#9A331B", Low = "#007DBC")
 
 issues_ui <- function(id, d) {
   ns <- shiny::NS(id)

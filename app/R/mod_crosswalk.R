@@ -1,7 +1,7 @@
 # Crosswalk explorer: the ENSA_Chad_crosswalk_2018-2025.xlsx workbook, made interactive.
 
 cov_fill <- function(v) {
-  dplyr::case_when(is.na(v) ~ "#F1F3F5", v == 0 ~ "#F8D7D3", v < 95 ~ "#FFF1CC", TRUE ~ "#E3F1E6")
+  dplyr::case_when(is.na(v) ~ "#F1F3F5", v == 0 ~ "#FCDCD8", v < 95 ~ "#F5E9CE", TRUE ~ "#D5ECDD")
 }
 
 crosswalk_ui <- function(id, d) {
@@ -25,9 +25,9 @@ crosswalk_ui <- function(id, d) {
         htmltools::hr(),
         htmltools::div(class = "legend-block",
                        htmltools::strong("Coverage"),
-                       legend_row("#E3F1E6", "found, ≥ 95% non-missing"),
-                       legend_row("#FFF1CC", "found, 1–95% (often skip pattern)"),
-                       legend_row("#F8D7D3", "variable exists but empty"),
+                       legend_row("#D5ECDD", "found, ≥ 95% non-missing"),
+                       legend_row("#F5E9CE", "found, 1–95% (often skip pattern)"),
+                       legend_row("#FCDCD8", "variable exists but empty"),
                        legend_row("#F1F3F5", "no equivalent in that round")),
         htmltools::hr(),
         shiny::downloadButton(ns("dl_xlsx"), "Crosswalk workbook (.xlsx)", class = "btn-sm btn-outline-primary w-100 mb-2"),
@@ -132,7 +132,7 @@ crosswalk_server <- function(id, d) {
         style = function(v, i) {
           cv <- covm[[rl]][i]
           list(background = cov_fill(cv), fontFamily = "Consolas, monospace", fontSize = "0.78em",
-               color = if (is.na(cv)) "#9AA5B1" else COL$ink)
+               color = if (is.na(cv)) "#939598" else COL$ink)
         })), d$round_levels)
       reactable::reactable(
         tbl, groupBy = "domain", defaultExpanded = TRUE, compact = TRUE, bordered = TRUE,
@@ -191,7 +191,7 @@ crosswalk_server <- function(id, d) {
           htmltools::span(class = "h5 m-0", cc$concept),
           htmltools::code(cc$harm), pill(as.character(cc$domain), COL$navy),
           pill(sprintf("%d / 14 rounds", cc$rounds_available),
-               if (cc$rounds_available == 14) "#2E8B57" else "#E58E26")
+               if (cc$rounds_available == 14) "#035537" else "#AA5628")
         ),
         if (!is.na(cc$notes)) callout(cc$notes, type = if (grepl("SLOT SWAP|SEVERITY|EMPTY|NO weight|different scale", cc$notes)) "warning" else "info"),
         reactable::reactableOutput(ns("concept_rounds"))
@@ -206,7 +206,7 @@ crosswalk_server <- function(id, d) {
                          type, range, label, value_labels, alternates)
       reactable::reactable(
         x, compact = TRUE, pagination = FALSE, striped = TRUE,
-        rowStyle = function(i) if (x$source[i] == "(not available)") list(color = "#9AA5B1"),
+        rowStyle = function(i) if (x$source[i] == "(not available)") list(color = "#939598"),
         columns = list(
           round = reactable::colDef(minWidth = 85, style = list(fontWeight = 600)),
           gen = reactable::colDef(name = "gen", minWidth = 55, align = "center",
@@ -237,6 +237,6 @@ coverage_bar <- function(v) {
   if (is.na(v)) return("—")
   htmltools::div(class = "cov-bar",
                  htmltools::div(class = "cov-fill", style = sprintf("width:%s%%;background:%s", v,
-                                                                     if (v >= 95) "#2E8B57" else if (v > 0) "#E5A823" else "#C8553D")),
+                                                                     if (v >= 95) "#03924A" else if (v > 0) "#AA5628" else "#E3002B")),
                  htmltools::span(fmt_pct(v, 0)))
 }
