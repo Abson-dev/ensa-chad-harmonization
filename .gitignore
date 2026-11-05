@@ -1,6 +1,9 @@
 # Household-level outputs: regenerate with run_harmonize.py, never publish
 output/
 
+# John's operations model: its tables hold real regional estimates (needs SISAAP/WFP agreement)
+models/
+
 # Shiny app data: aggregates by region; share deliberately, not via a public repo
 app/data/
 # Posit deployment records (account and app URL)

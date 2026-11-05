@@ -118,5 +118,59 @@ if (file.exists(stata_src)) {
   file.remove(stata_app)
 }
 
+# Outputs of the humanitarian operations model (../models): aggregates only, from an explicit list.
+# Its Monte Carlo draws and working tables stay out of the app.
+sim_root <- file.path(root, "models", "Chad_Humanitarian_Operations_Reproducibility")
+old_sim <- list.files(dat, pattern = "^sim_", full.names = TRUE)
+if (length(old_sim)) file.remove(old_sim)
+if (dir.exists(sim_root)) {
+  tab <- function(x) fread(file.path(sim_root, "outputs", "tables", x), encoding = "UTF-8")
+  put <- function(x, name) {
+    if (any(c("hh_id", "uuid") %in% names(x))) stop("Household identifiers in the model's table for ", name)
+    fwrite(x, file.path(dat, name))
+  }
+  res <- fromJSON(file.path(sim_root, "outputs", "results.json"))
+  scen <- fromJSON(file.path(sim_root, "outputs", "scenario_results.json"))
+
+  regional <- tab("regional_profile_baseline.csv")
+  stopifnot("Regional estimate under the 30-household threshold" = all(regional$n >= MIN_CELL))
+  put(regional[, !c("official_province", "neff", "rank_fi_rate", "rank_sev_rate", "need_share_fi", "need_share_sev")], "sim_regional.csv")
+
+  nat <- tab("national_estimates_all_rounds.csv")[round_id == res$baseline_round & weight_basis == "survey weights"]
+  put(nat[, .(key = indicator_key, indicator, type, est = w_est, lo = w_lo, hi = w_hi, person = person_weighted, unweighted, n)], "sim_national.csv")
+
+  # Groups the model flags as too small keep their size but lose their estimates.
+  prof <- tab("household_profiles_baseline.csv")
+  est <- setdiff(names(prof), c("characteristic", "group", "n", "suppress"))
+  prof[suppress == TRUE, (est) := NA_real_]
+  put(prof[, !"suppress"], "sim_profiles.csv")
+  pop <- tab("population_group_profiles_2024_unweighted.csv")
+  stopifnot("A population group is flagged for suppression" = !any(pop$suppress))
+  put(pop[, !c("weight_basis", "suppress")], "sim_popgroups.csv")
+
+  put(tab("targeting_benchmark_relative.csv"), "sim_targeting.csv")
+  put(tab("predictive_logit_cariPB_fi.csv"), "sim_logit.csv")
+  mc <- tab("mc_summary.csv"); setnames(mc, 1, "parameter")
+  put(mc, "sim_mc_summary.csv")
+  put(tab("mc_top5_probability.csv"), "sim_mc_top5.csv")
+
+  inputs <- fromJSON(file.path(sim_root, "scenarios", "scenario_defaults.json"), simplifyVector = TRUE)
+  # In the workbook's Assumptions sheet, not in the JSON.
+  inputs$cash_share <- list(value = 0.5, unit = "share of households", status = "illustrative")
+  write_json(inputs, file.path(dat, "sim_inputs.json"), auto_unbox = TRUE, pretty = TRUE, digits = NA)
+
+  # Does the model rest on the merged file as it is now?
+  dta <- file.path(out, "merged", "ENSA_Chad_merged_2018-2025.dta")
+  current <- if (file.exists(dta)) paste(as.character(openssl::sha256(file(dta))), collapse = "") else NA_character_
+  matches <- identical(current, res$sha256)
+  if (!matches) warning("The model's input file differs from output/merged: rerun the model before publishing.", call. = FALSE)
+  write_json(list(sha256 = res$sha256, input_matches = matches, baseline_round = res$baseline_round, baseline_dates = res$baseline_dates,
+                  baseline_n = res$baseline_n, mean_hhsize = res$mean_hhsize_baseline, logit_auc = res$logit_auc, hhsize_reference = scen$hhsize),
+             file.path(dat, "sim_meta.json"), auto_unbox = TRUE, pretty = TRUE, digits = NA)
+  cat("Model outputs written (sim_*); input file matches the merged file:", matches, "\n")
+} else {
+  cat("No models folder: the Simulation page will say so.\n")
+}
+
 cat(sprintf("App data written to %s\n  rounds: %d, region x round cells: %d (suppressed < %d HH: %d)\n",
             dat, nrow(by_round), nrow(by_region), MIN_CELL, sum(by_region$households < MIN_CELL)))

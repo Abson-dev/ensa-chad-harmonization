@@ -35,6 +35,7 @@ ui <- protect_ui(page_navbar(
   nav_panel("Overview", icon = bsicons::bs_icon("speedometer2"), situation_ui("situation", d)),
   nav_panel("Trends", icon = bsicons::bs_icon("graph-up"), trends_ui("trends", d)),
   nav_panel("Regions", icon = bsicons::bs_icon("geo-alt"), regions_ui("regions", d)),
+  nav_panel("Simulation", icon = bsicons::bs_icon("sliders"), simulation_ui("simulation", d)),
   nav_panel("Validation", icon = bsicons::bs_icon("patch-check"), validation_ui("validation", d)),
   nav_panel("Data issues", icon = bsicons::bs_icon("exclamation-triangle"), issues_ui("issues", d)),
   nav_menu(
@@ -77,6 +78,7 @@ server <- function(input, output, session) {
   situation_server("situation", d, ref)
   trends_server("trends", d, ref)
   regions_server("regions", d, ref)
+  simulation_server("simulation", d)
   validation_server("validation", d)
   issues_server("issues", d)
   approach_server("approach", d)

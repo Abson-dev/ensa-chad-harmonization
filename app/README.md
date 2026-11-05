@@ -13,6 +13,7 @@ The **reference round** in the left panel drives Overview, Trends and Regions.
 | **Overview** | What is the situation in this round, and what should I check first? Key figures, points of attention generated from the data and QC tables, indicators of the latest rounds of the same season |
 | **Trends** | How has an indicator moved, February with February and October with October, nationally or in one region? |
 | **Regions** | How does a region compare with the national value and the other regions? Profile, ranking, region × round map |
+| **Simulation** | What can a budget buy, under explicit assumptions? John's humanitarian operations model on the Oct 2025 baseline: a live scenario planner (allocation rules, funding, prices, delivery), baseline estimates with intervals, Monte Carlo robustness, targeting and readiness. Illustrative inputs; not for deployment decisions |
 | **Validation** | Do the results match the sources? Agreement with the analysts, the reversed FCS coding, the Stata check against the original files |
 | **Data issues** | What was found, and how is it handled? |
 | **Method** | *Approach*, *Process* (pipeline, rules), *Crosswalk* (83 concepts × 14 rounds, downloads), *Rounds* (fieldwork, weights) |
@@ -56,6 +57,8 @@ Rscript prepare_app_data.R
 
 This aggregates `../output/ensa_*.csv` (household files, never copied into the app) into `data/indicators_by_round*.csv`, for all 8 domains. It also copies the QC tables, the configuration, a cleaned manifest (file names only, no local paths), the latest crosswalk workbook and, if it was run, the result of the Stata check. It needs `data.table` and `jsonlite` in addition to the app packages. Run the pipeline with hashes (without `--no-hash`) first: the About page shows them.
 
+If `../models/Chad_Humanitarian_Operations_Reproducibility` is present, it also copies a listed set of the model's aggregate outputs to `data/sim_*` (not its Monte Carlo draws), hides the groups the model flags as too small, and records whether the model's input is the current `output/merged/` file. The `models/` folder is not versioned: its tables hold real regional estimates. After the model is rerun, run this script again. `R/sim_model.R` mirrors the model's formulas in R so the planner can recompute them; `tests/test_app.R` reconciles it with the model's outputs and fails if they drift apart. Without the folder, the Simulation page says so and the rest of the app runs.
+
 ## Test
 
 ```bash
@@ -92,6 +95,7 @@ app/
 │   ├── data.R            loads the workbook, config, QC and indicators
 │   ├── utils.R           theme, indicator catalogue, same-season comparison, chart style, helpers
 │   ├── auth.R            login: required on a server, refuses to start without accounts
+│   ├── sim_model.R       the operations model's accounting formulas, for the Simulation page
 │   └── mod_*.R           one module per page
 ├── www/styles.css        visual design: WFP Visual Brand Guide v6.0 colours
 ├── www/fonts/            Open Sans, WFP's corporate font, with its licence (OFL.txt)

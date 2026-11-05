@@ -63,4 +63,60 @@ for (f in list.files("demo_data", pattern = "^qc_.*\\.csv$")) {
     x
   })
 }
+# The humanitarian operations model: every estimate invented. Its illustrative inputs (budget, transfer,
+# costs) are not survey results and are kept, so the planner runs the real formulas on invented regions.
+if (file.exists("demo_data/sim_regional.csv")) {
+  rw("sim_regional.csv", function(x) {
+    w <- stats::runif(nrow(x), 0.3, 1.5)
+    x$weight_share <- w / sum(w)
+    x$mean_hhsize <- round(stats::runif(nrow(x), 5, 8), 2)
+    fi <- grep("_(fi|pb)$|^(rcsi_ge19|hhs_modsev|lcs_crisis_plus|fes_ge75|hdds_phase3p)$", names(x), value = TRUE)
+    for (n in fi) x[[n]] <- round(stats::runif(nrow(x), 0.1, 0.8), 4)
+    x$cariPB_sev <- round(x$cariPB_fi * stats::runif(nrow(x), 0.05, 0.3), 4)
+    x$cariPC_sev <- round(x$cariPC_fi * stats::runif(nrow(x), 0.05, 0.3), 4)
+    x$fcs28_poor <- round(x$fcs28_pb * stats::runif(nrow(x), 0.1, 0.4), 4)
+    x$fcs_mean <- round(stats::runif(nrow(x), 35, 65), 1)
+    for (n in grep("_se$", names(x), value = TRUE)) x[[n]] <- round(stats::runif(nrow(x), 0.01, 0.05), 4)
+    x
+  })
+  rw("sim_national.csv", function(x) {
+    v <- ifelse(x$type == "prop", stats::runif(nrow(x), 0.03, 0.6), stats::runif(nrow(x), 4, 50))
+    half <- 0.06 * v
+    x$est <- v; x$lo <- v - half; x$hi <- v + half
+    x$person <- ifelse(is.na(x$person), NA_real_, v * stats::runif(nrow(x), 0.95, 1.05))
+    x$unweighted <- v * stats::runif(nrow(x), 0.9, 1.1)
+    x
+  })
+  rw("sim_profiles.csv", function(x) {
+    est <- setdiff(names(x), c("characteristic", "group", "n", "pop_share"))
+    for (n in est) x[[n]] <- ifelse(is.na(x[[n]]), NA_real_, if (grepl("_se$", n)) stats::runif(nrow(x), 0.01, 0.04) else stats::runif(nrow(x), 0.05, 0.7))
+    x$pop_share <- round(stats::runif(nrow(x), 0.02, 0.5), 3)
+    x
+  })
+  rw("sim_popgroups.csv", function(x) {
+    for (n in setdiff(names(x), c("round_id", "pop_group", "n"))) x[[n]] <- stats::runif(nrow(x), 0.05, 0.8)
+    x
+  })
+  rw("sim_targeting.csv", function(x) {
+    for (n in c("share_targeted", "benchmark_coverage", "benchmark_relative_inclusion", "share_of_target_in_benchmark")) x[[n]] <- stats::runif(nrow(x), 0.1, 0.9)
+    x$benchmark_relative_exclusion <- 1 - x$benchmark_coverage
+    x
+  })
+  rw("sim_logit.csv", function(x) {
+    x$coef <- stats::rnorm(nrow(x), 0, 0.5); x$se_robust_no_cluster <- stats::runif(nrow(x), 0.05, 0.2); x$odds_ratio <- exp(x$coef)
+    x
+  })
+  rw("sim_mc_summary.csv", function(x) {
+    mid <- stats::runif(nrow(x), 0.3, 0.7); half <- stats::runif(nrow(x), 0.05, 0.15)
+    x$p05 <- mid - half; x$p50 <- mid; x$p95 <- mid + half
+    x
+  })
+  rw("sim_mc_top5.csv", function(x) {
+    x$prob_top5_need_share <- round(stats::runif(nrow(x), 0, 1)^3, 3)
+    x[order(-x$prob_top5_need_share), ]
+  })
+  m <- jsonlite::fromJSON("demo_data/sim_meta.json")
+  m$mean_hhsize <- 6.5; m$hhsize_reference <- 6.5; m$logit_auc <- 0.7
+  jsonlite::write_json(m, "demo_data/sim_meta.json", auto_unbox = TRUE, pretty = TRUE)
+}
 cat("demo_data/ written: synthetic estimates. Run the app with ENSA_DEMO=1.\n")

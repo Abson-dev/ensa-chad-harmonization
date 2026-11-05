@@ -176,6 +176,7 @@ The report has one chapter per domain (sample, household profile, FCS, HDDS, rCS
 | ![Pipeline diagram with step details](docs/screenshots/04-process.png) **Process**: click a step to see what it does | ![Coverage matrix of 83 concepts across 14 rounds](docs/screenshots/05-crosswalk-matrix.png) **Crosswalk**: where each concept lives in each round |
 | ![Fieldwork calendar and round inventory](docs/screenshots/06-rounds.png) **Rounds**: fieldwork windows, weights, checks | ![Data page with filters and exports](docs/screenshots/10-data.png) **Data**: filter and export the aggregates |
 | ![Approach page](docs/screenshots/09-approach.png) **Approach**: the three questionnaire generations and the four steps | ![Login page](docs/screenshots/11-login.png) **Login**: required on the published version |
+| ![Simulation page with synthetic data](docs/screenshots/12-simulation.png) **Simulation**: what a budget can buy under explicit, illustrative assumptions | |
 
 The app ships **aggregates and metadata only**. Its `data/` folder is not versioned; build it after a pipeline run with `prepare_app_data.R` (see [Quick start](#2-explore-the-results-r)). Publishing with a login and other sharing options: [app/README.md](app/README.md). For a non-technical user who receives the app folder with its `data/`: [app/README_FIRST.txt](app/README_FIRST.txt).
 
@@ -386,6 +387,8 @@ Details: [SETUP.md §10](SETUP.md#10-change-a-harmonisation-decision).
 | `qc/qc_<domain>_by_round.csv` | 14 | completeness, invalid values, unweighted and weighted indicators, agreement with original scores |
 
 `orig_*` columns are kept for QC only; analyse the recomputed columns. Outputs contain household-level data and are **not versioned** (`.gitignore`).
+
+`python build_merged.py` joins the eight domain files into one household dataset in `output/merged/` (CSV, SAV, DTA and a codebook; 197,947 households, 120 variables). It stops on any unmatched key and reads each written file back to compare it with the domain files, cell by cell.
 
 ## Author, citation and license
 

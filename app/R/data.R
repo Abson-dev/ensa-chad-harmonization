@@ -29,6 +29,20 @@ indicators_long <- function(ind_round, ind_region, rounds) {
           "weighted", "unweighted", "households")]
 }
 
+# Outputs of the humanitarian operations model, written by prepare_app_data.R. NULL if not there.
+load_sim <- function(dir) {
+  f <- function(x) file.path(dir, paste0("sim_", x))
+  if (!file.exists(f("regional.csv"))) return(NULL)
+  csv <- function(x) utils::read.csv(f(x), stringsAsFactors = FALSE, encoding = "UTF-8", check.names = FALSE)
+  regional <- csv("regional.csv")
+  # Alphabetical order in the byte sense, as in the Python model: rule D keeps ties in this order.
+  regional <- regional[order(regional$admin1, method = "radix"), ]
+  rownames(regional) <- NULL
+  list(regional = regional, national = csv("national.csv"), profiles = csv("profiles.csv"), popgroups = csv("popgroups.csv"),
+       targeting = csv("targeting.csv"), logit = csv("logit.csv"), mc_summary = csv("mc_summary.csv"), mc_top5 = csv("mc_top5.csv"),
+       inputs = jsonlite::fromJSON(f("inputs.json")), meta = jsonlite::fromJSON(f("meta.json")))
+}
+
 load_app_data <- function(dir = app_data_dir()) {
   f <- function(x) file.path(dir, x)
   xl <- f("ENSA_Chad_crosswalk_2018-2025.xlsx")
@@ -110,6 +124,7 @@ load_app_data <- function(dir = app_data_dir()) {
     stata_check = if (file.exists(stata_file)) readr::read_csv(stata_file, show_col_types = FALSE),
     manifest = jsonlite::fromJSON(f("manifest.json")),
     settings = readLines(f("settings.toml"), encoding = "UTF-8"),
+    sim = load_sim(dir),
     xlsx_path = xl
   )
 }
